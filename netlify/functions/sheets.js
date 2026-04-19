@@ -12,6 +12,17 @@ function base64url(str) {
     .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
 }
 
+function formatTimestamp(isoString) {
+  const date = new Date(isoString);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+  return `${day}.${month}.${year} ${hours}:${minutes}:${seconds}`;
+}
+
 async function getAccessToken() {
   const email      = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
   const rawKey     = process.env.GOOGLE_PRIVATE_KEY;
@@ -104,8 +115,7 @@ const SHEET_COLS = {
   DYNAMIK:      7,
   BEMERKUNGEN:  8,
   VERSION:      9,
-  ROLLE:        10,
-  EMAIL_SENT:   11,
+  EMAIL_SENT:   10,
 };
 
 function sheetUrl(path) {
@@ -144,7 +154,7 @@ function rowToObject(r) {
     leiterCount: r[SHEET_COLS.LEITER_COUNT]  || 0,
     dynamik:     r[SHEET_COLS.DYNAMIK]       || 1,
     bemerkungen: r[SHEET_COLS.BEMERKUNGEN]   || '',
-    rolle:       r[SHEET_COLS.ROLLE]         || '',
+    version:     r[SHEET_COLS.VERSION]       || '',
     emailSent:   r[SHEET_COLS.EMAIL_SENT] === 'TRUE',
   };
 }
@@ -288,7 +298,7 @@ exports.handler = async (event) => {
       }
 
       const row = [
-        body.timestamp,
+        formatTimestamp(body.timestamp),
         body.datum,
         body.leiterName,
         body.hl,
@@ -297,8 +307,7 @@ exports.handler = async (event) => {
         body.leiterCount  || 0,
         body.dynamik,
         body.bemerkungen  || '',
-        '1.4',
-        body.rolle        || '',
+        body.version      || '',
         emailSent ? 'TRUE' : 'FALSE',
       ];
 

@@ -255,18 +255,22 @@
         <button class="accordion-header" onclick="toggleAccordion(this)">📞 Notrufnummern</button>
         <div class="accordion-content">
           <p><strong>Polizei:</strong> 117</p>
-          <p><strong>Feuerwehr / Rettung:</strong> 118</p>
-          <p><strong>Notfall:</strong> 112</p>
+          <p><strong>Feuerwehr:</strong> 118</p>
+          <p><strong>Sanität:</strong> 144</p>
           <p><strong>Kinder- und Jugendnotruf:</strong> 147</p>
+          <p><strong>Vergiftungsnotruf:</strong> 145</p>
+          <p><strong>REGA:</strong> 1414</p>
+          <p><strong>Jubla Zürich Kriesentelefon:</strong> 0800 505 202</p>
+          <p><strong>Jubla Kriesentelefon national:</strong> 079 259 76 90</p>
         </div>
       </div>
       <div class="accordion-item">
         <button class="accordion-header" onclick="toggleAccordion(this)">❓ Hilfe-Themen</button>
         <div class="accordion-content">
-          <p><strong>Gruppendynamik:</strong> Wie erkenne ich eine gute oder schlechte Dynamik?</p>
-          <p><strong>Konflikte:</strong> Was tun bei Streitereien in der Gruppe?</p>
-          <p><strong>Sicherheit:</strong> Wichtige Sicherheitsregeln für Gruppenstunden.</p>
-          <p><strong>Notfälle:</strong> Wie verhalte ich mich in Notfallsituationen?</p>
+          <p><strong>Gruppendynamik:</strong> Eine gute Dynamik erkennst du daran, dass die Kinder aktiv mitmachen, Respekt zeigen und zusammenarbeiten. Eine schlechte Dynamik zeigt sich durch Unruhe, Konflikte, Konzentrationsprobleme oder Desinteresse. Nutze die Dynamik-Skala 1-5 um dies zu dokumentieren.</p>
+          <p><strong>Konflikte:</strong> Nimm Konflikte ernst. Höre beiden Seiten zu, bleibe ruhig und fair. Versuche schnell zu deeskalieren durch klare Regeln und positive Verstärkung. Wichtig: Achte auf körperliche Grenzen und respektvolle Kommunikation. Bei ernsthaften Fällen informiere die Scharleitung.</p>
+          <p><strong>Sicherheit:</strong> Überprüfe vor jeder Gruppenstunde den Ort auf Gefahren. Achte auf Aufsichtspflicht – Kinder dürfen nicht unbeaufsichtigt sein. Beachte Altersgerechtheit von Aktivitäten, stelle Material sicher und kenne Erste-Hilfe-Grundlagen. Im Notfall 144 oder 117 anrufen.</p>
+          <p><strong>Notfälle:</strong> Bleibe ruhig und überlegt. Sicherheit first – Stelle sicher dass keine weiteren Personen in Gefahr sind. Rufe sofort den Notruf an (117/118/144). Informiere die Scharleitung und gib ihr alle wichtigen Informationen. Dokumentiere was passiert ist und berichte dies über das Reporting-Tool.</p>
         </div>
       </div>
       <div class="accordion-item">
@@ -294,6 +298,7 @@
 <script>
 // ── State ──────────────────────────────────────────────────
 var currentUser = null;
+var currentVersion = '';
 var allRows     = [];
 var API         = '/.netlify/functions/sheets';
 
@@ -362,7 +367,9 @@ function loadVersionInfo() {
       return response.json();
     })
     .then(function(data) {
-      label.innerText = data.tag_name || data.name || 'GitHub';
+      var version = data.tag_name || data.name || 'GitHub';
+      currentVersion = version;
+      label.innerText = version;
       if (data.html_url) {
         link.href = data.html_url;
       }
@@ -371,7 +378,9 @@ function loadVersionInfo() {
       return fetch(apiCommit)
         .then(function(r) { return r.json(); })
         .then(function(data) {
-          label.innerText = 'commit ' + (data.sha ? data.sha.slice(0, 7) : 'main');
+          var version = 'commit ' + (data.sha ? data.sha.slice(0, 7) : 'main');
+          currentVersion = version;
+          label.innerText = version;
           link.href = 'https://github.com/' + repo + '/commits/main';
         })
         .catch(function() {
@@ -484,7 +493,8 @@ function submitReport() {
     leiterCount: parseInt(leiter)  || 0,
     dynamik:     parseInt(dynamik),
     bemerkungen: bem,
-    rolle:       rolle
+    rolle:       rolle,
+    version:     currentVersion
   })
   .then(function(data) {
     if (data.ok) {
