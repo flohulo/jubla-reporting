@@ -1,22 +1,6 @@
-/**
- * Jubla Wald ZH – Reporting Tool
- * Netlify Serverless Function: Google Sheets via Service Account
- *
- * Umgebungsvariablen in Netlify setzen (Site settings → Environment variables):
- *   GOOGLE_SERVICE_ACCOUNT_EMAIL  → z.B. jubla-reporting@mein-projekt.iam.gserviceaccount.com
- *   GOOGLE_PRIVATE_KEY            → Kompletter Private Key aus der JSON-Datei (mit -----BEGIN...)
- *   GOOGLE_SHEET_ID               → ID aus der Sheet-URL
- *   SHEET_NAME                    → z.B. "Reporting"
- *   SCHAR_PIN                     → z.B. "1234"
- */
-
 const https = require('https');
 
 // ── JWT / Google Auth ──────────────────────────────────────────────────────
-/**
- * Erstellt ein JWT und tauscht es gegen ein Google Access Token.
- * Kein externes npm-Paket nötig – alles mit Node.js Bordmitteln.
- */
 async function getAccessToken() {
   const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
   const rawKey = process.env.GOOGLE_PRIVATE_KEY;
