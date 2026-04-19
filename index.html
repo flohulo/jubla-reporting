@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Jubla Wald ZH – Reporting (Service Account)</title>
+  <title>Jubla Wald ZH – Reporting</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -111,7 +111,7 @@
     <p class="section-title">🔒 Anmelden</p>
     <div class="form-group">
       <label class="form-label">Dein Name</label>
-      <input type="text" id="userNameInput" class="form-control" placeholder="Vorname Nachname">
+      <input type="text" id="userNameInput" class="form-control" placeholder="Vorname">
     </div>
     <div class="form-group">
       <label class="form-label">Schar-PIN</label>
@@ -128,17 +128,18 @@
   <!-- TAB BAR -->
   <div class="tab-bar" id="tabBar" style="display:none;">
     <button class="tab-btn active" onclick="showTab('formTab', this)">📝 Report</button>
-    <button class="tab-btn" onclick="showTab('historyTab', this)">📋 Verlauf</button>
+    <button class="tab-btn" onclick="showTab('requestTab', this)">📋 Anfordern</button>
   </div>
 
   <!-- FORM -->
   <div class="card-body" id="formTab" style="display:none;">
     <button class="btn btn-secondary" onclick="document.getElementById('supportBox').classList.toggle('open')">💡 Hilfe & Tipps</button>
-    <div class="support-box" id="supportBox">Erfasse nach jeder Aktivität einen kurzen Bericht.
+    <div class="support-box" id="supportBox">Erfasse nach jeder Gruppenstunde einen kurzen Bericht.
 
 • Beschreibe bei Dynamik 4 oder 5 die Situation genau.
 • Bei Dynamik 5 melde dich zusätzlich bei der Scharleitung.
-• Partnerfeld: trage den Namen der Begleitperson ein.</div>
+• Partnerfeld: trage den Namen der Begleitperson ein.
+• Diese Einträge hilfen bei Problemen die Situation nachzuverfolgen.</div>
 
     <div class="form-group"><label class="form-label">Datum</label><input type="date" id="f_datum" class="form-control" required></div>
     <div class="form-group"><label class="form-label">Meine Rolle</label>
@@ -147,6 +148,7 @@
         <option value="Hilfsleitung">Hilfsleitung</option>
       </select>
     </div>
+    <div class="form-group"><label class="form-label">Report für</label><input type="text" id="f_fuer" class="form-control" placeholder="Name der Person (optional)"></div>
     <div class="form-group"><label class="form-label">Partner/in</label><input type="text" id="f_partner" class="form-control" placeholder="Name"></div>
     <div class="form-group"><label class="form-label">Anzahl Kinder</label><input type="number" id="f_anzahl" class="form-control" placeholder="z.B. 12" min="0"></div>
     <div class="form-group"><label class="form-label">Zusätzliche Leiter</label><input type="number" id="f_leiter" class="form-control" placeholder="z.B. 2" min="0"></div>
@@ -167,11 +169,19 @@
     <button class="btn btn-primary" id="submitBtn" onclick="submitReport()">Report absenden 🚀</button>
   </div>
 
-  <!-- HISTORY -->
-  <div class="card-body" id="historyTab" style="display:none;">
-    <p class="section-title">📋 Verlauf</p>
-    <div id="historyContent"><div class="loading-inline"><div class="spinner"></div>Lade…</div></div>
-    <button class="export-btn" onclick="exportCSV()">⬇️ Als CSV exportieren</button>
+  <!-- REQUEST -->
+  <div class="card-body" id="requestTab" style="display:none;">
+    <p class="section-title">📋 Anfordern</p>
+    <div class="form-group">
+      <label class="form-label">Gewünschtes Datum</label>
+      <input type="date" id="r_datum" class="form-control" required>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Grund der Anforderung</label>
+      <textarea id="r_grund" class="form-control" rows="3" placeholder="Bitte gib den Grund an..."></textarea>
+    </div>
+    <p class="error-msg" id="requestError"></p>
+    <button class="btn btn-primary" id="requestBtn" onclick="submitRequest()">Anfordern 🚀</button>
   </div>
 
   <div class="card-footer">
@@ -215,7 +225,7 @@ function login() {
       document.getElementById('pinInput').value = '';
     }
   })
-  .catch(function() { err.innerText = 'Verbindungsfehler. Ist die Netlify Function aktiv?'; });
+  .catch(function() { err.innerText = 'Verbindungsfehler'; });
 }
 
 function togglePin() {
@@ -225,11 +235,11 @@ function togglePin() {
 
 // ── Tabs ───────────────────────────────────────
 function showTab(tabId, btn) {
-  ['formTab','historyTab'].forEach(function(id) { document.getElementById(id).style.display='none'; });
+  ['formTab','requestTab'].forEach(function(id) { document.getElementById(id).style.display='none'; });
   document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
   document.getElementById(tabId).style.display = 'block';
   btn.classList.add('active');
-  if (tabId === 'historyTab') loadHistory();
+  if (tabId === 'requestTab') loadRequest();
 }
 
 // ── Dynamik ────────────────────────────────────
@@ -247,6 +257,7 @@ function submitReport() {
 
   var datum   = document.getElementById('f_datum').value;
   var rolle   = document.getElementById('f_rolle').value;
+  var fuer    = document.getElementById('f_fuer').value.trim();
   var partner = document.getElementById('f_partner').value.trim();
   var anzahl  = document.getElementById('f_anzahl').value;
   var leiter  = document.getElementById('f_leiter').value;
@@ -273,7 +284,8 @@ function submitReport() {
       leiterCount: parseInt(leiter)||0,
       dynamik:   parseInt(dynamik),
       bemerkungen: bem,
-      rolle:     rolle
+      rolle:     rolle,
+      fuer:      fuer
     })
   })
   .then(function(r) { return r.json(); })
@@ -298,47 +310,54 @@ function submitReport() {
   });
 }
 
-// ── History ────────────────────────────────────
-function loadHistory() {
-  var content = document.getElementById('historyContent');
-  content.innerHTML = '<div class="loading-inline"><div class="spinner"></div>Lade aus Sheets…</div>';
+// ── Request ────────────────────────────────────
+function loadRequest() {
+  document.getElementById('r_datum').value = new Date().toISOString().split('T')[0];
+}
+
+function submitRequest() {
+  var btn = document.getElementById('requestBtn');
+  var err = document.getElementById('requestError');
+  err.innerText = '';
+
+  var datum = document.getElementById('r_datum').value;
+  var grund = document.getElementById('r_grund').value.trim();
+
+  if (!datum) { err.innerText = 'Bitte Datum auswählen.'; return; }
+  if (!grund) { err.innerText = 'Bitte Grund angeben.'; return; }
+
+  btn.disabled = true; btn.innerText = 'Wird angefordert… ⏳';
 
   fetch('/.netlify/functions/sheets', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'getRows', leiterName: currentUser })
+    body: JSON.stringify({
+      action: 'requestHistory',
+      datum: datum,
+      grund: grund,
+      requester: currentUser
+    })
   })
   .then(function(r) { return r.json(); })
   .then(function(data) {
-    if (!data.ok) { content.innerHTML = '<p style="color:var(--red)">Fehler: ' + data.error + '</p>'; return; }
-    var rows = (data.rows || []).reverse();
-    allRows = data.rows || [];
-
-    if (rows.length === 0) { content.innerHTML = '<div class="reports-empty">Noch keine Berichte gefunden.</div>'; return; }
-
-    var dynLabels = ['','Alles top 😊','Gut 🙂','Intensiv 😐','Schwierig 😬','Kritisch ⛔'];
-    var dynBadge  = ['','badge-green','badge-green','badge-blue','badge-warn','badge-crit'];
-
-    content.innerHTML = rows.map(function(r) {
-      var dyn = parseInt(r.dynamik)||1;
-      var cls = dyn>=5?'dyn-5':dyn>=4?'dyn-4':'';
-      return [
-        '<div class="report-card ' + cls + '">',
-        '<div class="report-meta">',
-        '<span class="report-date">📅 ' + formatDate(r.datum) + '</span>',
-        '<span class="report-by">' + (r.rolle||'') + '</span>',
-        '</div>',
-        '<div class="report-badges">',
-        '<span class="badge badge-blue">👦 ' + r.anzahl + ' Kinder</span>',
-        '<span class="badge badge-blue">👥 +' + r.leiterCount + ' Leiter</span>',
-        '<span class="badge ' + dynBadge[dyn] + '">Dynamik ' + dyn + ' – ' + dynLabels[dyn] + '</span>',
-        '</div>',
-        '<div class="report-note">' + escapeHtml(r.bemerkungen||'') + '</div>',
+    if (data.ok) {
+      document.getElementById('requestTab').innerHTML = [
+        '<div class="success-card">',
+        '<div class="success-icon">📧</div>',
+        '<h2>Angefordert!</h2>',
+        '<p>Der Auszug wird per Mail zugestellt.</p>',
+        '<button class="btn btn-primary" onclick="location.reload()">Neue Anforderung</button>',
         '</div>'
       ].join('');
-    }).join('');
+    } else {
+      err.innerText = 'Fehler: ' + (data.error || 'Unbekannt');
+      btn.disabled = false; btn.innerText = 'Anfordern 🚀';
+    }
   })
-  .catch(function(e) { content.innerHTML = '<p style="color:var(--red)">Fehler: ' + e.message + '</p>'; });
+  .catch(function(e) {
+    err.innerText = 'Netzwerkfehler: ' + e.message;
+    btn.disabled = false; btn.innerText = 'Anfordern 🚀';
+  });
 }
 
 // ── Export ─────────────────────────────────────

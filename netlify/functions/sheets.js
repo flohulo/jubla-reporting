@@ -1,4 +1,5 @@
 const https = require('https');
+const { google } = require('googleapis');
 
 // ── JWT / Google Auth ──────────────────────────────────────────────────────
 async function getAccessToken() {
@@ -7,13 +8,12 @@ async function getAccessToken() {
 
   if (!email || !rawKey) throw new Error('Service Account Env-Variablen fehlen!');
 
-  // Private Key: Zeilenumbrüche wiederherstellen (Netlify speichert \n als literal)
   const privateKey = rawKey.replace(/\\n/g, '\n');
 
   const now = Math.floor(Date.now() / 1000);
   const claim = {
     iss: email,
-    scope: 'https://www.googleapis.com/auth/spreadsheets',
+    scope: 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/gmail.send',
     aud: 'https://oauth2.googleapis.com/token',
     exp: now + 3600,
     iat: now
@@ -45,6 +45,25 @@ async function getAccessToken() {
 function base64url(str) {
   return Buffer.from(str).toString('base64')
     .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+}
+
+async function getAuthClient() {
+  const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
+  const rawKey = process.env.GOOGLE_PRIVATE_KEY;
+
+  if (!email || !rawKey) throw new Error('Service Account Env-Variablen fehlen!');
+
+  const privateKey = rawKey.replace(/\\n/g, '\n');
+
+  const auth = new google.auth.JWT(
+    email,
+    null,
+    privateKey,
+    ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/gmail.send'],
+    process.env.GMAIL_USER  // Der User, den der Service Account impersoniert
+  );
+
+  return auth;
 }
 
 // ── HTTPS-Helper ───────────────────────────────────────────────────────────
@@ -79,6 +98,28 @@ function httpGet(url, headers) {
   });
 }
 
+// ── MAIL ───────────────────────────────────────────────────────────
+async function sendMail(to, subject, text) {
+  const auth = await getAuthClient();
+  const gmail = google.gmail({ version: 'v1', auth });
+
+  const mimeMessage = [
+    'To: ' + to,
+    'Subject: ' + subject,
+    '',
+    text
+  ].join('\n');
+
+  const encodedMessage = Buffer.from(mimeMessage).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+
+  await gmail.users.messages.send({
+    userId: 'me',
+    requestBody: {
+      raw: encodedMessage
+    }
+  });
+}
+
 // ── SHEETS API CALLS ───────────────────────────────────────────────────────
 async function appendRow(token, row) {
   const sheetId = process.env.GOOGLE_SHEET_ID;
@@ -93,7 +134,7 @@ async function appendRow(token, row) {
   return JSON.parse(result);
 }
 
-async function getRows(token, leiterName) {
+async function getRowsByDate(token, datum) {
   const sheetId = process.env.GOOGLE_SHEET_ID;
   const sheetName = process.env.SHEET_NAME || 'Reporting';
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(sheetName)}`;
@@ -102,10 +143,9 @@ async function getRows(token, leiterName) {
   const data = JSON.parse(raw);
   const allRows = (data.values || []).slice(1); // Header überspringen
 
-  // Nur Zeilen dieses Leiters zurückgeben
-  // Spalten: [0]Timestamp [1]Datum [2]Melder [3]HL [4]HilfsL [5]Kinder [6]Leiter [7]Dynamik [8]Bemerkung [9]Version [10]Rolle
+  // Nur Zeilen für dieses Datum
   return allRows
-    .filter((r) => r[2] === leiterName)
+    .filter((r) => r[1] === datum)
     .map((r) => ({
       timestamp:   r[0]  || '',
       datum:       r[1]  || '',
@@ -116,7 +156,8 @@ async function getRows(token, leiterName) {
       leiterCount: r[6]  || 0,
       dynamik:     r[7]  || 1,
       bemerkungen: r[8]  || '',
-      rolle:       r[10] || ''
+      rolle:       r[10] || '',
+      fuer:        r[11] || ''
     }));
 }
 
@@ -170,9 +211,36 @@ exports.handler = async (event) => {
         body.timestamp, body.datum, body.leiterName,
         body.hl, body.hilfs,
         body.anzahl, body.leiterCount,
-        body.dynamik, body.bemerkungen, '1.4', body.rolle
+        body.dynamik, body.bemerkungen, '1.4', body.rolle, body.fuer || ''
       ];
       await appendRow(token, row);
+
+      // Mail an Scharleitung bei Dynamik 4 & 5
+      if (parseInt(body.dynamik) >= 4) {
+        const scharEmail = process.env.SCHARLEITUNG_EMAIL;
+        if (scharEmail) {
+          const subject = `Jubla Report: Kritische Situation (Dynamik ${body.dynamik})`;
+          const text = `Hoi Scharleitung,
+
+Ein Bericht mit Dynamik ${body.dynamik} wurde eingetragen.
+
+Datum: ${body.datum}
+Gemeldet von: ${body.leiterName}
+Rolle: ${body.rolle}
+Für: ${body.fuer || '–'}
+Partner: ${body.partner || '–'}
+Kinder: ${body.anzahl}
+Leiter: ${body.leiterCount}
+Bemerkungen: ${body.bemerkungen}
+
+Bitte überprüfen.
+
+Grüsse,
+Jubla Reporting Tool`;
+          await sendMail(scharEmail, subject, text);
+        }
+      }
+
       return { statusCode: 200, headers, body: JSON.stringify({ ok: true }) };
     } catch (e) {
       return { statusCode: 500, headers, body: JSON.stringify({ ok: false, error: e.message }) };
@@ -184,6 +252,53 @@ exports.handler = async (event) => {
     try {
       const rows = await getRows(token, body.leiterName);
       return { statusCode: 200, headers, body: JSON.stringify({ ok: true, rows }) };
+    } catch (e) {
+      return { statusCode: 500, headers, body: JSON.stringify({ ok: false, error: e.message }) };
+    }
+  }
+
+  // ── History anfordern ──
+  if (action === 'requestHistory') {
+    try {
+      const rows = await getRowsByDate(token, body.datum);
+      // Mail senden
+      const requesterEmail = process.env.REQUEST_EMAIL || 'requester@example.com'; // Placeholder, vielleicht aus body oder env
+      // Aber da keine Email-Adressen gespeichert sind, vielleicht an eine feste Adresse oder aus env basierend auf user
+      // Für Einfachheit, an SCHARLEITUNG_EMAIL senden, oder eine neue env REQUEST_EMAIL
+      const toEmail = process.env.REQUEST_EMAIL;
+      if (toEmail) {
+        const subject = `Jubla Report Auszug für ${body.datum}`;
+        let text = `Hoi ${body.requester},
+
+Hier der Auszug für das Datum ${body.datum}.
+Grund: ${body.grund}
+
+`;
+        if (rows.length === 0) {
+          text += 'Keine Berichte gefunden für dieses Datum.';
+        } else {
+          rows.forEach(r => {
+            text += `
+Datum: ${r.datum}
+Gemeldet von: ${r.leiterName}
+Rolle: ${r.rolle}
+Für: ${r.fuer || '–'}
+HL: ${r.hl}
+Hilfs: ${r.hilfs}
+Kinder: ${r.anzahl}
+Leiter: ${r.leiterCount}
+Dynamik: ${r.dynamik}
+Bemerkungen: ${r.bemerkungen}
+`;
+          });
+        }
+        text += `
+
+Grüsse,
+Jubla Reporting Tool`;
+        await sendMail(toEmail, subject, text);
+      }
+      return { statusCode: 200, headers, body: JSON.stringify({ ok: true }) };
     } catch (e) {
       return { statusCode: 500, headers, body: JSON.stringify({ ok: false, error: e.message }) };
     }
