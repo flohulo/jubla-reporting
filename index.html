@@ -44,6 +44,18 @@
     .card-header p { color: rgba(255,255,255,0.85); font-size: 0.82em; margin-top: 3px; }
     .card-body { padding: 28px 24px; }
     .card-footer { background: var(--yel-lt); border-top: 1px solid rgba(0,0,0,0.04); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75em; color: var(--mid); }
+    .footer-link { color: var(--dark); text-decoration: none; font-weight: 700; }
+    .footer-link:hover { text-decoration: underline; }
+    .footer-links { display: flex; gap: 16px; flex-wrap: wrap; justify-content: flex-end; }
+    .footer-links a { color: var(--mid); text-decoration: none; }
+    .footer-links a:hover { color: var(--dark); text-decoration: underline; }
+    .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: none; align-items: center; justify-content: center; padding: 24px; z-index: 1000; }
+    .modal.show { display: flex; }
+    .modal-panel { background: white; border-radius: 18px; max-width: 720px; width: 100%; box-shadow: var(--shadow); padding: 24px; position: relative; max-height: 85vh; overflow: hidden; display: flex; flex-direction: column; }
+    .modal-close { position: absolute; top: 18px; right: 18px; background: none; border: none; font-size: 1.6em; line-height: 1; cursor: pointer; color: var(--mid); }
+    .modal-body { overflow: auto; padding: 12px 0; flex: 1; }
+    .modal-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 16px; flex-wrap: wrap; }
+    .modal-body pre { white-space: pre-wrap; word-break: break-word; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace; font-size: 0.9em; color: var(--dark); }
     .section-title { font-size: 1.05em; font-weight: 800; color: var(--dark); margin-bottom: 22px; text-align: center; }
     .form-group { margin-bottom: 18px; }
     .form-label { display: block; font-size: 0.73em; font-weight: 800; color: var(--mid); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 7px; }
@@ -128,7 +140,6 @@
   <!-- TAB BAR -->
   <div class="tab-bar" id="tabBar" style="display:none;">
     <button class="tab-btn active" onclick="showTab('formTab', this)">📝 Report</button>
-    <button class="tab-btn" onclick="showTab('historyTab', this)">📋 Verlauf</button>
     <button class="tab-btn" onclick="showTab('requestTab', this)">📨 Anfordern</button>
   </div>
 
@@ -170,13 +181,6 @@
     <button class="btn btn-primary" id="submitBtn" onclick="submitReport()">Report absenden 🚀</button>
   </div>
 
-  <!-- HISTORY -->
-  <div class="card-body" id="historyTab" style="display:none;">
-    <p class="section-title">📋 Meine Berichte</p>
-    <div id="historyContent"><div class="loading-inline"><div class="spinner"></div>Lade…</div></div>
-    <button class="export-btn" onclick="exportCSV()">⬇️ Als CSV exportieren</button>
-  </div>
-
   <!-- REQUEST -->
   <div class="card-body" id="requestTab" style="display:none;">
     <p class="section-title">📨 Auszug anfordern</p>
@@ -196,8 +200,26 @@
   </div>
 
   <div class="card-footer">
-    <span>Jubla Wald ZH · v1.4</span>
-    <span id="connectionStatus">⬤ verbunden</span>
+    <span><a id="versionLink" class="footer-link" href="#" onclick="openChangelog(event)">Version <span id="versionLabel">lade...</span></a></span>
+    <span class="footer-links">
+      <a href="https://github.com/flohulo/jubla-reporting" target="_blank" rel="noreferrer">GitHub</a>
+      <a href="https://github.com/flohulo/jubla-reporting/blob/main/LICENSE" target="_blank" rel="noreferrer">Lizenz</a>
+      <a href="https://github.com/flohulo/jubla-reporting/blob/main/README.md" target="_blank" rel="noreferrer">Rechtliches</a>
+    </span>
+  </div>
+</div>
+
+<div class="modal" id="changelogModal">
+  <div class="modal-panel" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeChangelog()" aria-label="Schliessen">×</button>
+    <h2>Changelog</h2>
+    <div class="modal-body">
+      <pre id="changelogContent">Lade Changelog…</pre>
+    </div>
+    <div class="modal-actions">
+      <a class="btn btn-secondary" href="https://github.com/flohulo/jubla-reporting/releases" target="_blank" rel="noreferrer">Zu den Releases</a>
+      <button class="btn btn-primary" onclick="closeChangelog()">Schliessen</button>
+    </div>
   </div>
 </div>
 
@@ -259,15 +281,66 @@ function togglePin() {
   el.type = el.type === 'password' ? 'text' : 'password';
 }
 
+function loadVersionInfo() {
+  var label = document.getElementById('versionLabel');
+  var repo  = 'flohulo/jubla-reporting';
+  var apiRelease = 'https://api.github.com/repos/' + repo + '/releases/latest';
+  var apiCommit  = 'https://api.github.com/repos/' + repo + '/commits/main';
+
+  fetch(apiRelease)
+    .then(function(response) {
+      if (!response.ok) throw new Error('Kein Release gefunden');
+      return response.json();
+    })
+    .then(function(data) {
+      label.innerText = data.tag_name || data.name || 'GitHub';
+    })
+    .catch(function() {
+      return fetch(apiCommit)
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          label.innerText = 'commit ' + (data.sha ? data.sha.slice(0, 7) : 'main');
+        })
+        .catch(function() {
+          label.innerText = 'GitHub';
+        });
+    });
+}
+
+function openChangelog(event) {
+  event.preventDefault();
+  var modal = document.getElementById('changelogModal');
+  var content = document.getElementById('changelogContent');
+  content.innerText = 'Lade Changelog…';
+  modal.classList.add('show');
+
+  fetch('https://raw.githubusercontent.com/flohulo/jubla-reporting/main/CHANGELOG.md')
+    .then(function(response) {
+      if (!response.ok) throw new Error('Changelog nicht gefunden');
+      return response.text();
+    })
+    .then(function(text) {
+      content.innerText = text || 'Kein Changelog verfügbar.';
+    })
+    .catch(function() {
+      content.innerText = 'Changelog konnte nicht geladen werden. Öffne GitHub für Details.';
+    });
+}
+
+function closeChangelog() {
+  document.getElementById('changelogModal').classList.remove('show');
+}
+
+window.addEventListener('load', loadVersionInfo);
+
 // ── Tabs ───────────────────────────────────────────────────
 function showTab(tabId, btn) {
-  ['formTab','historyTab','requestTab'].forEach(function(id) {
+  ['formTab','requestTab'].forEach(function(id) {
     document.getElementById(id).style.display = 'none';
   });
   document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
   document.getElementById(tabId).style.display = 'block';
   btn.classList.add('active');
-  if (tabId === 'historyTab') loadHistory();
 }
 
 // ── Dynamik ────────────────────────────────────────────────
@@ -338,45 +411,6 @@ function submitReport() {
   });
 }
 
-// ── Verlauf laden ──────────────────────────────────────────
-function loadHistory() {
-  var content = document.getElementById('historyContent');
-  content.innerHTML = '<div class="loading-inline"><div class="spinner"></div>Lade aus Sheets…</div>';
-
-  api({ action: 'getRows', leiterName: currentUser })
-    .then(function(data) {
-      if (!data.ok) { content.innerHTML = '<p style="color:var(--red)">Fehler: ' + data.error + '</p>'; return; }
-      var rows = data.rows || [];
-      allRows = rows;
-
-      if (rows.length === 0) {
-        content.innerHTML = '<div class="reports-empty">Noch keine Berichte von dir. Erfasse deinen ersten Report! 🚀</div>';
-        return;
-      }
-
-      content.innerHTML = rows.map(function(r) {
-        var dyn = parseInt(r.dynamik) || 1;
-        var cls = dyn >= 5 ? 'dyn-5' : (dyn >= 4 ? 'dyn-4' : '');
-        return '<div class="report-card ' + cls + '">' +
-          '<div class="report-meta">' +
-          '<span class="report-date">📅 ' + formatDate(r.datum) + '</span>' +
-          '<span class="report-by">' + (r.rolle || '') + '</span>' +
-          '</div>' +
-          '<div class="report-badges">' +
-          '<span class="badge badge-blue">👦 ' + r.anzahl + ' Kinder</span>' +
-          '<span class="badge badge-blue">👥 +' + r.leiterCount + ' Leiter</span>' +
-          '<span class="badge ' + dynBadge[dyn] + '">Dynamik ' + dyn + ' – ' + dynLabels[dyn] + '</span>' +
-          (r.fuer ? '<span class="badge badge-blue">Für: ' + escapeHtml(r.fuer) + '</span>' : '') +
-          '</div>' +
-          '<div class="report-note">' + (r.bemerkungen ? escapeHtml(r.bemerkungen) : '<em style="opacity:0.5">Keine Bemerkungen</em>') + '</div>' +
-          '</div>';
-      }).join('');
-    })
-    .catch(function(e) {
-      content.innerHTML = '<p style="color:var(--red)">Fehler: ' + e.message + '</p>';
-    });
-}
-
 // ── Auszug anfordern ───────────────────────────────────────
 function submitRequest() {
   var btn   = document.getElementById('requestBtn');
@@ -411,25 +445,6 @@ function submitRequest() {
       err.innerText = 'Netzwerkfehler: ' + e.message;
       btn.disabled = false; btn.innerText = 'Anfordern 📧';
     });
-}
-
-// ── CSV Export ─────────────────────────────────────────────
-function exportCSV() {
-  if (!allRows.length) { alert('Bitte zuerst den Verlauf laden.'); return; }
-  var header = 'Timestamp,Datum,Melder,HL,HilfsL,Kinder,Leiter,Dynamik,Bemerkungen,Rolle,Fuer';
-  var csv = header + '\n' + allRows.map(function(r) {
-    return [
-      r.timestamp, r.datum, r.leiterName, r.hl, r.hilfs,
-      r.anzahl, r.leiterCount, r.dynamik,
-      '"' + (r.bemerkungen || '').replace(/"/g, '""') + '"',
-      r.rolle, r.fuer
-    ].join(',');
-  }).join('\n');
-  var blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-  var a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'Jubla_Report_' + new Date().toISOString().split('T')[0] + '.csv';
-  a.click();
 }
 
 // ── Helpers ────────────────────────────────────────────────
