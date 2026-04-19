@@ -1,15 +1,9 @@
 {
   "name": "jubla-reporting",
   "version": "1.0.0",
-  "description": "Jubla Reporting Tool",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "description": "Jubla Wald ZH – Reporting Tool",
+  "license": "GPL-3.0",
   "dependencies": {
-    "googleapis": "^118.0.0"
+    "nodemailer": "^6.9.13"
   }
 }
