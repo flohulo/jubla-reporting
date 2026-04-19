@@ -1,24 +1,3 @@
-/**
- * Jubla Wald ZH – Reporting Tool
- * Netlify Serverless Function: Google Sheets via Service Account + SMTP Mail
- *
- * Umgebungsvariablen in Netlify (Site settings → Environment variables):
- *
- *  Google Sheets:
- *   GOOGLE_SERVICE_ACCOUNT_EMAIL  → z.B. jubla@mein-projekt.iam.gserviceaccount.com
- *   GOOGLE_PRIVATE_KEY            → Kompletter Private Key aus JSON (mit -----BEGIN...)
- *   GOOGLE_SHEET_ID               → ID aus der Sheet-URL
- *   SHEET_NAME                    → z.B. "Reporting"
- *
- *  App-Login:
- *   SCHAR_PIN                     → z.B. "1234"
- *
- *  Mail (Gmail SMTP mit App-Passwort):
- *   SMTP_USER                     → deine Gmail-Adresse, z.B. jubla@gmail.com
- *   SMTP_PASS                     → 16-stelliges Gmail App-Passwort (nicht dein normales PW!)
- *   SCHARLEITUNG_EMAIL            → Empfänger für Alerts + Anforderungen
- */
-
 'use strict';
 
 const https   = require('https');

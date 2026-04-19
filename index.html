@@ -141,6 +141,7 @@
   <div class="tab-bar" id="tabBar" style="display:none;">
     <button class="tab-btn active" onclick="showTab('formTab', this)">📝 Report</button>
     <button class="tab-btn" onclick="showTab('requestTab', this)">📨 Anfordern</button>
+    <button class="tab-btn" onclick="showTab('infoTab', this)">ℹ️ Infos</button>
   </div>
 
   <!-- FORM -->
@@ -199,29 +200,43 @@
     <button class="btn btn-primary" id="requestBtn" onclick="submitRequest()">Anfordern 📧</button>
   </div>
 
+  <!-- INFO -->
+  <div class="card-body" id="infoTab" style="display:none;">
+    <p class="section-title">ℹ️ Allgemeine Infos</p>
+    <div class="support-box open">
+      <strong>Kontakt</strong>
+      
+      Telefon: <span id="contactPhone">lade...</span>
+      
+      E-Mail: <span id="contactEmail">lade...</span>
+      
+      <strong>Allgemeines</strong>
+      
+      Dieses Reporting-Tool dient zur Erfassung der Gruppenstunden-Dynamik und zur Meldung kritischer Situationen an die Scharleitung.
+      
+      Bitte fülle alle Pflichtfelder aus und beschreibe Vorfälle bei Dynamik 4 und 5 so präzise wie möglich.
+      
+      <strong>Wichtige Links</strong>
+      
+      • <a id="githubProjectLink" href="https://github.com/flohulo/jubla-reporting" target="_blank" rel="noreferrer">Projekt auf GitHub</a>
+      
+      • <a id="licenseLink" href="https://github.com/flohulo/jubla-reporting/blob/main/LICENSE" target="_blank" rel="noreferrer">Lizenz</a>
+      
+      • <a id="legalLink" href="https://github.com/flohulo/jubla-reporting/blob/main/README.md" target="_blank" rel="noreferrer">Rechtliche Hinweise</a>
+    </div>
+  </div>
+
   <div class="card-footer">
-    <span><a id="versionLink" class="footer-link" href="#" onclick="openChangelog(event)">Version <span id="versionLabel">lade...</span></a></span>
+    <span><a id="versionLink" class="footer-link" href="https://github.com/flohulo/jubla-reporting/releases" target="_blank" rel="noreferrer">Version <span id="versionLabel">lade...</span></a></span>
     <span class="footer-links">
       <a href="https://github.com/flohulo/jubla-reporting" target="_blank" rel="noreferrer">GitHub</a>
+      <a id="issueLink" href="https://github.com/flohulo/jubla-reporting/issues" target="_blank" rel="noreferrer">Issue melden</a>
       <a href="https://github.com/flohulo/jubla-reporting/blob/main/LICENSE" target="_blank" rel="noreferrer">Lizenz</a>
       <a href="https://github.com/flohulo/jubla-reporting/blob/main/README.md" target="_blank" rel="noreferrer">Rechtliches</a>
     </span>
   </div>
 </div>
 
-<div class="modal" id="changelogModal">
-  <div class="modal-panel" onclick="event.stopPropagation()">
-    <button class="modal-close" onclick="closeChangelog()" aria-label="Schliessen">×</button>
-    <h2>Changelog</h2>
-    <div class="modal-body">
-      <pre id="changelogContent">Lade Changelog…</pre>
-    </div>
-    <div class="modal-actions">
-      <a class="btn btn-secondary" href="https://github.com/flohulo/jubla-reporting/releases" target="_blank" rel="noreferrer">Zu den Releases</a>
-      <button class="btn btn-primary" onclick="closeChangelog()">Schliessen</button>
-    </div>
-  </div>
-</div>
 
 <script>
 // ── State ──────────────────────────────────────────────────
@@ -283,6 +298,7 @@ function togglePin() {
 
 function loadVersionInfo() {
   var label = document.getElementById('versionLabel');
+  var link  = document.getElementById('versionLink');
   var repo  = 'flohulo/jubla-reporting';
   var apiRelease = 'https://api.github.com/repos/' + repo + '/releases/latest';
   var apiCommit  = 'https://api.github.com/repos/' + repo + '/commits/main';
@@ -294,48 +310,51 @@ function loadVersionInfo() {
     })
     .then(function(data) {
       label.innerText = data.tag_name || data.name || 'GitHub';
+      if (data.html_url) {
+        link.href = data.html_url;
+      }
     })
     .catch(function() {
       return fetch(apiCommit)
         .then(function(r) { return r.json(); })
         .then(function(data) {
           label.innerText = 'commit ' + (data.sha ? data.sha.slice(0, 7) : 'main');
+          link.href = 'https://github.com/' + repo + '/commits/main';
         })
         .catch(function() {
           label.innerText = 'GitHub';
+          link.href = 'https://github.com/' + repo;
         });
     });
 }
 
-function openChangelog(event) {
-  event.preventDefault();
-  var modal = document.getElementById('changelogModal');
-  var content = document.getElementById('changelogContent');
-  content.innerText = 'Lade Changelog…';
-  modal.classList.add('show');
-
-  fetch('https://raw.githubusercontent.com/flohulo/jubla-reporting/main/CHANGELOG.md')
-    .then(function(response) {
-      if (!response.ok) throw new Error('Changelog nicht gefunden');
-      return response.text();
-    })
-    .then(function(text) {
-      content.innerText = text || 'Kein Changelog verfügbar.';
+function loadConfig() {
+  fetch('/.netlify/functions/config')
+    .then(function(response) { return response.json(); })
+    .then(function(data) {
+      if (!data.ok) return;
+      document.getElementById('contactPhone').innerText = data.contactPhone || 'Nicht verfügbar';
+      var emailEl = document.getElementById('contactEmail');
+      emailEl.innerHTML = data.contactEmail ? '<a href="mailto:' + data.contactEmail + '">' + data.contactEmail + '</a>' : 'Nicht verfügbar';
+      document.getElementById('issueLink').href = data.issueUrl || 'https://github.com/flohulo/jubla-reporting/issues';
+      document.getElementById('githubProjectLink').href = data.githubUrl || 'https://github.com/flohulo/jubla-reporting';
+      document.getElementById('licenseLink').href = data.licenseUrl || 'https://github.com/flohulo/jubla-reporting/blob/main/LICENSE';
+      document.getElementById('legalLink').href = data.legalUrl || 'https://github.com/flohulo/jubla-reporting/blob/main/README.md';
     })
     .catch(function() {
-      content.innerText = 'Changelog konnte nicht geladen werden. Öffne GitHub für Details.';
+      document.getElementById('contactPhone').innerText = 'Nicht verfügbar';
+      document.getElementById('contactEmail').innerText = 'Nicht verfügbar';
     });
 }
 
-function closeChangelog() {
-  document.getElementById('changelogModal').classList.remove('show');
-}
-
-window.addEventListener('load', loadVersionInfo);
+window.addEventListener('load', function() {
+  loadVersionInfo();
+  loadConfig();
+});
 
 // ── Tabs ───────────────────────────────────────────────────
 function showTab(tabId, btn) {
-  ['formTab','requestTab'].forEach(function(id) {
+  ['formTab','requestTab','infoTab'].forEach(function(id) {
     document.getElementById(id).style.display = 'none';
   });
   document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
