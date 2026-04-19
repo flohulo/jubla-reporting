@@ -148,7 +148,10 @@
         <option value="Hilfsleitung">Hilfsleitung</option>
       </select>
     </div>
-    <div class="form-group"><label class="form-label">Report für</label><input type="text" id="f_fuer" class="form-control" placeholder="Name der Person (optional)"></div>
+    <div class="form-group">
+      <label class="form-label"><input type="checkbox" id="f_forSomeoneElse" onchange="onForSomeoneElseChange()"> Report für jemand anderes</label>
+    </div>
+    <div class="form-group" id="f_fuer_wrapper" style="display:none;"><label class="form-label">Name der Person</label><input type="text" id="f_fuer" class="form-control" placeholder="Name der Person"></div>
     <div class="form-group"><label class="form-label">Partner/in</label><input type="text" id="f_partner" class="form-control" placeholder="Name"></div>
     <div class="form-group"><label class="form-label">Anzahl Kinder</label><input type="number" id="f_anzahl" class="form-control" placeholder="z.B. 12" min="0"></div>
     <div class="form-group"><label class="form-label">Zusätzliche Leiter</label><input type="number" id="f_leiter" class="form-control" placeholder="z.B. 2" min="0"></div>
@@ -249,22 +252,32 @@ function onDynamikChange() {
   document.getElementById('critBox').classList.toggle('show', val === 5);
 }
 
+function onForSomeoneElseChange() {
+  var checked = document.getElementById('f_forSomeoneElse').checked;
+  document.getElementById('f_fuer_wrapper').style.display = checked ? 'block' : 'none';
+  if (!checked) {
+    document.getElementById('f_fuer').value = '';
+  }
+}
+
 // ── Submit ─────────────────────────────────────
 function submitReport() {
   var btn = document.getElementById('submitBtn');
   var err = document.getElementById('formError');
   err.innerText = '';
 
-  var datum   = document.getElementById('f_datum').value;
-  var rolle   = document.getElementById('f_rolle').value;
-  var fuer    = document.getElementById('f_fuer').value.trim();
-  var partner = document.getElementById('f_partner').value.trim();
-  var anzahl  = document.getElementById('f_anzahl').value;
-  var leiter  = document.getElementById('f_leiter').value;
-  var dynamik = document.getElementById('f_dynamik').value;
-  var bem     = document.getElementById('f_bemerkungen').value.trim();
+  var datum      = document.getElementById('f_datum').value;
+  var rolle      = document.getElementById('f_rolle').value;
+  var forSomeone = document.getElementById('f_forSomeoneElse').checked;
+  var fuer       = document.getElementById('f_fuer').value.trim();
+  var partner    = document.getElementById('f_partner').value.trim();
+  var anzahl     = document.getElementById('f_anzahl').value;
+  var leiter     = document.getElementById('f_leiter').value;
+  var dynamik    = document.getElementById('f_dynamik').value;
+  var bem        = document.getElementById('f_bemerkungen').value.trim();
 
   if (!datum || !partner || anzahl==='' || leiter==='') { err.innerText='Alle Felder ausfüllen.'; return; }
+  if (forSomeone && !fuer) { err.innerText='Bitte Namen angeben, wenn der Report für jemand anderes ist.'; return; }
   if (parseInt(dynamik)>=4 && !bem) { err.innerText='Bei Dynamik 4/5 sind Bemerkungen Pflicht.'; return; }
 
   btn.disabled = true; btn.innerText = 'Wird gespeichert… ⏳';
