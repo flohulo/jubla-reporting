@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jubla Wald ZH – Reporting (Service Account)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red: #d65a5a; --red-dk: #b84d4d;
+      --yellow: #f7f1e3; --yel-lt: #fcfaf5;
+      --blue: #576574; --blu-lt: #eeeff1;
+      --dark: #2f3640; --mid: #7f8c8d;
+      --light: #f5f6fa; --white: #ffffff;
+      --green: #6ab04c; --grn-lt: #f1f8ed;
+      --shadow: 0 10px 25px rgba(0,0,0,0.08);
+      --radius: 16px; --modal-bg: rgba(0,0,0,0.4);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --yellow: #1a1a1a; --yel-lt: #252525; --dark: #f5f6fa;
+        --mid: #a0a0a0; --light: #2d2d2d; --white: #262626;
+        --blu-lt: #3d3d3d; --blue: #a4b0be; --grn-lt: #1e271a;
+        --shadow: 0 10px 30px rgba(0,0,0,0.5);
+      }
+      .form-control { border-color: #444 !important; }
+      .form-control:focus { background: #333 !important; }
+      .dynamik-warn { background: #433f2a !important; border-color: #fab005 !important; color: #ffe066 !important; }
+      .dynamik-crit { background: #3d2a2a !important; border-color: var(--red) !important; color: #ff8787 !important; }
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Nunito', sans-serif; background: var(--yellow);
+      background-image: radial-gradient(circle at 15% 50%, rgba(214,90,90,0.06) 0%, transparent 60%),
+        radial-gradient(circle at 85% 20%, rgba(47,54,64,0.04) 0%, transparent 50%);
+      min-height: 100vh; display: flex; align-items: flex-start;
+      justify-content: center; padding: 24px 12px 60px; color: var(--dark);
+    }
+    .card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); width: 100%; max-width: 480px; overflow: hidden; animation: slideUp 0.4s cubic-bezier(0.16,1,0.3,1); }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
+    .card-header { background: var(--red); padding: 22px 24px 18px; display: flex; align-items: center; gap: 14px; }
+    .logo-badge { width: 50px; height: 50px; background: white; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.7em; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .card-header h1 { color: white; font-size: 1.25em; font-weight: 900; line-height: 1.2; }
+    .card-header p { color: rgba(255,255,255,0.85); font-size: 0.82em; margin-top: 3px; }
+    .card-body { padding: 28px 24px; }
+    .card-footer { background: var(--yel-lt); border-top: 1px solid rgba(0,0,0,0.04); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75em; color: var(--mid); }
+    .section-title { font-size: 1.05em; font-weight: 800; color: var(--dark); margin-bottom: 22px; text-align: center; }
+    .form-group { margin-bottom: 18px; }
+    .form-label { display: block; font-size: 0.73em; font-weight: 800; color: var(--mid); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 7px; }
+    .form-control { width: 100%; padding: 12px 16px; border: 2px solid #edf0f2; border-radius: 12px; font-family: 'Nunito', sans-serif; font-size: 0.95em; color: var(--dark); background: var(--light); transition: 0.2s; }
+    .form-control:focus { outline: none; border-color: var(--red); background: var(--white); box-shadow: 0 0 0 4px rgba(214,90,90,0.1); }
+    textarea.form-control { resize: vertical; min-height: 100px; }
+    .pin-group { position: relative; }
+    .pin-group input { font-size: 1.4em; letter-spacing: 0.3em; text-align: center; font-weight: 700; }
+    .pin-toggle { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--mid); font-size: 1.2em; }
+    .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; font-family: 'Nunito', sans-serif; font-weight: 800; cursor: pointer; transition: 0.2s; font-size: 1em; }
+    .btn-primary { background: var(--red); color: white; box-shadow: 0 6px 16px rgba(214,90,90,0.28); }
+    .btn-primary:hover { box-shadow: 0 8px 20px rgba(214,90,90,0.38); transform: translateY(-1px); }
+    .btn-primary:active { transform: translateY(1px); }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .btn-secondary { background: var(--blu-lt); color: var(--blue); margin-bottom: 16px; font-size: 0.9em; }
+    .error-msg { color: var(--red); font-size: 0.85em; font-weight: 700; text-align: center; min-height: 20px; margin-top: 8px; }
+    .tab-bar { display: flex; border-bottom: 2px solid var(--blu-lt); background: var(--white); }
+    .tab-btn { flex: 1; padding: 13px 8px; border: none; background: none; font-family: 'Nunito', sans-serif; font-size: 0.82em; font-weight: 800; color: var(--mid); cursor: pointer; transition: 0.2s; border-bottom: 3px solid transparent; margin-bottom: -2px; }
+    .tab-btn.active { color: var(--red); border-bottom-color: var(--red); }
+    .support-box { background: var(--blu-lt); border-left: 4px solid var(--blue); border-radius: 8px; padding: 14px; font-size: 0.85em; line-height: 1.6; color: var(--dark); display: none; margin-bottom: 20px; white-space: pre-line; }
+    .support-box.open { display: block; }
+    .dynamik-warn, .dynamik-crit { display: none; border-radius: 10px; padding: 12px; font-size: 0.85em; margin-top: 10px; border: 1px solid; font-weight: 600; }
+    .dynamik-warn { background: #fff9db; border-color: #fab005; color: #856404; }
+    .dynamik-crit { background: #fff5f5; border-color: var(--red); color: #a02020; }
+    .show { display: block !important; }
+    .success-card { text-align: center; padding: 40px 20px; }
+    .success-icon { font-size: 3.5em; margin-bottom: 14px; animation: popIn 0.5s cubic-bezier(0.16,1,0.3,1); }
+    @keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .success-card h2 { color: var(--green); margin-bottom: 10px; }
+    .success-card p { color: var(--mid); font-size: 0.9em; line-height: 1.5; margin-bottom: 20px; }
+    .report-card { background: var(--light); border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; border-left: 4px solid var(--blu-lt); }
+    .report-card.dyn-4 { border-left-color: #fab005; }
+    .report-card.dyn-5 { border-left-color: var(--red); }
+    .report-meta { display: flex; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 4px; }
+    .report-date { font-weight: 800; font-size: 0.95em; }
+    .report-by { font-size: 0.78em; color: var(--mid); }
+    .report-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
+    .badge { display: inline-block; padding: 3px 9px; border-radius: 20px; font-size: 0.75em; font-weight: 700; }
+    .badge-blue { background: var(--blu-lt); color: var(--blue); }
+    .badge-green { background: var(--grn-lt); color: var(--green); }
+    .badge-warn { background: #fff9db; color: #856404; }
+    .badge-crit { background: #fff5f5; color: #a02020; }
+    .report-note { font-size: 0.82em; color: var(--mid); margin-top: 6px; white-space: pre-wrap; word-break: break-word; }
+    .reports-empty { text-align: center; padding: 40px 0; color: var(--mid); }
+    .spinner { width: 32px; height: 32px; border: 4px solid var(--blu-lt); border-top-color: var(--red); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-inline { text-align: center; padding: 30px; color: var(--mid); font-size: 0.9em; }
+    .export-btn { display: flex; align-items: center; gap: 8px; justify-content: center; background: var(--grn-lt); color: var(--green); border: 2px solid var(--green); border-radius: 12px; padding: 12px; font-weight: 800; font-size: 0.9em; cursor: pointer; width: 100%; font-family: 'Nunito', sans-serif; transition: 0.2s; margin-top: 16px; }
+    .divider { border: none; border-top: 1px solid var(--blu-lt); margin: 20px 0; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <div class="card-header">
+    <div class="logo-badge">🏕</div>
+    <div>
+      <h1>Jubla Wald ZH</h1>
+      <p id="headerSubtitle">Reporting Tool</p>
+    </div>
+  </div>
+
+  <!-- LOGIN -->
+  <div class="card-body" id="loginArea">
+    <p class="section-title">🔒 Anmelden</p>
+    <div class="form-group">
+      <label class="form-label">Dein Name</label>
+      <input type="text" id="userNameInput" class="form-control" placeholder="Vorname Nachname">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Schar-PIN</label>
+      <div class="pin-group">
+        <input type="password" id="pinInput" class="form-control" placeholder="••••" inputmode="numeric" maxlength="8"
+          onkeydown="if(event.key==='Enter') login()">
+        <button class="pin-toggle" onclick="togglePin()">👁</button>
+      </div>
+    </div>
+    <p class="error-msg" id="loginError"></p>
+    <button class="btn btn-primary" id="loginBtn" onclick="login()">Anmelden</button>
+  </div>
+
+  <!-- TAB BAR -->
+  <div class="tab-bar" id="tabBar" style="display:none;">
+    <button class="tab-btn active" onclick="showTab('formTab', this)">📝 Report</button>
+    <button class="tab-btn" onclick="showTab('historyTab', this)">📋 Verlauf</button>
+  </div>
+
+  <!-- FORM -->
+  <div class="card-body" id="formTab" style="display:none;">
+    <button class="btn btn-secondary" onclick="document.getElementById('supportBox').classList.toggle('open')">💡 Hilfe & Tipps</button>
+    <div class="support-box" id="supportBox">Erfasse nach jeder Aktivität einen kurzen Bericht.
+
+• Beschreibe bei Dynamik 4 oder 5 die Situation genau.
+• Bei Dynamik 5 melde dich zusätzlich bei der Scharleitung.
+• Partnerfeld: trage den Namen der Begleitperson ein.</div>
+
+    <div class="form-group"><label class="form-label">Datum</label><input type="date" id="f_datum" class="form-control" required></div>
+    <div class="form-group"><label class="form-label">Meine Rolle</label>
+      <select id="f_rolle" class="form-control">
+        <option value="Hauptleitung">Hauptleitung</option>
+        <option value="Hilfsleitung">Hilfsleitung</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Partner/in</label><input type="text" id="f_partner" class="form-control" placeholder="Name"></div>
+    <div class="form-group"><label class="form-label">Anzahl Kinder</label><input type="number" id="f_anzahl" class="form-control" placeholder="z.B. 12" min="0"></div>
+    <div class="form-group"><label class="form-label">Zusätzliche Leiter</label><input type="number" id="f_leiter" class="form-control" placeholder="z.B. 2" min="0"></div>
+    <div class="form-group">
+      <label class="form-label">Gruppendynamik</label>
+      <select id="f_dynamik" class="form-control" onchange="onDynamikChange()">
+        <option value="1">1 – Alles top 😊</option>
+        <option value="2">2 – Gut 🙂</option>
+        <option value="3">3 – Intensiv 😐</option>
+        <option value="4">4 – Schwierig 😬</option>
+        <option value="5">5 – Kritisch ⛔</option>
+      </select>
+      <div class="dynamik-warn" id="warnBox">⚠️ Bitte beschreibe die Situation ausführlich.</div>
+      <div class="dynamik-crit" id="critBox">⛔ Bitte melde dich zusätzlich bei der Scharleitung!</div>
+    </div>
+    <div class="form-group"><label class="form-label">Bemerkungen</label><textarea id="f_bemerkungen" class="form-control" rows="5"></textarea></div>
+    <p class="error-msg" id="formError"></p>
+    <button class="btn btn-primary" id="submitBtn" onclick="submitReport()">Report absenden 🚀</button>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="card-body" id="historyTab" style="display:none;">
+    <p class="section-title">📋 Verlauf</p>
+    <div id="historyContent"><div class="loading-inline"><div class="spinner"></div>Lade…</div></div>
+    <button class="export-btn" onclick="exportCSV()">⬇️ Als CSV exportieren</button>
+  </div>
+
+  <div class="card-footer">
+    <span>Jubla Wald ZH · v1.4</span>
+    <span>Option B · Service Account</span>
+  </div>
+</div>
+
+<script>
+// ── State ──────────────────────────────────────
+var currentUser = null;
+var allRows = [];
+
+// ── Login ──────────────────────────────────────
+function login() {
+  var name = document.getElementById('userNameInput').value.trim();
+  var pin  = document.getElementById('pinInput').value.trim();
+  var err  = document.getElementById('loginError');
+
+  if (!name) { err.innerText = 'Bitte Name eingeben.'; return; }
+  if (!pin)  { err.innerText = 'Bitte PIN eingeben.'; return; }
+
+  // PIN-Prüfung über Netlify Function (sicher – PIN nicht im Frontend!)
+  fetch('/.netlify/functions/sheets', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'verifyPin', pin: pin })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.ok) {
+      currentUser = name;
+      err.innerText = '';
+      document.getElementById('headerSubtitle').innerText = 'Hoi ' + name + '! 👋';
+      document.getElementById('f_datum').value = new Date().toISOString().split('T')[0];
+      document.getElementById('loginArea').style.display = 'none';
+      document.getElementById('tabBar').style.display = 'flex';
+      document.getElementById('formTab').style.display = 'block';
+    } else {
+      err.innerText = 'Falscher PIN.';
+      document.getElementById('pinInput').value = '';
+    }
+  })
+  .catch(function() { err.innerText = 'Verbindungsfehler. Ist die Netlify Function aktiv?'; });
+}
+
+function togglePin() {
+  var el = document.getElementById('pinInput');
+  el.type = el.type === 'password' ? 'text' : 'password';
+}
+
+// ── Tabs ───────────────────────────────────────
+function showTab(tabId, btn) {
+  ['formTab','historyTab'].forEach(function(id) { document.getElementById(id).style.display='none'; });
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.getElementById(tabId).style.display = 'block';
+  btn.classList.add('active');
+  if (tabId === 'historyTab') loadHistory();
+}
+
+// ── Dynamik ────────────────────────────────────
+function onDynamikChange() {
+  var val = parseInt(document.getElementById('f_dynamik').value);
+  document.getElementById('warnBox').classList.toggle('show', val === 4);
+  document.getElementById('critBox').classList.toggle('show', val === 5);
+}
+
+// ── Submit ─────────────────────────────────────
+function submitReport() {
+  var btn = document.getElementById('submitBtn');
+  var err = document.getElementById('formError');
+  err.innerText = '';
+
+  var datum   = document.getElementById('f_datum').value;
+  var rolle   = document.getElementById('f_rolle').value;
+  var partner = document.getElementById('f_partner').value.trim();
+  var anzahl  = document.getElementById('f_anzahl').value;
+  var leiter  = document.getElementById('f_leiter').value;
+  var dynamik = document.getElementById('f_dynamik').value;
+  var bem     = document.getElementById('f_bemerkungen').value.trim();
+
+  if (!datum || !partner || anzahl==='' || leiter==='') { err.innerText='Alle Felder ausfüllen.'; return; }
+  if (parseInt(dynamik)>=4 && !bem) { err.innerText='Bei Dynamik 4/5 sind Bemerkungen Pflicht.'; return; }
+
+  btn.disabled = true; btn.innerText = 'Wird gespeichert… ⏳';
+
+  var isHL = rolle === 'Hauptleitung';
+  fetch('/.netlify/functions/sheets', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      action:    'appendRow',
+      timestamp: new Date().toISOString(),
+      datum:     datum,
+      leiterName: currentUser,
+      hl:        isHL ? currentUser : partner,
+      hilfs:     isHL ? partner : currentUser,
+      anzahl:    parseInt(anzahl)||0,
+      leiterCount: parseInt(leiter)||0,
+      dynamik:   parseInt(dynamik),
+      bemerkungen: bem,
+      rolle:     rolle
+    })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.ok) {
+      document.getElementById('formTab').innerHTML = [
+        '<div class="success-card">',
+        '<div class="success-icon">✅</div>',
+        '<h2>Gespeichert!</h2>',
+        '<p>Dein Bericht wurde in Google Sheets eingetragen.</p>',
+        '<button class="btn btn-primary" onclick="location.reload()">Neuen Report</button>',
+        '</div>'
+      ].join('');
+    } else {
+      err.innerText = 'Fehler: ' + (data.error || 'Unbekannt');
+      btn.disabled = false; btn.innerText = 'Report absenden 🚀';
+    }
+  })
+  .catch(function(e) {
+    err.innerText = 'Netzwerkfehler: ' + e.message;
+    btn.disabled = false; btn.innerText = 'Report absenden 🚀';
+  });
+}
+
+// ── History ────────────────────────────────────
+function loadHistory() {
+  var content = document.getElementById('historyContent');
+  content.innerHTML = '<div class="loading-inline"><div class="spinner"></div>Lade aus Sheets…</div>';
+
+  fetch('/.netlify/functions/sheets', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'getRows', leiterName: currentUser })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (!data.ok) { content.innerHTML = '<p style="color:var(--red)">Fehler: ' + data.error + '</p>'; return; }
+    var rows = (data.rows || []).reverse();
+    allRows = data.rows || [];
+
+    if (rows.length === 0) { content.innerHTML = '<div class="reports-empty">Noch keine Berichte gefunden.</div>'; return; }
+
+    var dynLabels = ['','Alles top 😊','Gut 🙂','Intensiv 😐','Schwierig 😬','Kritisch ⛔'];
+    var dynBadge  = ['','badge-green','badge-green','badge-blue','badge-warn','badge-crit'];
+
+    content.innerHTML = rows.map(function(r) {
+      var dyn = parseInt(r.dynamik)||1;
+      var cls = dyn>=5?'dyn-5':dyn>=4?'dyn-4':'';
+      return [
+        '<div class="report-card ' + cls + '">',
+        '<div class="report-meta">',
+        '<span class="report-date">📅 ' + formatDate(r.datum) + '</span>',
+        '<span class="report-by">' + (r.rolle||'') + '</span>',
+        '</div>',
+        '<div class="report-badges">',
+        '<span class="badge badge-blue">👦 ' + r.anzahl + ' Kinder</span>',
+        '<span class="badge badge-blue">👥 +' + r.leiterCount + ' Leiter</span>',
+        '<span class="badge ' + dynBadge[dyn] + '">Dynamik ' + dyn + ' – ' + dynLabels[dyn] + '</span>',
+        '</div>',
+        '<div class="report-note">' + escapeHtml(r.bemerkungen||'') + '</div>',
+        '</div>'
+      ].join('');
+    }).join('');
+  })
+  .catch(function(e) { content.innerHTML = '<p style="color:var(--red)">Fehler: ' + e.message + '</p>'; });
+}
+
+// ── Export ─────────────────────────────────────
+function exportCSV() {
+  if (!allRows.length) { alert('Bitte zuerst den Verlauf laden.'); return; }
+  var header = 'Timestamp,Datum,Melder,HL,HilfsL,Kinder,Leiter,Dynamik,Bemerkungen,Rolle';
+  var csv = header + '\n' + allRows.map(function(r) {
+    return [r.timestamp,r.datum,r.leiterName,r.hl,r.hilfs,r.anzahl,r.leiterCount,r.dynamik,'"'+(r.bemerkungen||'').replace(/"/g,'""')+'"',r.rolle].join(',');
+  }).join('\n');
+  var blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = 'Jubla_Report.csv'; a.click();
+}
+
+function formatDate(s) { if(!s)return'–'; var p=s.split('-'); return p.length===3?p[2]+'.'+p[1]+'.'+p[0]:s; }
+function escapeHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+</script>
+</body>
+</html>
