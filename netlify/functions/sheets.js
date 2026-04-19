@@ -330,21 +330,7 @@ exports.handler = async (event) => {
     }
   }
 
-  // ── 4. Eigene Zeilen laden (Verlauf-Tab) ──────────────────
-  if (action === 'getRows') {
-    try {
-      const all  = await sheetsGetAll(token);
-      const rows = all
-        .filter((r) => r[SHEET_COLS.MELDER] === body.leiterName)
-        .map(rowToObject)
-        .reverse(); // Neueste zuerst
-      return ok({ rows });
-    } catch (e) {
-      return err('Sheets-Fehler: ' + e.message);
-    }
-  }
-
-  // ── 5. Auszug für Datum anfordern ─────────────────────────
+  // ── 4. Auszug für Datum anfordern ─────────────────────────
   if (action === 'requestHistory') {
     try {
       const all  = await sheetsGetAll(token);
