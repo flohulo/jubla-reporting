@@ -105,7 +105,7 @@ const SHEET_COLS = {
   BEMERKUNGEN:  8,
   VERSION:      9,
   ROLLE:        10,
-  FUER:         11,
+  EMAIL_SENT:   11,
 };
 
 function sheetUrl(path) {
@@ -145,7 +145,7 @@ function rowToObject(r) {
     dynamik:     r[SHEET_COLS.DYNAMIK]       || 1,
     bemerkungen: r[SHEET_COLS.BEMERKUNGEN]   || '',
     rolle:       r[SHEET_COLS.ROLLE]         || '',
-    fuer:        r[SHEET_COLS.FUER]          || '',
+    emailSent:   r[SHEET_COLS.EMAIL_SENT] === 'TRUE',
   };
 }
 
@@ -189,7 +189,6 @@ Ein Bericht mit Dynamik ${stufe} wurde eingetragen.
 Datum:       ${body.datum}
 Gemeldet von: ${body.leiterName}
 Rolle:       ${body.rolle}
-Für:         ${body.fuer || '–'}
 Partner/in:  ${body.hl === body.leiterName ? body.hilfs : body.hl}
 Kinder:      ${body.anzahl}
 Zusatz-Ltr.: ${body.leiterCount}
@@ -219,7 +218,7 @@ Grund: ${grund}
       text += `─── Bericht ${i + 1} ──────────────────
 Gemeldet von: ${r.leiterName}
 Rolle:        ${r.rolle}
-Für:          ${r.fuer || '–'}
+E-Mail versendet: ${r.emailSent ? 'Ja' : 'Nein'}
 Hauptleitung: ${r.hl}
 Hilfsleitung: ${r.hilfs}
 Kinder:       ${r.anzahl}
@@ -275,6 +274,19 @@ exports.handler = async (event) => {
   // ── 3. Zeile eintragen ────────────────────────────────────
   if (action === 'appendRow') {
     try {
+      // Mail bei kritischer Dynamik (4 oder 5)
+      let emailSent = false;
+      if (parseInt(body.dynamik) >= 4) {
+        try {
+          const { subject, text } = buildAlertMail(body);
+          await sendMail(subject, text);
+          emailSent = true;
+        } catch (mailErr) {
+          // Mail-Fehler loggen, aber Report trotzdem als OK zurückgeben
+          console.error('Mail-Fehler:', mailErr.message);
+        }
+      }
+
       const row = [
         body.timestamp,
         body.datum,
@@ -287,22 +299,10 @@ exports.handler = async (event) => {
         body.bemerkungen  || '',
         '1.4',
         body.rolle        || '',
-        body.fuer         || '',
+        emailSent ? 'TRUE' : 'FALSE',
       ];
 
       await sheetsAppendRow(token, row);
-
-      // Mail bei kritischer Dynamik (4 oder 5)
-      if (parseInt(body.dynamik) >= 4) {
-        try {
-          const { subject, text } = buildAlertMail(body);
-          await sendMail(subject, text);
-        } catch (mailErr) {
-          // Mail-Fehler loggen, aber Report trotzdem als OK zurückgeben
-          console.error('Mail-Fehler:', mailErr.message);
-        }
-      }
-
       return ok();
     } catch (e) {
       return err('Sheets-Fehler: ' + e.message);
@@ -320,7 +320,7 @@ exports.handler = async (event) => {
       const { subject, text } = buildRequestMail(rows, body.datum, body.requester, body.grund);
       await sendMail(subject, text);
 
-      return ok({ found: rows.length });
+      return ok({ found: rows.length, rows: rows });
     } catch (e) {
       return err('Fehler: ' + e.message);
     }

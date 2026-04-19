@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Jubla Wald ZH – Reporting</title>
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" href="/favicon.ico">
+  <meta name="theme-color" content="#d65a5a">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -105,6 +108,13 @@
     .loading-inline { text-align: center; padding: 30px; color: var(--mid); font-size: 0.9em; }
     .export-btn { display: flex; align-items: center; gap: 8px; justify-content: center; background: var(--grn-lt); color: var(--green); border: 2px solid var(--green); border-radius: 12px; padding: 12px; font-weight: 800; font-size: 0.9em; cursor: pointer; width: 100%; font-family: 'Nunito', sans-serif; transition: 0.2s; margin-top: 16px; }
     .divider { border: none; border-top: 1px solid var(--blu-lt); margin: 20px 0; }
+    .accordion { margin-top: 20px; }
+    .accordion-item { border: 1px solid var(--blu-lt); border-radius: 8px; margin-bottom: 10px; overflow: hidden; }
+    .accordion-header { width: 100%; padding: 14px 16px; background: var(--yel-lt); border: none; text-align: left; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.9em; cursor: pointer; color: var(--dark); transition: 0.2s; }
+    .accordion-header:hover { background: var(--light); }
+    .accordion-content { padding: 0 16px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease; background: var(--white); }
+    .accordion-content.open { padding: 14px 16px; max-height: 500px; }
+  </style>
   </style>
 </head>
 <body>
@@ -166,9 +176,6 @@
         <option value="Hauptleitung">Hauptleitung</option>
         <option value="Hilfsleitung">Hilfsleitung</option>
       </select>
-    </div>
-    <div class="form-group" id="fuerGroup" style="display:none;">
-      <label class="form-label">Report für</label><input type="text" id="f_fuer" class="form-control" placeholder="Name der Person">
     </div>
     <div class="form-group" id="partnerGroup">
       <label class="form-label">Partner/in</label><input type="text" id="f_partner" class="form-control" placeholder="Name">
@@ -234,11 +241,42 @@
       
       <strong>Wichtige Links</strong>
       
+      • <a href="https://www.jubla.ch" target="_blank" rel="noreferrer">Jubla Webseite</a>
+      
       • <a id="githubProjectLink" href="https://github.com/flohulo/jubla-reporting" target="_blank" rel="noreferrer">Projekt auf GitHub</a>
       
       • <a id="licenseLink" href="https://github.com/flohulo/jubla-reporting/blob/main/LICENSE" target="_blank" rel="noreferrer">Lizenz</a>
       
       • <a id="legalLink" href="https://github.com/flohulo/jubla-reporting/blob/main/README.md" target="_blank" rel="noreferrer">Rechtliche Hinweise</a>
+    </div>
+
+    <div class="accordion">
+      <div class="accordion-item">
+        <button class="accordion-header" onclick="toggleAccordion(this)">📞 Notrufnummern</button>
+        <div class="accordion-content">
+          <p><strong>Polizei:</strong> 117</p>
+          <p><strong>Feuerwehr / Rettung:</strong> 118</p>
+          <p><strong>Notfall:</strong> 112</p>
+          <p><strong>Kinder- und Jugendnotruf:</strong> 147</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-header" onclick="toggleAccordion(this)">❓ Hilfe-Themen</button>
+        <div class="accordion-content">
+          <p><strong>Gruppendynamik:</strong> Wie erkenne ich eine gute oder schlechte Dynamik?</p>
+          <p><strong>Konflikte:</strong> Was tun bei Streitereien in der Gruppe?</p>
+          <p><strong>Sicherheit:</strong> Wichtige Sicherheitsregeln für Gruppenstunden.</p>
+          <p><strong>Notfälle:</strong> Wie verhalte ich mich in Notfallsituationen?</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-header" onclick="toggleAccordion(this)">📋 Rechtliche Hinweise</button>
+        <div class="accordion-content">
+          <p>Diese Anwendung sammelt Daten zur Qualitätssicherung der Gruppenstunden. Alle Daten werden vertraulich behandelt und nur zur internen Nutzung verwendet.</p>
+          <p>Bei kritischen Berichten wird die Scharleitung automatisch informiert.</p>
+          <p>Weitere Informationen in der <a href="https://github.com/flohulo/jubla-reporting/blob/main/README.md" target="_blank">README</a>.</p>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -246,8 +284,7 @@
     <span><a id="versionLink" class="footer-link" href="https://github.com/flohulo/jubla-reporting/releases" target="_blank" rel="noreferrer">Version <span id="versionLabel">lade...</span></a></span>
     <span class="footer-links">
       <a href="https://github.com/flohulo/jubla-reporting" target="_blank" rel="noreferrer">GitHub</a>
-      <a id="issueLink" href="https://github.com/flohulo/jubla-reporting/issues" target="_blank" rel="noreferrer">Issue melden</a>
-      <a href="https://github.com/flohulo/jubla-reporting/blob/main/LICENSE" target="_blank" rel="noreferrer">Lizenz</a>
+      <a id="issueLink" href="https://github.com/flohulo/jubla-reporting/issues" target="_blank" rel="noreferrer">Fehler melden</a>
       <a href="https://github.com/flohulo/jubla-reporting/blob/main/README.md" target="_blank" rel="noreferrer">Rechtliches</a>
     </span>
   </div>
@@ -389,10 +426,15 @@ function onDynamikChange() {
 function toggleReportFor() {
   var checked = document.getElementById('f_fuer_check').checked;
   document.getElementById('rolleGroup').style.display = checked ? 'none' : 'block';
-  document.getElementById('fuerGroup').style.display = checked ? 'block' : 'none';
   document.getElementById('partnerGroup').style.display = checked ? 'none' : 'block';
   document.getElementById('hlGroup').style.display = checked ? 'block' : 'none';
   document.getElementById('hilfsGroup').style.display = checked ? 'block' : 'none';
+}
+
+// ── Toggle Accordion ───────────────────────────────────────
+function toggleAccordion(button) {
+  var content = button.nextElementSibling;
+  content.classList.toggle('open');
 }
 
 // ── Report absenden ────────────────────────────────────────
@@ -404,7 +446,6 @@ function submitReport() {
   var datum   = document.getElementById('f_datum').value;
   var checked = document.getElementById('f_fuer_check').checked;
   var rolle   = checked ? 'Melder' : document.getElementById('f_rolle').value;
-  var fuer    = checked ? document.getElementById('f_fuer').value.trim() : '';
   var partner = checked ? '' : document.getElementById('f_partner').value.trim();
   var hl      = checked ? document.getElementById('f_hl').value.trim() : '';
   var hilfs   = checked ? document.getElementById('f_hilfs').value.trim() : '';
@@ -416,8 +457,8 @@ function submitReport() {
   if (!datum || anzahl === '' || leiter === '') {
     err.innerText = 'Bitte alle Pflichtfelder ausfüllen.'; return;
   }
-  if (checked && (!fuer || !hl || !hilfs)) {
-    err.innerText = 'Bitte Report für, Hauptleitung und Hilfsleitung ausfüllen.'; return;
+  if (checked && (!hl || !hilfs)) {
+    err.innerText = 'Bitte Hauptleitung und Hilfsleitung ausfüllen.'; return;
   }
   if (!checked && !partner) {
     err.innerText = 'Bitte Partner/in ausfüllen.'; return;
@@ -443,8 +484,7 @@ function submitReport() {
     leiterCount: parseInt(leiter)  || 0,
     dynamik:     parseInt(dynamik),
     bemerkungen: bem,
-    rolle:       rolle,
-    fuer:        fuer
+    rolle:       rolle
   })
   .then(function(data) {
     if (data.ok) {
@@ -484,15 +524,36 @@ function submitRequest() {
   api({ action: 'requestHistory', datum: datum, grund: grund, requester: currentUser })
     .then(function(data) {
       if (data.ok) {
-        document.getElementById('requestTab').innerHTML =
-          '<div class="success-card">' +
+        var html = '<div class="success-card">' +
           '<div class="success-icon">📧</div>' +
           '<h2>Angefordert!</h2>' +
           '<p>Der Auszug für ' + formatDate(datum) + ' wurde per E-Mail an die Scharleitung gesendet.' +
           (data.found === 0 ? '<br><em>Hinweis: Keine Einträge für dieses Datum gefunden.</em>' : ' (' + data.found + ' Einträge)') +
-          '</p>' +
-          '<button class="btn btn-primary" onclick="location.reload()">Neue Anforderung</button>' +
-          '</div>';
+          '</p>';
+
+        if (data.rows && data.rows.length > 0) {
+          html += '<div class="divider"></div><h3 style="text-align:center; margin-bottom:16px;">Berichte:</h3>';
+          data.rows.forEach(function(r) {
+            html += '<div class="report-card dyn-' + r.dynamik + '">' +
+              '<div class="report-meta">' +
+              '<span class="report-date">' + formatDate(r.datum) + '</span>' +
+              '<span class="report-by">von ' + r.leiterName + ' (' + r.rolle + ')</span>' +
+              '</div>' +
+              '<div class="report-badges">' +
+              '<span class="badge badge-blue">HL: ' + r.hl + '</span>' +
+              '<span class="badge badge-blue">Hilfs: ' + r.hilfs + '</span>' +
+              '<span class="badge badge-green">Kinder: ' + r.anzahl + '</span>' +
+              '<span class="badge badge-green">Leiter: ' + r.leiterCount + '</span>' +
+              '<span class="badge ' + (r.dynamik >= 4 ? 'badge-crit' : r.dynamik >= 3 ? 'badge-warn' : 'badge-green') + '">Dynamik ' + r.dynamik + '</span>' +
+              '<span class="badge ' + (r.emailSent ? 'badge-green' : 'badge-warn') + '">' + (r.emailSent ? 'E-Mail versendet' : 'Keine E-Mail') + '</span>' +
+              '</div>' +
+              '<div class="report-note">' + (r.bemerkungen || '(keine)') + '</div>' +
+              '</div>';
+          });
+        }
+
+        html += '<button class="btn btn-primary" onclick="location.reload()">Neue Anforderung</button></div>';
+        document.getElementById('requestTab').innerHTML = html;
       } else {
         err.innerText = 'Fehler: ' + (data.error || 'Unbekannt');
         btn.disabled = false; btn.innerText = 'Anfordern 📧';
@@ -512,6 +573,19 @@ function formatDate(s) {
 }
 function escapeHtml(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── Service Worker Registration ────────────────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(function(registration) {
+        console.log('Service Worker registriert:', registration);
+      })
+      .catch(function(err) {
+        console.log('Service Worker Registrierung fehlgeschlagen:', err);
+      });
+  });
 }
 </script>
 </body>
