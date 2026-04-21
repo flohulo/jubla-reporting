@@ -8,6 +8,8 @@ labels: bug
 
 Beschreibe das Problem so genau wie möglich.
 
+- ...
+
 **Schritte zum Reproduzieren**
 
 1.
@@ -17,6 +19,8 @@ Beschreibe das Problem so genau wie möglich.
 **Erwartetes Verhalten**
 
 Was sollte stattdessen passieren?
+
+- ...
 
 **Screenshots / Logs**
 
