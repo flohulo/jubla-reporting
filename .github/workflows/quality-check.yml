@@ -2,7 +2,7 @@ name: Quality Gate
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   check:
@@ -13,7 +13,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       # 1. Prüft HTML auf Fehler
       - name: HTML Lint
