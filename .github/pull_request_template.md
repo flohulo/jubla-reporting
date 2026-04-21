@@ -9,6 +9,7 @@ Beschreibe kurz, welche Änderungen du vorgenommen hast.
 Warum sind diese Änderungen notwendig oder welches Issue wurde behandelt?
 
 ## Prüfpunkte
+
 - [ ] Code kompiliert / Funktionsfähig
 - [ ] Kein hart codiertes Passwort oder geheime Daten im Code
 - [ ] README bei Bedarf aktualisiert

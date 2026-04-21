@@ -6,9 +6,7 @@ labels: enhancement
 
 **Was möchtest du verbessern oder hinzufügen?**
 
-
 **Warum ist das hilfreich?**
-
 
 **Weitere Details**
 
