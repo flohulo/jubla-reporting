@@ -9,9 +9,10 @@ labels: bug
 Beschreibe das Problem so genau wie möglich.
 
 **Schritte zum Reproduzieren**
-1. 
-2. 
-3. 
+
+1.
+2.
+3.
 
 **Erwartetes Verhalten**
 

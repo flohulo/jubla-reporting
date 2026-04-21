@@ -1,601 +1,1395 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Jubla Wald ZH – Reporting</title>
-  <link rel="manifest" href="/site.webmanifest">
-  <link rel="icon" href="/favicon.ico">
-  <meta name="theme-color" content="#d65a5a">
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --red: #d65a5a; --red-dk: #b84d4d;
-      --yellow: #f7f1e3; --yel-lt: #fcfaf5;
-      --blue: #576574; --blu-lt: #eeeff1;
-      --dark: #2f3640; --mid: #7f8c8d;
-      --light: #f5f6fa; --white: #ffffff;
-      --green: #6ab04c; --grn-lt: #f1f8ed;
-      --shadow: 0 10px 25px rgba(0,0,0,0.08);
-      --radius: 16px; --modal-bg: rgba(0,0,0,0.4);
-    }
-    @media (prefers-color-scheme: dark) {
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Jubla Wald ZH – Reporting</title>
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="theme-color" content="#d65a5a" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
       :root {
-        --yellow: #1a1a1a; --yel-lt: #252525; --dark: #f5f6fa;
-        --mid: #a0a0a0; --light: #2d2d2d; --white: #262626;
-        --blu-lt: #3d3d3d; --blue: #a4b0be; --grn-lt: #1e271a;
-        --shadow: 0 10px 30px rgba(0,0,0,0.5);
+        --red: #d65a5a;
+        --red-dk: #b84d4d;
+        --yellow: #f7f1e3;
+        --yel-lt: #fcfaf5;
+        --blue: #576574;
+        --blu-lt: #eeeff1;
+        --dark: #2f3640;
+        --mid: #7f8c8d;
+        --light: #f5f6fa;
+        --white: #ffffff;
+        --green: #6ab04c;
+        --grn-lt: #f1f8ed;
+        --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        --radius: 16px;
+        --modal-bg: rgba(0, 0, 0, 0.4);
       }
-      .form-control { border-color: #444 !important; }
-      .form-control:focus { background: #333 !important; }
-      .dynamik-warn { background: #433f2a !important; border-color: #fab005 !important; color: #ffe066 !important; }
-      .dynamik-crit { background: #3d2a2a !important; border-color: var(--red) !important; color: #ff8787 !important; }
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Nunito', sans-serif; background: var(--yellow);
-      background-image: radial-gradient(circle at 15% 50%, rgba(214,90,90,0.06) 0%, transparent 60%),
-        radial-gradient(circle at 85% 20%, rgba(47,54,64,0.04) 0%, transparent 50%);
-      min-height: 100vh; display: flex; align-items: flex-start;
-      justify-content: center; padding: 24px 12px 60px; color: var(--dark);
-    }
-    .card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); width: 100%; max-width: 480px; overflow: hidden; animation: slideUp 0.4s cubic-bezier(0.16,1,0.3,1); }
-    @keyframes slideUp { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
-    .card-header { background: var(--red); padding: 22px 24px 18px; display: flex; align-items: center; gap: 14px; }
-    .logo-badge { width: 50px; height: 50px; background: white; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.7em; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-    .card-header h1 { color: white; font-size: 1.25em; font-weight: 900; line-height: 1.2; }
-    .card-header p { color: rgba(255,255,255,0.85); font-size: 0.82em; margin-top: 3px; }
-    .card-body { padding: 28px 24px; }
-    .card-footer { background: var(--yel-lt); border-top: 1px solid rgba(0,0,0,0.04); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75em; color: var(--mid); }
-    .footer-link { color: var(--dark); text-decoration: none; font-weight: 700; }
-    .footer-link:hover { text-decoration: underline; }
-    .footer-links { display: flex; gap: 16px; flex-wrap: wrap; justify-content: flex-end; }
-    .footer-links a { color: var(--mid); text-decoration: none; }
-    .footer-links a:hover { color: var(--dark); text-decoration: underline; }
-    .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: none; align-items: center; justify-content: center; padding: 24px; z-index: 1000; }
-    .modal.show { display: flex; }
-    .modal-panel { background: white; border-radius: 18px; max-width: 720px; width: 100%; box-shadow: var(--shadow); padding: 24px; position: relative; max-height: 85vh; overflow: hidden; display: flex; flex-direction: column; }
-    .modal-close { position: absolute; top: 18px; right: 18px; background: none; border: none; font-size: 1.6em; line-height: 1; cursor: pointer; color: var(--mid); }
-    .modal-body { overflow: auto; padding: 12px 0; flex: 1; }
-    .modal-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 16px; flex-wrap: wrap; }
-    .modal-body pre { white-space: pre-wrap; word-break: break-word; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace; font-size: 0.9em; color: var(--dark); }
-    .section-title { font-size: 1.05em; font-weight: 800; color: var(--dark); margin-bottom: 22px; text-align: center; }
-    .form-group { margin-bottom: 18px; }
-    .form-label { display: block; font-size: 0.73em; font-weight: 800; color: var(--mid); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 7px; }
-    .form-control { width: 100%; padding: 12px 16px; border: 2px solid #edf0f2; border-radius: 12px; font-family: 'Nunito', sans-serif; font-size: 0.95em; color: var(--dark); background: var(--light); transition: 0.2s; }
-    .form-control:focus { outline: none; border-color: var(--red); background: var(--white); box-shadow: 0 0 0 4px rgba(214,90,90,0.1); }
-    textarea.form-control { resize: vertical; min-height: 100px; }
-    .pin-group { position: relative; }
-    .pin-group input { font-size: 1.4em; letter-spacing: 0.3em; text-align: center; font-weight: 700; }
-    .pin-toggle { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--mid); font-size: 1.2em; }
-    .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; font-family: 'Nunito', sans-serif; font-weight: 800; cursor: pointer; transition: 0.2s; font-size: 1em; }
-    .btn-primary { background: var(--red); color: white; box-shadow: 0 6px 16px rgba(214,90,90,0.28); }
-    .btn-primary:hover { box-shadow: 0 8px 20px rgba(214,90,90,0.38); transform: translateY(-1px); }
-    .btn-primary:active { transform: translateY(1px); }
-    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-    .btn-secondary { background: var(--blu-lt); color: var(--blue); margin-bottom: 16px; font-size: 0.9em; }
-    .error-msg { color: var(--red); font-size: 0.85em; font-weight: 700; text-align: center; min-height: 20px; margin-top: 8px; }
-    .tab-bar { display: flex; border-bottom: 2px solid var(--blu-lt); background: var(--white); }
-    .tab-btn { flex: 1; padding: 13px 8px; border: none; background: none; font-family: 'Nunito', sans-serif; font-size: 0.82em; font-weight: 800; color: var(--mid); cursor: pointer; transition: 0.2s; border-bottom: 3px solid transparent; margin-bottom: -2px; }
-    .tab-btn.active { color: var(--red); border-bottom-color: var(--red); }
-    .support-box { background: var(--blu-lt); border-left: 4px solid var(--blue); border-radius: 8px; padding: 14px; font-size: 0.85em; line-height: 1.6; color: var(--dark); display: none; margin-bottom: 20px; white-space: pre-line; }
-    .support-box.open { display: block; }
-    .dynamik-warn, .dynamik-crit { display: none; border-radius: 10px; padding: 12px; font-size: 0.85em; margin-top: 10px; border: 1px solid; font-weight: 600; }
-    .dynamik-warn { background: #fff9db; border-color: #fab005; color: #856404; }
-    .dynamik-crit { background: #fff5f5; border-color: var(--red); color: #a02020; }
-    .show { display: block !important; }
-    .success-card { text-align: center; padding: 40px 20px; }
-    .success-icon { font-size: 3.5em; margin-bottom: 14px; animation: popIn 0.5s cubic-bezier(0.16,1,0.3,1); }
-    @keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-    .success-card h2 { color: var(--green); margin-bottom: 10px; }
-    .success-card p { color: var(--mid); font-size: 0.9em; line-height: 1.5; margin-bottom: 20px; }
-    .report-card { background: var(--light); border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; border-left: 4px solid var(--blu-lt); }
-    .report-card.dyn-4 { border-left-color: #fab005; }
-    .report-card.dyn-5 { border-left-color: var(--red); }
-    .report-meta { display: flex; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 4px; }
-    .report-date { font-weight: 800; font-size: 0.95em; }
-    .report-by { font-size: 0.78em; color: var(--mid); }
-    .report-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
-    .badge { display: inline-block; padding: 3px 9px; border-radius: 20px; font-size: 0.75em; font-weight: 700; }
-    .badge-blue { background: var(--blu-lt); color: var(--blue); }
-    .badge-green { background: var(--grn-lt); color: var(--green); }
-    .badge-warn { background: #fff9db; color: #856404; }
-    .badge-crit { background: #fff5f5; color: #a02020; }
-    .report-note { font-size: 0.82em; color: var(--mid); margin-top: 6px; white-space: pre-wrap; word-break: break-word; }
-    .reports-empty { text-align: center; padding: 40px 0; color: var(--mid); }
-    .spinner { width: 32px; height: 32px; border: 4px solid var(--blu-lt); border-top-color: var(--red); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .loading-inline { text-align: center; padding: 30px; color: var(--mid); font-size: 0.9em; }
-    .export-btn { display: flex; align-items: center; gap: 8px; justify-content: center; background: var(--grn-lt); color: var(--green); border: 2px solid var(--green); border-radius: 12px; padding: 12px; font-weight: 800; font-size: 0.9em; cursor: pointer; width: 100%; font-family: 'Nunito', sans-serif; transition: 0.2s; margin-top: 16px; }
-    .divider { border: none; border-top: 1px solid var(--blu-lt); margin: 20px 0; }
-    .accordion { margin-top: 20px; }
-    .accordion-item { border: 1px solid var(--blu-lt); border-radius: 8px; margin-bottom: 10px; overflow: hidden; }
-    .accordion-header { width: 100%; padding: 14px 16px; background: var(--yel-lt); border: none; text-align: left; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.9em; cursor: pointer; color: var(--dark); transition: 0.2s; }
-    .accordion-header:hover { background: var(--light); }
-    .accordion-content { padding: 0 16px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease; background: var(--white); }
-    .accordion-content.open { padding: 14px 16px; max-height: 500px; }
-  </style>
-</head>
-<body>
-
-<div class="card">
-  <div class="card-header">
-    <div class="logo-badge">🏕</div>
-    <div>
-      <h1>Jubla Wald ZH</h1>
-      <p id="headerSubtitle">Reporting Tool</p>
-    </div>
-  </div>
-
-  <!-- LOGIN -->
-  <div class="card-body" id="loginArea">
-    <p class="section-title">🔒 Anmelden</p>
-    <div class="form-group">
-      <label class="form-label">Dein Name</label>
-      <input type="text" id="userNameInput" class="form-control" placeholder="Vorname">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Schar-PIN</label>
-      <div class="pin-group">
-        <input type="password" id="pinInput" class="form-control" placeholder="••••"
-          inputmode="numeric" maxlength="8" onkeydown="if(event.key==='Enter') login()">
-        <button class="pin-toggle" onclick="togglePin()">👁</button>
-      </div>
-    </div>
-    <p class="error-msg" id="loginError"></p>
-    <button class="btn btn-primary" id="loginBtn" onclick="login()">Anmelden</button>
-  </div>
-
-  <!-- TAB BAR -->
-  <div class="tab-bar" id="tabBar" style="display:none;">
-    <button class="tab-btn active" onclick="showTab('formTab', this)">📝 Report</button>
-    <button class="tab-btn" onclick="showTab('requestTab', this)">📨 Anfordern</button>
-    <button class="tab-btn" onclick="showTab('infoTab', this)">ℹ️ Infos</button>
-  </div>
-
-  <!-- FORM -->
-  <div class="card-body" id="formTab" style="display:none;">
-    <button class="btn btn-secondary" onclick="document.getElementById('supportBox').classList.toggle('open')">💡 Hilfe & Tipps</button>
-    <div class="support-box" id="supportBox">Erfasse nach jeder Gruppenstunde einen kurzen Bericht.
-
-• Beschreibe bei Dynamik 4 oder 5 die Situation genau.
-• Bei Dynamik 5 melde dich zusätzlich bei der Scharleitung.
-• Partnerfeld: trage den Namen der Begleitperson ein.
-• Diese Einträge helfen bei Problemen die Situation nachzuverfolgen.</div>
-
-    <div class="form-group"><label class="form-label">Datum</label><input type="date" id="f_datum" class="form-control" required></div>
-    <div class="form-group">
-      <label class="form-label">
-        <input type="checkbox" id="f_fuer_check" onchange="toggleReportFor()"> Report für andere
-      </label>
-    </div>
-    <div class="form-group" id="rolleGroup">
-      <label class="form-label">Meine Rolle</label>
-      <select id="f_rolle" class="form-control">
-        <option value="Hauptleitung">Hauptleitung</option>
-        <option value="Hilfsleitung">Hilfsleitung</option>
-      </select>
-    </div>
-    <div class="form-group" id="partnerGroup">
-      <label class="form-label">Partner/in</label><input type="text" id="f_partner" class="form-control" placeholder="Name">
-    </div>
-    <div class="form-group" id="hlGroup" style="display:none;">
-      <label class="form-label">Hauptleitung</label><input type="text" id="f_hl" class="form-control" placeholder="Name">
-    </div>
-    <div class="form-group" id="hilfsGroup" style="display:none;">
-      <label class="form-label">Hilfsleitung</label><input type="text" id="f_hilfs" class="form-control" placeholder="Name">
-    </div>
-    <div class="form-group"><label class="form-label">Anzahl Kinder</label><input type="number" id="f_anzahl" class="form-control" placeholder="z.B. 12" min="0"></div>
-    <div class="form-group"><label class="form-label">Zusätzliche Leiter</label><input type="number" id="f_leiter" class="form-control" placeholder="z.B. 2" min="0"></div>
-    <div class="form-group">
-      <label class="form-label">Gruppendynamik</label>
-      <select id="f_dynamik" class="form-control" onchange="onDynamikChange()">
-        <option value="1">1 – Alles top 😊</option>
-        <option value="2">2 – Gut 🙂</option>
-        <option value="3">3 – Intensiv 😐</option>
-        <option value="4">4 – Schwierig 😬</option>
-        <option value="5">5 – Kritisch ⛔</option>
-      </select>
-      <div class="dynamik-warn" id="warnBox">⚠️ Bitte beschreibe die Situation ausführlich.</div>
-      <div class="dynamik-crit" id="critBox">⛔ Bitte melde dich zusätzlich bei der Scharleitung!</div>
-    </div>
-    <div class="form-group"><label class="form-label">Bemerkungen</label><textarea id="f_bemerkungen" class="form-control" rows="5"></textarea></div>
-    <p class="error-msg" id="formError"></p>
-    <button class="btn btn-primary" id="submitBtn" onclick="submitReport()">Report absenden 🚀</button>
-  </div>
-
-  <!-- REQUEST -->
-  <div class="card-body" id="requestTab" style="display:none;">
-    <p class="section-title">📨 Auszug anfordern</p>
-    <p style="font-size:0.85em; color:var(--mid); margin-bottom:20px; line-height:1.5;">
-      Fordere einen Bericht für ein bestimmtes Datum an. Die Scharleitung erhält ihn per E-Mail.
-    </p>
-    <div class="form-group">
-      <label class="form-label">Datum</label>
-      <input type="date" id="r_datum" class="form-control" required>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Grund der Anforderung</label>
-      <textarea id="r_grund" class="form-control" rows="3" placeholder="Bitte gib den Grund an…"></textarea>
-    </div>
-    <p class="error-msg" id="requestError"></p>
-    <button class="btn btn-primary" id="requestBtn" onclick="submitRequest()">Anfordern 📧</button>
-  </div>
-
-  <!-- INFO -->
-  <div class="card-body" id="infoTab" style="display:none;">
-    <p class="section-title">ℹ️ Allgemeine Infos</p>
-    <div class="support-box open">
-      <strong>Kontakt</strong>
-      
-      Telefon: <span id="contactPhone">lade...</span>
-      
-      E-Mail: <span id="contactEmail">lade...</span>
-      
-      <strong>Allgemeines</strong>
-      
-      Dieses Reporting-Tool dient zur Erfassung der Gruppenstunden-Dynamik und zur Meldung kritischer Situationen an die Scharleitung.
-      
-      Bitte fülle alle Pflichtfelder aus und beschreibe Vorfälle bei Dynamik 4 und 5 so präzise wie möglich.
-      
-      <strong>Wichtige Links</strong>
-      
-      • <a href="https://www.jubla.ch" target="_blank" rel="noreferrer">Jubla Webseite</a>
-      
-      • <a id="githubProjectLink" href="https://github.com/flohulo/jubla-reporting" target="_blank" rel="noreferrer">Projekt auf GitHub</a>
-      
-      • <a id="licenseLink" href="https://github.com/flohulo/jubla-reporting/blob/main/LICENSE" target="_blank" rel="noreferrer">Lizenz</a>
-      
-      • <a id="legalLink" href="https://github.com/flohulo/jubla-reporting/blob/main/README.md" target="_blank" rel="noreferrer">Rechtliche Hinweise</a>
-    </div>
-
-    <div class="accordion">
-      <div class="accordion-item">
-        <button class="accordion-header" onclick="toggleAccordion(this)">📞 Notrufnummern</button>
-        <div class="accordion-content">
-          <p><strong>Polizei:</strong> 117</p>
-          <p><strong>Feuerwehr:</strong> 118</p>
-          <p><strong>Sanität:</strong> 144</p>
-          <p><strong>Kinder- und Jugendnotruf:</strong> 147</p>
-          <p><strong>Vergiftungsnotruf:</strong> 145</p>
-          <p><strong>REGA:</strong> 1414</p>
-          <p><strong>Jubla Zürich Kriesentelefon:</strong> 0800 505 202</p>
-          <p><strong>Jubla Kriesentelefon national:</strong> 079 259 76 90</p>
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --yellow: #1a1a1a;
+          --yel-lt: #252525;
+          --dark: #f5f6fa;
+          --mid: #a0a0a0;
+          --light: #2d2d2d;
+          --white: #262626;
+          --blu-lt: #3d3d3d;
+          --blue: #a4b0be;
+          --grn-lt: #1e271a;
+          --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        .form-control {
+          border-color: #444 !important;
+        }
+        .form-control:focus {
+          background: #333 !important;
+        }
+        .dynamik-warn {
+          background: #433f2a !important;
+          border-color: #fab005 !important;
+          color: #ffe066 !important;
+        }
+        .dynamik-crit {
+          background: #3d2a2a !important;
+          border-color: var(--red) !important;
+          color: #ff8787 !important;
+        }
+      }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "Nunito", sans-serif;
+        background: var(--yellow);
+        background-image:
+          radial-gradient(
+            circle at 15% 50%,
+            rgba(214, 90, 90, 0.06) 0%,
+            transparent 60%
+          ),
+          radial-gradient(
+            circle at 85% 20%,
+            rgba(47, 54, 64, 0.04) 0%,
+            transparent 50%
+          );
+        min-height: 100vh;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 24px 12px 60px;
+        color: var(--dark);
+      }
+      .card {
+        background: var(--white);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        width: 100%;
+        max-width: 480px;
+        overflow: hidden;
+        animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(28px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .card-header {
+        background: var(--red);
+        padding: 22px 24px 18px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .logo-badge {
+        width: 50px;
+        height: 50px;
+        background: white;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.7em;
+        flex-shrink: 0;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+      .card-header h1 {
+        color: white;
+        font-size: 1.25em;
+        font-weight: 900;
+        line-height: 1.2;
+      }
+      .card-header p {
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 0.82em;
+        margin-top: 3px;
+      }
+      .card-body {
+        padding: 28px 24px;
+      }
+      .card-footer {
+        background: var(--yel-lt);
+        border-top: 1px solid rgba(0, 0, 0, 0.04);
+        padding: 12px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.75em;
+        color: var(--mid);
+      }
+      .footer-link {
+        color: var(--dark);
+        text-decoration: none;
+        font-weight: 700;
+      }
+      .footer-link:hover {
+        text-decoration: underline;
+      }
+      .footer-links {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+      .footer-links a {
+        color: var(--mid);
+        text-decoration: none;
+      }
+      .footer-links a:hover {
+        color: var(--dark);
+        text-decoration: underline;
+      }
+      .modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        z-index: 1000;
+      }
+      .modal.show {
+        display: flex;
+      }
+      .modal-panel {
+        background: white;
+        border-radius: 18px;
+        max-width: 720px;
+        width: 100%;
+        box-shadow: var(--shadow);
+        padding: 24px;
+        position: relative;
+        max-height: 85vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .modal-close {
+        position: absolute;
+        top: 18px;
+        right: 18px;
+        background: none;
+        border: none;
+        font-size: 1.6em;
+        line-height: 1;
+        cursor: pointer;
+        color: var(--mid);
+      }
+      .modal-body {
+        overflow: auto;
+        padding: 12px 0;
+        flex: 1;
+      }
+      .modal-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        margin-top: 16px;
+        flex-wrap: wrap;
+      }
+      .modal-body pre {
+        white-space: pre-wrap;
+        word-break: break-word;
+        font-family:
+          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+        font-size: 0.9em;
+        color: var(--dark);
+      }
+      .section-title {
+        font-size: 1.05em;
+        font-weight: 800;
+        color: var(--dark);
+        margin-bottom: 22px;
+        text-align: center;
+      }
+      .form-group {
+        margin-bottom: 18px;
+      }
+      .form-label {
+        display: block;
+        font-size: 0.73em;
+        font-weight: 800;
+        color: var(--mid);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 7px;
+      }
+      .form-control {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #edf0f2;
+        border-radius: 12px;
+        font-family: "Nunito", sans-serif;
+        font-size: 0.95em;
+        color: var(--dark);
+        background: var(--light);
+        transition: 0.2s;
+      }
+      .form-control:focus {
+        outline: none;
+        border-color: var(--red);
+        background: var(--white);
+        box-shadow: 0 0 0 4px rgba(214, 90, 90, 0.1);
+      }
+      textarea.form-control {
+        resize: vertical;
+        min-height: 100px;
+      }
+      .pin-group {
+        position: relative;
+      }
+      .pin-group input {
+        font-size: 1.4em;
+        letter-spacing: 0.3em;
+        text-align: center;
+        font-weight: 700;
+      }
+      .pin-toggle {
+        position: absolute;
+        right: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--mid);
+        font-size: 1.2em;
+      }
+      .btn {
+        width: 100%;
+        padding: 14px;
+        border: none;
+        border-radius: 12px;
+        font-family: "Nunito", sans-serif;
+        font-weight: 800;
+        cursor: pointer;
+        transition: 0.2s;
+        font-size: 1em;
+      }
+      .btn-primary {
+        background: var(--red);
+        color: white;
+        box-shadow: 0 6px 16px rgba(214, 90, 90, 0.28);
+      }
+      .btn-primary:hover {
+        box-shadow: 0 8px 20px rgba(214, 90, 90, 0.38);
+        transform: translateY(-1px);
+      }
+      .btn-primary:active {
+        transform: translateY(1px);
+      }
+      .btn-primary:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+      .btn-secondary {
+        background: var(--blu-lt);
+        color: var(--blue);
+        margin-bottom: 16px;
+        font-size: 0.9em;
+      }
+      .error-msg {
+        color: var(--red);
+        font-size: 0.85em;
+        font-weight: 700;
+        text-align: center;
+        min-height: 20px;
+        margin-top: 8px;
+      }
+      .tab-bar {
+        display: flex;
+        border-bottom: 2px solid var(--blu-lt);
+        background: var(--white);
+      }
+      .tab-btn {
+        flex: 1;
+        padding: 13px 8px;
+        border: none;
+        background: none;
+        font-family: "Nunito", sans-serif;
+        font-size: 0.82em;
+        font-weight: 800;
+        color: var(--mid);
+        cursor: pointer;
+        transition: 0.2s;
+        border-bottom: 3px solid transparent;
+        margin-bottom: -2px;
+      }
+      .tab-btn.active {
+        color: var(--red);
+        border-bottom-color: var(--red);
+      }
+      .support-box {
+        background: var(--blu-lt);
+        border-left: 4px solid var(--blue);
+        border-radius: 8px;
+        padding: 14px;
+        font-size: 0.85em;
+        line-height: 1.6;
+        color: var(--dark);
+        display: none;
+        margin-bottom: 20px;
+        white-space: pre-line;
+      }
+      .support-box.open {
+        display: block;
+      }
+      .dynamik-warn,
+      .dynamik-crit {
+        display: none;
+        border-radius: 10px;
+        padding: 12px;
+        font-size: 0.85em;
+        margin-top: 10px;
+        border: 1px solid;
+        font-weight: 600;
+      }
+      .dynamik-warn {
+        background: #fff9db;
+        border-color: #fab005;
+        color: #856404;
+      }
+      .dynamik-crit {
+        background: #fff5f5;
+        border-color: var(--red);
+        color: #a02020;
+      }
+      .show {
+        display: block !important;
+      }
+      .success-card {
+        text-align: center;
+        padding: 40px 20px;
+      }
+      .success-icon {
+        font-size: 3.5em;
+        margin-bottom: 14px;
+        animation: popIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      @keyframes popIn {
+        from {
+          transform: scale(0.5);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      .success-card h2 {
+        color: var(--green);
+        margin-bottom: 10px;
+      }
+      .success-card p {
+        color: var(--mid);
+        font-size: 0.9em;
+        line-height: 1.5;
+        margin-bottom: 20px;
+      }
+      .report-card {
+        background: var(--light);
+        border-radius: 12px;
+        padding: 14px 16px;
+        margin-bottom: 12px;
+        border-left: 4px solid var(--blu-lt);
+      }
+      .report-card.dyn-4 {
+        border-left-color: #fab005;
+      }
+      .report-card.dyn-5 {
+        border-left-color: var(--red);
+      }
+      .report-meta {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        flex-wrap: wrap;
+        gap: 4px;
+      }
+      .report-date {
+        font-weight: 800;
+        font-size: 0.95em;
+      }
+      .report-by {
+        font-size: 0.78em;
+        color: var(--mid);
+      }
+      .report-badges {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-bottom: 6px;
+      }
+      .badge {
+        display: inline-block;
+        padding: 3px 9px;
+        border-radius: 20px;
+        font-size: 0.75em;
+        font-weight: 700;
+      }
+      .badge-blue {
+        background: var(--blu-lt);
+        color: var(--blue);
+      }
+      .badge-green {
+        background: var(--grn-lt);
+        color: var(--green);
+      }
+      .badge-warn {
+        background: #fff9db;
+        color: #856404;
+      }
+      .badge-crit {
+        background: #fff5f5;
+        color: #a02020;
+      }
+      .report-note {
+        font-size: 0.82em;
+        color: var(--mid);
+        margin-top: 6px;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      .reports-empty {
+        text-align: center;
+        padding: 40px 0;
+        color: var(--mid);
+      }
+      .spinner {
+        width: 32px;
+        height: 32px;
+        border: 4px solid var(--blu-lt);
+        border-top-color: var(--red);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin: 0 auto 12px;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .loading-inline {
+        text-align: center;
+        padding: 30px;
+        color: var(--mid);
+        font-size: 0.9em;
+      }
+      .export-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        justify-content: center;
+        background: var(--grn-lt);
+        color: var(--green);
+        border: 2px solid var(--green);
+        border-radius: 12px;
+        padding: 12px;
+        font-weight: 800;
+        font-size: 0.9em;
+        cursor: pointer;
+        width: 100%;
+        font-family: "Nunito", sans-serif;
+        transition: 0.2s;
+        margin-top: 16px;
+      }
+      .divider {
+        border: none;
+        border-top: 1px solid var(--blu-lt);
+        margin: 20px 0;
+      }
+      .accordion {
+        margin-top: 20px;
+      }
+      .accordion-item {
+        border: 1px solid var(--blu-lt);
+        border-radius: 8px;
+        margin-bottom: 10px;
+        overflow: hidden;
+      }
+      .accordion-header {
+        width: 100%;
+        padding: 14px 16px;
+        background: var(--yel-lt);
+        border: none;
+        text-align: left;
+        font-family: "Nunito", sans-serif;
+        font-weight: 700;
+        font-size: 0.9em;
+        cursor: pointer;
+        color: var(--dark);
+        transition: 0.2s;
+      }
+      .accordion-header:hover {
+        background: var(--light);
+      }
+      .accordion-content {
+        padding: 0 16px;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        background: var(--white);
+      }
+      .accordion-content.open {
+        padding: 14px 16px;
+        max-height: 500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="card-header">
+        <div class="logo-badge">🏕</div>
+        <div>
+          <h1>Jubla Wald ZH</h1>
+          <p id="headerSubtitle">Reporting Tool</p>
         </div>
       </div>
-      <div class="accordion-item">
-        <button class="accordion-header" onclick="toggleAccordion(this)">❓ Hilfe-Themen</button>
-        <div class="accordion-content">
-          <p><strong>Gruppendynamik:</strong> Eine gute Dynamik erkennst du daran, dass die Kinder aktiv mitmachen, Respekt zeigen und zusammenarbeiten. Eine schlechte Dynamik zeigt sich durch Unruhe, Konflikte, Konzentrationsprobleme oder Desinteresse. Nutze die Dynamik-Skala 1-5 um dies zu dokumentieren.</p>
-          <p><strong>Konflikte:</strong> Nimm Konflikte ernst. Höre beiden Seiten zu, bleibe ruhig und fair. Versuche schnell zu deeskalieren durch klare Regeln und positive Verstärkung. Wichtig: Achte auf körperliche Grenzen und respektvolle Kommunikation. Bei ernsthaften Fällen informiere die Scharleitung.</p>
-          <p><strong>Sicherheit:</strong> Überprüfe vor jeder Gruppenstunde den Ort auf Gefahren. Achte auf Aufsichtspflicht – Kinder dürfen nicht unbeaufsichtigt sein. Beachte Altersgerechtheit von Aktivitäten, stelle Material sicher und kenne Erste-Hilfe-Grundlagen. Im Notfall 144 oder 117 anrufen.</p>
-          <p><strong>Notfälle:</strong> Bleibe ruhig und überlegt. Sicherheit first – Stelle sicher dass keine weiteren Personen in Gefahr sind. Rufe sofort den Notruf an (117/118/144). Informiere die Scharleitung und gib ihr alle wichtigen Informationen. Dokumentiere was passiert ist und berichte dies über das Reporting-Tool.</p>
+
+      <!-- LOGIN -->
+      <div class="card-body" id="loginArea">
+        <p class="section-title">🔒 Anmelden</p>
+        <div class="form-group">
+          <label class="form-label">Dein Name</label>
+          <input
+            type="text"
+            id="userNameInput"
+            class="form-control"
+            placeholder="Vorname"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Schar-PIN</label>
+          <div class="pin-group">
+            <input
+              type="password"
+              id="pinInput"
+              class="form-control"
+              placeholder="••••"
+              inputmode="numeric"
+              maxlength="8"
+              onkeydown="if (event.key === 'Enter') login();"
+            />
+            <button class="pin-toggle" onclick="togglePin()">👁</button>
+          </div>
+        </div>
+        <p class="error-msg" id="loginError"></p>
+        <button class="btn btn-primary" id="loginBtn" onclick="login()">
+          Anmelden
+        </button>
+      </div>
+
+      <!-- TAB BAR -->
+      <div class="tab-bar" id="tabBar" style="display: none">
+        <button class="tab-btn active" onclick="showTab('formTab', this)">
+          📝 Report
+        </button>
+        <button class="tab-btn" onclick="showTab('requestTab', this)">
+          📨 Anfordern
+        </button>
+        <button class="tab-btn" onclick="showTab('infoTab', this)">
+          ℹ️ Infos
+        </button>
+      </div>
+
+      <!-- FORM -->
+      <div class="card-body" id="formTab" style="display: none">
+        <button
+          class="btn btn-secondary"
+          onclick="
+            document.getElementById('supportBox').classList.toggle('open')
+          "
+        >
+          💡 Hilfe & Tipps
+        </button>
+        <div class="support-box" id="supportBox">
+          Erfasse nach jeder Gruppenstunde einen kurzen Bericht. • Beschreibe
+          bei Dynamik 4 oder 5 die Situation genau. • Bei Dynamik 5 melde dich
+          zusätzlich bei der Scharleitung. • Partnerfeld: trage den Namen der
+          Begleitperson ein. • Diese Einträge helfen bei Problemen die Situation
+          nachzuverfolgen.
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Datum</label
+          ><input type="date" id="f_datum" class="form-control" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">
+            <input
+              type="checkbox"
+              id="f_fuer_check"
+              onchange="toggleReportFor()"
+            />
+            Report für andere
+          </label>
+        </div>
+        <div class="form-group" id="rolleGroup">
+          <label class="form-label">Meine Rolle</label>
+          <select id="f_rolle" class="form-control">
+            <option value="Hauptleitung">Hauptleitung</option>
+            <option value="Hilfsleitung">Hilfsleitung</option>
+          </select>
+        </div>
+        <div class="form-group" id="partnerGroup">
+          <label class="form-label">Partner/in</label
+          ><input
+            type="text"
+            id="f_partner"
+            class="form-control"
+            placeholder="Name"
+          />
+        </div>
+        <div class="form-group" id="hlGroup" style="display: none">
+          <label class="form-label">Hauptleitung</label
+          ><input
+            type="text"
+            id="f_hl"
+            class="form-control"
+            placeholder="Name"
+          />
+        </div>
+        <div class="form-group" id="hilfsGroup" style="display: none">
+          <label class="form-label">Hilfsleitung</label
+          ><input
+            type="text"
+            id="f_hilfs"
+            class="form-control"
+            placeholder="Name"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Anzahl Kinder</label
+          ><input
+            type="number"
+            id="f_anzahl"
+            class="form-control"
+            placeholder="z.B. 12"
+            min="0"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Zusätzliche Leiter</label
+          ><input
+            type="number"
+            id="f_leiter"
+            class="form-control"
+            placeholder="z.B. 2"
+            min="0"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Gruppendynamik</label>
+          <select
+            id="f_dynamik"
+            class="form-control"
+            onchange="onDynamikChange()"
+          >
+            <option value="1">1 – Alles top 😊</option>
+            <option value="2">2 – Gut 🙂</option>
+            <option value="3">3 – Intensiv 😐</option>
+            <option value="4">4 – Schwierig 😬</option>
+            <option value="5">5 – Kritisch ⛔</option>
+          </select>
+          <div class="dynamik-warn" id="warnBox">
+            ⚠️ Bitte beschreibe die Situation ausführlich.
+          </div>
+          <div class="dynamik-crit" id="critBox">
+            ⛔ Bitte melde dich zusätzlich bei der Scharleitung!
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Bemerkungen</label
+          ><textarea
+            id="f_bemerkungen"
+            class="form-control"
+            rows="5"
+          ></textarea>
+        </div>
+        <p class="error-msg" id="formError"></p>
+        <button class="btn btn-primary" id="submitBtn" onclick="submitReport()">
+          Report absenden 🚀
+        </button>
+      </div>
+
+      <!-- REQUEST -->
+      <div class="card-body" id="requestTab" style="display: none">
+        <p class="section-title">📨 Auszug anfordern</p>
+        <p
+          style="
+            font-size: 0.85em;
+            color: var(--mid);
+            margin-bottom: 20px;
+            line-height: 1.5;
+          "
+        >
+          Fordere einen Bericht für ein bestimmtes Datum an. Die Scharleitung
+          erhält ihn per E-Mail.
+        </p>
+        <div class="form-group">
+          <label class="form-label">Datum</label>
+          <input type="date" id="r_datum" class="form-control" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Grund der Anforderung</label>
+          <textarea
+            id="r_grund"
+            class="form-control"
+            rows="3"
+            placeholder="Bitte gib den Grund an…"
+          ></textarea>
+        </div>
+        <p class="error-msg" id="requestError"></p>
+        <button
+          class="btn btn-primary"
+          id="requestBtn"
+          onclick="submitRequest()"
+        >
+          Anfordern 📧
+        </button>
+      </div>
+
+      <!-- INFO -->
+      <div class="card-body" id="infoTab" style="display: none">
+        <p class="section-title">ℹ️ Allgemeine Infos</p>
+        <div class="support-box open">
+          <strong>Kontakt</strong>
+
+          Telefon: <span id="contactPhone">lade...</span>
+
+          E-Mail: <span id="contactEmail">lade...</span>
+
+          <strong>Allgemeines</strong>
+
+          Dieses Reporting-Tool dient zur Erfassung der Gruppenstunden-Dynamik
+          und zur Meldung kritischer Situationen an die Scharleitung. Bitte
+          fülle alle Pflichtfelder aus und beschreibe Vorfälle bei Dynamik 4 und
+          5 so präzise wie möglich.
+
+          <strong>Wichtige Links</strong>
+
+          •
+          <a href="https://www.jubla.ch" target="_blank" rel="noreferrer"
+            >Jubla Webseite</a
+          >
+
+          •
+          <a
+            id="githubProjectLink"
+            href="https://github.com/flohulo/jubla-reporting"
+            target="_blank"
+            rel="noreferrer"
+            >Projekt auf GitHub</a
+          >
+
+          •
+          <a
+            id="licenseLink"
+            href="https://github.com/flohulo/jubla-reporting/blob/main/LICENSE"
+            target="_blank"
+            rel="noreferrer"
+            >Lizenz</a
+          >
+
+          •
+          <a
+            id="legalLink"
+            href="https://github.com/flohulo/jubla-reporting/blob/main/README.md"
+            target="_blank"
+            rel="noreferrer"
+            >Rechtliche Hinweise</a
+          >
+        </div>
+
+        <div class="accordion">
+          <div class="accordion-item">
+            <button class="accordion-header" onclick="toggleAccordion(this)">
+              📞 Notrufnummern
+            </button>
+            <div class="accordion-content">
+              <p><strong>Polizei:</strong> 117</p>
+              <p><strong>Feuerwehr:</strong> 118</p>
+              <p><strong>Sanität:</strong> 144</p>
+              <p><strong>Kinder- und Jugendnotruf:</strong> 147</p>
+              <p><strong>Vergiftungsnotruf:</strong> 145</p>
+              <p><strong>REGA:</strong> 1414</p>
+              <p><strong>Jubla Zürich Kriesentelefon:</strong> 0800 505 202</p>
+              <p>
+                <strong>Jubla Kriesentelefon national:</strong> 079 259 76 90
+              </p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-header" onclick="toggleAccordion(this)">
+              ❓ Hilfe-Themen
+            </button>
+            <div class="accordion-content">
+              <p>
+                <strong>Gruppendynamik:</strong> Eine gute Dynamik erkennst du
+                daran, dass die Kinder aktiv mitmachen, Respekt zeigen und
+                zusammenarbeiten. Eine schlechte Dynamik zeigt sich durch
+                Unruhe, Konflikte, Konzentrationsprobleme oder Desinteresse.
+                Nutze die Dynamik-Skala 1-5 um dies zu dokumentieren.
+              </p>
+              <p>
+                <strong>Konflikte:</strong> Nimm Konflikte ernst. Höre beiden
+                Seiten zu, bleibe ruhig und fair. Versuche schnell zu
+                deeskalieren durch klare Regeln und positive Verstärkung.
+                Wichtig: Achte auf körperliche Grenzen und respektvolle
+                Kommunikation. Bei ernsthaften Fällen informiere die
+                Scharleitung.
+              </p>
+              <p>
+                <strong>Sicherheit:</strong> Überprüfe vor jeder Gruppenstunde
+                den Ort auf Gefahren. Achte auf Aufsichtspflicht – Kinder dürfen
+                nicht unbeaufsichtigt sein. Beachte Altersgerechtheit von
+                Aktivitäten, stelle Material sicher und kenne
+                Erste-Hilfe-Grundlagen. Im Notfall 144 oder 117 anrufen.
+              </p>
+              <p>
+                <strong>Notfälle:</strong> Bleibe ruhig und überlegt. Sicherheit
+                first – Stelle sicher dass keine weiteren Personen in Gefahr
+                sind. Rufe sofort den Notruf an (117/118/144). Informiere die
+                Scharleitung und gib ihr alle wichtigen Informationen.
+                Dokumentiere was passiert ist und berichte dies über das
+                Reporting-Tool.
+              </p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-header" onclick="toggleAccordion(this)">
+              📋 Rechtliche Hinweise
+            </button>
+            <div class="accordion-content">
+              <p>
+                Diese Anwendung sammelt Daten zur Qualitätssicherung der
+                Gruppenstunden. Alle Daten werden vertraulich behandelt und nur
+                zur internen Nutzung verwendet.
+              </p>
+              <p>
+                Bei kritischen Berichten wird die Scharleitung automatisch
+                informiert.
+              </p>
+              <p>
+                Weitere Informationen in der
+                <a
+                  href="https://github.com/flohulo/jubla-reporting/blob/main/README.md"
+                  target="_blank"
+                  >README</a
+                >.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="accordion-item">
-        <button class="accordion-header" onclick="toggleAccordion(this)">📋 Rechtliche Hinweise</button>
-        <div class="accordion-content">
-          <p>Diese Anwendung sammelt Daten zur Qualitätssicherung der Gruppenstunden. Alle Daten werden vertraulich behandelt und nur zur internen Nutzung verwendet.</p>
-          <p>Bei kritischen Berichten wird die Scharleitung automatisch informiert.</p>
-          <p>Weitere Informationen in der <a href="https://github.com/flohulo/jubla-reporting/blob/main/README.md" target="_blank">README</a>.</p>
-        </div>
+
+      <div class="card-footer">
+        <span
+          ><a
+            id="versionLink"
+            class="footer-link"
+            href="https://github.com/flohulo/jubla-reporting/releases"
+            target="_blank"
+            rel="noreferrer"
+            >Version <span id="versionLabel">lade...</span></a
+          ></span
+        >
+        <span class="footer-links">
+          <a
+            href="https://github.com/flohulo/jubla-reporting"
+            target="_blank"
+            rel="noreferrer"
+            >GitHub</a
+          >
+          <a
+            id="issueLink"
+            href="https://github.com/flohulo/jubla-reporting/issues"
+            target="_blank"
+            rel="noreferrer"
+            >Fehler melden</a
+          >
+          <a
+            href="https://github.com/flohulo/jubla-reporting/blob/main/README.md"
+            target="_blank"
+            rel="noreferrer"
+            >Rechtliches</a
+          >
+        </span>
       </div>
     </div>
-  </div>
 
-  <div class="card-footer">
-    <span><a id="versionLink" class="footer-link" href="https://github.com/flohulo/jubla-reporting/releases" target="_blank" rel="noreferrer">Version <span id="versionLabel">lade...</span></a></span>
-    <span class="footer-links">
-      <a href="https://github.com/flohulo/jubla-reporting" target="_blank" rel="noreferrer">GitHub</a>
-      <a id="issueLink" href="https://github.com/flohulo/jubla-reporting/issues" target="_blank" rel="noreferrer">Fehler melden</a>
-      <a href="https://github.com/flohulo/jubla-reporting/blob/main/README.md" target="_blank" rel="noreferrer">Rechtliches</a>
-    </span>
-  </div>
-</div>
+    <script>
+      // ── State ──────────────────────────────────────────────────
+      var currentUser = null;
+      var currentVersion = "";
+      var allRows = [];
+      var API = "/.netlify/functions/sheets";
 
+      var dynLabels = [
+        "",
+        "Alles top 😊",
+        "Gut 🙂",
+        "Intensiv 😐",
+        "Schwierig 😬",
+        "Kritisch ⛔",
+      ];
+      var dynBadge = [
+        "",
+        "badge-green",
+        "badge-green",
+        "badge-blue",
+        "badge-warn",
+        "badge-crit",
+      ];
 
-<script>
-// ── State ──────────────────────────────────────────────────
-var currentUser = null;
-var currentVersion = '';
-var allRows     = [];
-var API         = '/.netlify/functions/sheets';
-
-var dynLabels = ['','Alles top 😊','Gut 🙂','Intensiv 😐','Schwierig 😬','Kritisch ⛔'];
-var dynBadge  = ['','badge-green','badge-green','badge-blue','badge-warn','badge-crit'];
-
-// ── API Helper ─────────────────────────────────────────────
-function api(payload) {
-  return fetch(API, {
-    method:  'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body:    JSON.stringify(payload)
-  }).then(function(r) { return r.json(); });
-}
-
-// ── Login ──────────────────────────────────────────────────
-function login() {
-  var name = document.getElementById('userNameInput').value.trim();
-  var pin  = document.getElementById('pinInput').value.trim();
-  var err  = document.getElementById('loginError');
-  var btn  = document.getElementById('loginBtn');
-
-  if (!name) { err.innerText = 'Bitte Name eingeben.'; return; }
-  if (!pin)  { err.innerText = 'Bitte PIN eingeben.'; return; }
-
-  btn.disabled = true; btn.innerText = 'Prüfe…';
-
-  api({ action: 'verifyPin', pin: pin })
-    .then(function(data) {
-      // data.ok = HTTP-Erfolg, data.verified = PIN korrekt
-      if (data.ok && data.verified) {
-        currentUser = name;
-        document.getElementById('headerSubtitle').innerText = 'Hoi ' + name + '! 👋';
-        document.getElementById('f_datum').value = new Date().toISOString().split('T')[0];
-        document.getElementById('r_datum').value = new Date().toISOString().split('T')[0];
-        document.getElementById('loginArea').style.display = 'none';
-        document.getElementById('tabBar').style.display    = 'flex';
-        document.getElementById('formTab').style.display   = 'block';
-      } else {
-        err.innerText = 'Falscher PIN. Bitte nochmal versuchen.';
-        document.getElementById('pinInput').value = '';
-        btn.disabled = false; btn.innerText = 'Anmelden';
-      }
-    })
-    .catch(function() {
-      err.innerText = 'Verbindungsfehler – ist die Netlify Function aktiv?';
-      btn.disabled = false; btn.innerText = 'Anmelden';
-    });
-}
-
-function togglePin() {
-  var el = document.getElementById('pinInput');
-  el.type = el.type === 'password' ? 'text' : 'password';
-}
-
-function loadVersionInfo() {
-  var label = document.getElementById('versionLabel');
-  var link  = document.getElementById('versionLink');
-  var repo  = 'flohulo/jubla-reporting';
-  var apiRelease = 'https://api.github.com/repos/' + repo + '/releases/latest';
-  var apiCommit  = 'https://api.github.com/repos/' + repo + '/commits/main';
-
-  fetch(apiRelease)
-    .then(function(response) {
-      if (!response.ok) throw new Error('Kein Release gefunden');
-      return response.json();
-    })
-    .then(function(data) {
-      var version = data.tag_name || data.name || 'GitHub';
-      currentVersion = version;
-      label.innerText = version;
-      if (data.html_url) {
-        link.href = data.html_url;
-      }
-    })
-    .catch(function() {
-      return fetch(apiCommit)
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-          var version = 'commit ' + (data.sha ? data.sha.slice(0, 7) : 'main');
-          currentVersion = version;
-          label.innerText = version;
-          link.href = 'https://github.com/' + repo + '/commits/main';
-        })
-        .catch(function() {
-          label.innerText = 'GitHub';
-          link.href = 'https://github.com/' + repo;
+      // ── API Helper ─────────────────────────────────────────────
+      function api(payload) {
+        return fetch(API, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }).then(function (r) {
+          return r.json();
         });
-    });
-}
+      }
 
-function loadConfig() {
-  fetch('/.netlify/functions/config')
-    .then(function(response) { return response.json(); })
-    .then(function(data) {
-      if (!data.ok) return;
-      document.getElementById('contactPhone').innerText = data.contactPhone || 'Nicht verfügbar';
-      var emailEl = document.getElementById('contactEmail');
-      emailEl.innerHTML = data.contactEmail ? '<a href="mailto:' + data.contactEmail + '">' + data.contactEmail + '</a>' : 'Nicht verfügbar';
-      document.getElementById('issueLink').href = data.issueUrl || 'https://github.com/flohulo/jubla-reporting/issues';
-      document.getElementById('githubProjectLink').href = data.githubUrl || 'https://github.com/flohulo/jubla-reporting';
-      document.getElementById('licenseLink').href = data.licenseUrl || 'https://github.com/flohulo/jubla-reporting/blob/main/LICENSE';
-      document.getElementById('legalLink').href = data.legalUrl || 'https://github.com/flohulo/jubla-reporting/blob/main/README.md';
-    })
-    .catch(function() {
-      document.getElementById('contactPhone').innerText = 'Nicht verfügbar';
-      document.getElementById('contactEmail').innerText = 'Nicht verfügbar';
-    });
-}
+      // ── Login ──────────────────────────────────────────────────
+      function login() {
+        var name = document.getElementById("userNameInput").value.trim();
+        var pin = document.getElementById("pinInput").value.trim();
+        var err = document.getElementById("loginError");
+        var btn = document.getElementById("loginBtn");
 
-window.addEventListener('load', function() {
-  loadVersionInfo();
-  loadConfig();
-});
-
-// ── Tabs ───────────────────────────────────────────────────
-function showTab(tabId, btn) {
-  ['formTab','requestTab','infoTab'].forEach(function(id) {
-    document.getElementById(id).style.display = 'none';
-  });
-  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
-  document.getElementById(tabId).style.display = 'block';
-  btn.classList.add('active');
-}
-
-// ── Dynamik ────────────────────────────────────────────────
-function onDynamikChange() {
-  var val = parseInt(document.getElementById('f_dynamik').value);
-  document.getElementById('warnBox').classList.toggle('show', val === 4);
-  document.getElementById('critBox').classList.toggle('show', val === 5);
-}
-
-// ── Toggle Report für andere ───────────────────────────────
-function toggleReportFor() {
-  var checked = document.getElementById('f_fuer_check').checked;
-  document.getElementById('rolleGroup').style.display = checked ? 'none' : 'block';
-  document.getElementById('partnerGroup').style.display = checked ? 'none' : 'block';
-  document.getElementById('hlGroup').style.display = checked ? 'block' : 'none';
-  document.getElementById('hilfsGroup').style.display = checked ? 'block' : 'none';
-}
-
-// ── Toggle Accordion ───────────────────────────────────────
-function toggleAccordion(button) {
-  var content = button.nextElementSibling;
-  content.classList.toggle('open');
-}
-
-// ── Report absenden ────────────────────────────────────────
-function submitReport() {
-  var btn = document.getElementById('submitBtn');
-  var err = document.getElementById('formError');
-  err.innerText = '';
-
-  var datum   = document.getElementById('f_datum').value;
-  var checked = document.getElementById('f_fuer_check').checked;
-  var rolle   = checked ? 'Melder' : document.getElementById('f_rolle').value;
-  var partner = checked ? '' : document.getElementById('f_partner').value.trim();
-  var hl      = checked ? document.getElementById('f_hl').value.trim() : '';
-  var hilfs   = checked ? document.getElementById('f_hilfs').value.trim() : '';
-  var anzahl  = document.getElementById('f_anzahl').value;
-  var leiter  = document.getElementById('f_leiter').value;
-  var dynamik = document.getElementById('f_dynamik').value;
-  var bem     = document.getElementById('f_bemerkungen').value.trim();
-
-  if (!datum || anzahl === '' || leiter === '') {
-    err.innerText = 'Bitte alle Pflichtfelder ausfüllen.'; return;
-  }
-  if (checked && (!hl || !hilfs)) {
-    err.innerText = 'Bitte Hauptleitung und Hilfsleitung ausfüllen.'; return;
-  }
-  if (!checked && !partner) {
-    err.innerText = 'Bitte Partner/in ausfüllen.'; return;
-  }
-  if (parseInt(dynamik) >= 4 && !bem) {
-    err.innerText = 'Bei Dynamik 4/5 sind Bemerkungen Pflicht.'; return;
-  }
-
-  btn.disabled = true; btn.innerText = 'Wird gespeichert… ⏳';
-
-  var isHL = !checked && rolle === 'Hauptleitung';
-  var finalHL = checked ? hl : (isHL ? currentUser : partner);
-  var finalHilfs = checked ? hilfs : (isHL ? partner : currentUser);
-
-  api({
-    action:      'appendRow',
-    timestamp:   new Date().toISOString(),
-    datum:       datum,
-    leiterName:  currentUser,
-    hl:          finalHL,
-    hilfs:       finalHilfs,
-    anzahl:      parseInt(anzahl)  || 0,
-    leiterCount: parseInt(leiter)  || 0,
-    dynamik:     parseInt(dynamik),
-    bemerkungen: bem,
-    rolle:       rolle,
-    version:     currentVersion
-  })
-  .then(function(data) {
-    if (data.ok) {
-      document.getElementById('formTab').innerHTML =
-        '<div class="success-card">' +
-        '<div class="success-icon">✅</div>' +
-        '<h2>Gespeichert!</h2>' +
-        '<p>Dein Bericht wurde in Google Sheets eingetragen.' +
-        (parseInt(dynamik) >= 4 ? '<br>⚠️ Die Scharleitung wurde per Mail informiert.' : '') +
-        '</p>' +
-        '<button class="btn btn-primary" onclick="location.reload()">Neuen Report erfassen</button>' +
-        '</div>';
-    } else {
-      err.innerText = 'Fehler: ' + (data.error || 'Unbekannt');
-      btn.disabled = false; btn.innerText = 'Report absenden 🚀';
-    }
-  })
-  .catch(function(e) {
-    err.innerText = 'Netzwerkfehler: ' + e.message;
-    btn.disabled = false; btn.innerText = 'Report absenden 🚀';
-  });
-}
-
-// ── Auszug anfordern ───────────────────────────────────────
-function submitRequest() {
-  var btn   = document.getElementById('requestBtn');
-  var err   = document.getElementById('requestError');
-  var datum = document.getElementById('r_datum').value;
-  var grund = document.getElementById('r_grund').value.trim();
-  err.innerText = '';
-
-  if (!datum) { err.innerText = 'Bitte Datum auswählen.'; return; }
-  if (!grund) { err.innerText = 'Bitte Grund angeben.'; return; }
-
-  btn.disabled = true; btn.innerText = 'Wird angefordert… ⏳';
-
-  api({ action: 'requestHistory', datum: datum, grund: grund, requester: currentUser })
-    .then(function(data) {
-      if (data.ok) {
-        var html = '<div class="success-card">' +
-          '<div class="success-icon">📧</div>' +
-          '<h2>Angefordert!</h2>' +
-          '<p>Der Auszug für ' + formatDate(datum) + ' wurde per E-Mail an die Scharleitung gesendet.' +
-          (data.found === 0 ? '<br><em>Hinweis: Keine Einträge für dieses Datum gefunden.</em>' : ' (' + data.found + ' Einträge)') +
-          '</p>';
-
-        if (data.rows && data.rows.length > 0) {
-          html += '<div class="divider"></div><h3 style="text-align:center; margin-bottom:16px;">Berichte:</h3>';
-          data.rows.forEach(function(r) {
-            html += '<div class="report-card dyn-' + r.dynamik + '">' +
-              '<div class="report-meta">' +
-              '<span class="report-date">' + formatDate(r.datum) + '</span>' +
-              '<span class="report-by">von ' + r.leiterName + ' (' + r.rolle + ')</span>' +
-              '</div>' +
-              '<div class="report-badges">' +
-              '<span class="badge badge-blue">HL: ' + r.hl + '</span>' +
-              '<span class="badge badge-blue">Hilfs: ' + r.hilfs + '</span>' +
-              '<span class="badge badge-green">Kinder: ' + r.anzahl + '</span>' +
-              '<span class="badge badge-green">Leiter: ' + r.leiterCount + '</span>' +
-              '<span class="badge ' + (r.dynamik >= 4 ? 'badge-crit' : r.dynamik >= 3 ? 'badge-warn' : 'badge-green') + '">Dynamik ' + r.dynamik + '</span>' +
-              '<span class="badge ' + (r.emailSent ? 'badge-green' : 'badge-warn') + '">' + (r.emailSent ? 'E-Mail versendet' : 'Keine E-Mail') + '</span>' +
-              '</div>' +
-              '<div class="report-note">' + (r.bemerkungen || '(keine)') + '</div>' +
-              '</div>';
-          });
+        if (!name) {
+          err.innerText = "Bitte Name eingeben.";
+          return;
+        }
+        if (!pin) {
+          err.innerText = "Bitte PIN eingeben.";
+          return;
         }
 
-        html += '<button class="btn btn-primary" onclick="location.reload()">Neue Anforderung</button></div>';
-        document.getElementById('requestTab').innerHTML = html;
-      } else {
-        err.innerText = 'Fehler: ' + (data.error || 'Unbekannt');
-        btn.disabled = false; btn.innerText = 'Anfordern 📧';
+        btn.disabled = true;
+        btn.innerText = "Prüfe…";
+
+        api({ action: "verifyPin", pin: pin })
+          .then(function (data) {
+            // data.ok = HTTP-Erfolg, data.verified = PIN korrekt
+            if (data.ok && data.verified) {
+              currentUser = name;
+              document.getElementById("headerSubtitle").innerText =
+                "Hoi " + name + "! 👋";
+              document.getElementById("f_datum").value = new Date()
+                .toISOString()
+                .split("T")[0];
+              document.getElementById("r_datum").value = new Date()
+                .toISOString()
+                .split("T")[0];
+              document.getElementById("loginArea").style.display = "none";
+              document.getElementById("tabBar").style.display = "flex";
+              document.getElementById("formTab").style.display = "block";
+            } else {
+              err.innerText = "Falscher PIN. Bitte nochmal versuchen.";
+              document.getElementById("pinInput").value = "";
+              btn.disabled = false;
+              btn.innerText = "Anmelden";
+            }
+          })
+          .catch(function () {
+            err.innerText =
+              "Verbindungsfehler – ist die Netlify Function aktiv?";
+            btn.disabled = false;
+            btn.innerText = "Anmelden";
+          });
       }
-    })
-    .catch(function(e) {
-      err.innerText = 'Netzwerkfehler: ' + e.message;
-      btn.disabled = false; btn.innerText = 'Anfordern 📧';
-    });
-}
 
-// ── Helpers ────────────────────────────────────────────────
-function formatDate(s) {
-  if (!s) return '–';
-  var p = s.split('-');
-  return p.length === 3 ? p[2] + '.' + p[1] + '.' + p[0] : s;
-}
-function escapeHtml(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
+      function togglePin() {
+        var el = document.getElementById("pinInput");
+        el.type = el.type === "password" ? "text" : "password";
+      }
 
-// ── Service Worker Registration ────────────────────────────
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/service-worker.js')
-      .then(function(registration) {
-        console.log('Service Worker registriert:', registration);
-      })
-      .catch(function(err) {
-        console.log('Service Worker Registrierung fehlgeschlagen:', err);
+      function loadVersionInfo() {
+        var label = document.getElementById("versionLabel");
+        var link = document.getElementById("versionLink");
+        var repo = "flohulo/jubla-reporting";
+        var apiRelease =
+          "https://api.github.com/repos/" + repo + "/releases/latest";
+        var apiCommit =
+          "https://api.github.com/repos/" + repo + "/commits/main";
+
+        fetch(apiRelease)
+          .then(function (response) {
+            if (!response.ok) throw new Error("Kein Release gefunden");
+            return response.json();
+          })
+          .then(function (data) {
+            var version = data.tag_name || data.name || "GitHub";
+            currentVersion = version;
+            label.innerText = version;
+            if (data.html_url) {
+              link.href = data.html_url;
+            }
+          })
+          .catch(function () {
+            return fetch(apiCommit)
+              .then(function (r) {
+                return r.json();
+              })
+              .then(function (data) {
+                var version =
+                  "commit " + (data.sha ? data.sha.slice(0, 7) : "main");
+                currentVersion = version;
+                label.innerText = version;
+                link.href = "https://github.com/" + repo + "/commits/main";
+              })
+              .catch(function () {
+                label.innerText = "GitHub";
+                link.href = "https://github.com/" + repo;
+              });
+          });
+      }
+
+      function loadConfig() {
+        fetch("/.netlify/functions/config")
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (data) {
+            if (!data.ok) return;
+            document.getElementById("contactPhone").innerText =
+              data.contactPhone || "Nicht verfügbar";
+            var emailEl = document.getElementById("contactEmail");
+            emailEl.innerHTML = data.contactEmail
+              ? '<a href="mailto:' +
+                data.contactEmail +
+                '">' +
+                data.contactEmail +
+                "</a>"
+              : "Nicht verfügbar";
+            document.getElementById("issueLink").href =
+              data.issueUrl ||
+              "https://github.com/flohulo/jubla-reporting/issues";
+            document.getElementById("githubProjectLink").href =
+              data.githubUrl || "https://github.com/flohulo/jubla-reporting";
+            document.getElementById("licenseLink").href =
+              data.licenseUrl ||
+              "https://github.com/flohulo/jubla-reporting/blob/main/LICENSE";
+            document.getElementById("legalLink").href =
+              data.legalUrl ||
+              "https://github.com/flohulo/jubla-reporting/blob/main/README.md";
+          })
+          .catch(function () {
+            document.getElementById("contactPhone").innerText =
+              "Nicht verfügbar";
+            document.getElementById("contactEmail").innerText =
+              "Nicht verfügbar";
+          });
+      }
+
+      window.addEventListener("load", function () {
+        loadVersionInfo();
+        loadConfig();
       });
-  });
-}
-</script>
-</body>
+
+      // ── Tabs ───────────────────────────────────────────────────
+      function showTab(tabId, btn) {
+        ["formTab", "requestTab", "infoTab"].forEach(function (id) {
+          document.getElementById(id).style.display = "none";
+        });
+        document.querySelectorAll(".tab-btn").forEach(function (b) {
+          b.classList.remove("active");
+        });
+        document.getElementById(tabId).style.display = "block";
+        btn.classList.add("active");
+      }
+
+      // ── Dynamik ────────────────────────────────────────────────
+      function onDynamikChange() {
+        var val = parseInt(document.getElementById("f_dynamik").value);
+        document.getElementById("warnBox").classList.toggle("show", val === 4);
+        document.getElementById("critBox").classList.toggle("show", val === 5);
+      }
+
+      // ── Toggle Report für andere ───────────────────────────────
+      function toggleReportFor() {
+        var checked = document.getElementById("f_fuer_check").checked;
+        document.getElementById("rolleGroup").style.display = checked
+          ? "none"
+          : "block";
+        document.getElementById("partnerGroup").style.display = checked
+          ? "none"
+          : "block";
+        document.getElementById("hlGroup").style.display = checked
+          ? "block"
+          : "none";
+        document.getElementById("hilfsGroup").style.display = checked
+          ? "block"
+          : "none";
+      }
+
+      // ── Toggle Accordion ───────────────────────────────────────
+      function toggleAccordion(button) {
+        var content = button.nextElementSibling;
+        content.classList.toggle("open");
+      }
+
+      // ── Report absenden ────────────────────────────────────────
+      function submitReport() {
+        var btn = document.getElementById("submitBtn");
+        var err = document.getElementById("formError");
+        err.innerText = "";
+
+        var datum = document.getElementById("f_datum").value;
+        var checked = document.getElementById("f_fuer_check").checked;
+        var rolle = checked
+          ? "Melder"
+          : document.getElementById("f_rolle").value;
+        var partner = checked
+          ? ""
+          : document.getElementById("f_partner").value.trim();
+        var hl = checked ? document.getElementById("f_hl").value.trim() : "";
+        var hilfs = checked
+          ? document.getElementById("f_hilfs").value.trim()
+          : "";
+        var anzahl = document.getElementById("f_anzahl").value;
+        var leiter = document.getElementById("f_leiter").value;
+        var dynamik = document.getElementById("f_dynamik").value;
+        var bem = document.getElementById("f_bemerkungen").value.trim();
+
+        if (!datum || anzahl === "" || leiter === "") {
+          err.innerText = "Bitte alle Pflichtfelder ausfüllen.";
+          return;
+        }
+        if (checked && (!hl || !hilfs)) {
+          err.innerText = "Bitte Hauptleitung und Hilfsleitung ausfüllen.";
+          return;
+        }
+        if (!checked && !partner) {
+          err.innerText = "Bitte Partner/in ausfüllen.";
+          return;
+        }
+        if (parseInt(dynamik) >= 4 && !bem) {
+          err.innerText = "Bei Dynamik 4/5 sind Bemerkungen Pflicht.";
+          return;
+        }
+
+        btn.disabled = true;
+        btn.innerText = "Wird gespeichert… ⏳";
+
+        var isHL = !checked && rolle === "Hauptleitung";
+        var finalHL = checked ? hl : isHL ? currentUser : partner;
+        var finalHilfs = checked ? hilfs : isHL ? partner : currentUser;
+
+        api({
+          action: "appendRow",
+          timestamp: new Date().toISOString(),
+          datum: datum,
+          leiterName: currentUser,
+          hl: finalHL,
+          hilfs: finalHilfs,
+          anzahl: parseInt(anzahl) || 0,
+          leiterCount: parseInt(leiter) || 0,
+          dynamik: parseInt(dynamik),
+          bemerkungen: bem,
+          rolle: rolle,
+          version: currentVersion,
+        })
+          .then(function (data) {
+            if (data.ok) {
+              document.getElementById("formTab").innerHTML =
+                '<div class="success-card">' +
+                '<div class="success-icon">✅</div>' +
+                "<h2>Gespeichert!</h2>" +
+                "<p>Dein Bericht wurde in Google Sheets eingetragen." +
+                (parseInt(dynamik) >= 4
+                  ? "<br>⚠️ Die Scharleitung wurde per Mail informiert."
+                  : "") +
+                "</p>" +
+                '<button class="btn btn-primary" onclick="location.reload()">Neuen Report erfassen</button>' +
+                "</div>";
+            } else {
+              err.innerText = "Fehler: " + (data.error || "Unbekannt");
+              btn.disabled = false;
+              btn.innerText = "Report absenden 🚀";
+            }
+          })
+          .catch(function (e) {
+            err.innerText = "Netzwerkfehler: " + e.message;
+            btn.disabled = false;
+            btn.innerText = "Report absenden 🚀";
+          });
+      }
+
+      // ── Auszug anfordern ───────────────────────────────────────
+      function submitRequest() {
+        var btn = document.getElementById("requestBtn");
+        var err = document.getElementById("requestError");
+        var datum = document.getElementById("r_datum").value;
+        var grund = document.getElementById("r_grund").value.trim();
+        err.innerText = "";
+
+        if (!datum) {
+          err.innerText = "Bitte Datum auswählen.";
+          return;
+        }
+        if (!grund) {
+          err.innerText = "Bitte Grund angeben.";
+          return;
+        }
+
+        btn.disabled = true;
+        btn.innerText = "Wird angefordert… ⏳";
+
+        api({
+          action: "requestHistory",
+          datum: datum,
+          grund: grund,
+          requester: currentUser,
+        })
+          .then(function (data) {
+            if (data.ok) {
+              var html =
+                '<div class="success-card">' +
+                '<div class="success-icon">📧</div>' +
+                "<h2>Angefordert!</h2>" +
+                "<p>Der Auszug für " +
+                formatDate(datum) +
+                " wurde per E-Mail an die Scharleitung gesendet." +
+                (data.found === 0
+                  ? "<br><em>Hinweis: Keine Einträge für dieses Datum gefunden.</em>"
+                  : " (" + data.found + " Einträge)") +
+                "</p>";
+
+              if (data.rows && data.rows.length > 0) {
+                html +=
+                  '<div class="divider"></div><h3 style="text-align:center; margin-bottom:16px;">Berichte:</h3>';
+                data.rows.forEach(function (r) {
+                  html +=
+                    '<div class="report-card dyn-' +
+                    r.dynamik +
+                    '">' +
+                    '<div class="report-meta">' +
+                    '<span class="report-date">' +
+                    formatDate(r.datum) +
+                    "</span>" +
+                    '<span class="report-by">von ' +
+                    r.leiterName +
+                    " (" +
+                    r.rolle +
+                    ")</span>" +
+                    "</div>" +
+                    '<div class="report-badges">' +
+                    '<span class="badge badge-blue">HL: ' +
+                    r.hl +
+                    "</span>" +
+                    '<span class="badge badge-blue">Hilfs: ' +
+                    r.hilfs +
+                    "</span>" +
+                    '<span class="badge badge-green">Kinder: ' +
+                    r.anzahl +
+                    "</span>" +
+                    '<span class="badge badge-green">Leiter: ' +
+                    r.leiterCount +
+                    "</span>" +
+                    '<span class="badge ' +
+                    (r.dynamik >= 4
+                      ? "badge-crit"
+                      : r.dynamik >= 3
+                        ? "badge-warn"
+                        : "badge-green") +
+                    '">Dynamik ' +
+                    r.dynamik +
+                    "</span>" +
+                    '<span class="badge ' +
+                    (r.emailSent ? "badge-green" : "badge-warn") +
+                    '">' +
+                    (r.emailSent ? "E-Mail versendet" : "Keine E-Mail") +
+                    "</span>" +
+                    "</div>" +
+                    '<div class="report-note">' +
+                    (r.bemerkungen || "(keine)") +
+                    "</div>" +
+                    "</div>";
+                });
+              }
+
+              html +=
+                '<button class="btn btn-primary" onclick="location.reload()">Neue Anforderung</button></div>';
+              document.getElementById("requestTab").innerHTML = html;
+            } else {
+              err.innerText = "Fehler: " + (data.error || "Unbekannt");
+              btn.disabled = false;
+              btn.innerText = "Anfordern 📧";
+            }
+          })
+          .catch(function (e) {
+            err.innerText = "Netzwerkfehler: " + e.message;
+            btn.disabled = false;
+            btn.innerText = "Anfordern 📧";
+          });
+      }
+
+      // ── Helpers ────────────────────────────────────────────────
+      function formatDate(s) {
+        if (!s) return "–";
+        var p = s.split("-");
+        return p.length === 3 ? p[2] + "." + p[1] + "." + p[0] : s;
+      }
+      function escapeHtml(s) {
+        return String(s)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+      }
+
+      // ── Service Worker Registration ────────────────────────────
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", function () {
+          navigator.serviceWorker
+            .register("/service-worker.js")
+            .then(function (registration) {
+              console.log("Service Worker registriert:", registration);
+            })
+            .catch(function (err) {
+              console.log("Service Worker Registrierung fehlgeschlagen:", err);
+            });
+        });
+      }
+    </script>
+  </body>
 </html>
