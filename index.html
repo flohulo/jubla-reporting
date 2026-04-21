@@ -793,7 +793,7 @@
         <div class="support-box open">
           <strong>Kontakt</strong>
 
-          Telefon: <span id="contactPhone">lade...</span>
+          Telefon: <a id="contactPhone" href="#">lade...</a>
 
           E-Mail: <span id="contactEmail">lade...</span>
 
@@ -1094,8 +1094,14 @@
           })
           .then(function (data) {
             if (!data.ok) return;
-            document.getElementById("contactPhone").innerText =
-              data.contactPhone || "Nicht verfügbar";
+            document.getElementById("contactPhone").innerHTML =
+              data.contactPhone
+                ? '<a href="tel:' +
+                  data.contactPhone +
+                  '">' +
+                  data.contactPhone +
+                  "</a>"
+                : "Nicht verfügbar";
             var emailEl = document.getElementById("contactEmail");
             emailEl.innerHTML = data.contactEmail
               ? '<a href="mailto:' +
