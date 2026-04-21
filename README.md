@@ -28,5 +28,6 @@ Bei Fragen wenden Sie sich an die Scharleitung.
 - Issues: https://github.com/flohulo/jubla-reporting/issues
 
 Für Fehlermeldungen und Verbesserungsvorschläge darfst du gerne ein Issue erstellen.
+Wenn du willst, darfst du gerne auch deinen Code beitrage. Forke diesen Projekt, erstelle einen PR und lass ihn Review.
 
 Dieses Projekt ist unter der Lizenz GPL-3.0 license lizenziert.
