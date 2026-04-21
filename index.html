@@ -584,34 +584,43 @@
       <!-- LOGIN -->
       <div class="card-body" id="loginArea">
         <p class="section-title">🔒 Anmelden</p>
-        <div class="form-group">
-          <label class="form-label">Dein Name</label>
-          <input
-            type="text"
-            id="userNameInput"
-            class="form-control"
-            placeholder="Vorname"
-          />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Schar-PIN</label>
-          <div class="pin-group">
+        <form
+          onsubmit="
+            login();
+            return false;
+          "
+        >
+          <div class="form-group">
+            <label class="form-label">Dein Name</label>
             <input
-              type="password"
-              id="pinInput"
+              type="text"
+              id="userNameInput"
               class="form-control"
-              placeholder="••••"
-              inputmode="numeric"
-              maxlength="8"
-              onkeydown="if (event.key === 'Enter') login();"
+              placeholder="Vorname"
             />
-            <button class="pin-toggle" onclick="togglePin()">👁</button>
           </div>
-        </div>
-        <p class="error-msg" id="loginError"></p>
-        <button class="btn btn-primary" id="loginBtn" onclick="login()">
-          Anmelden
-        </button>
+          <div class="form-group">
+            <label class="form-label">Schar-PIN</label>
+            <div class="pin-group">
+              <input
+                type="password"
+                id="pinInput"
+                class="form-control"
+                placeholder="••••"
+                inputmode="numeric"
+                maxlength="8"
+                onkeydown="if (event.key === 'Enter') login();"
+              />
+              <button type="button" class="pin-toggle" onclick="togglePin()">
+                👁
+              </button>
+            </div>
+          </div>
+          <p class="error-msg" id="loginError"></p>
+          <button type="submit" class="btn btn-primary" id="loginBtn">
+            Anmelden
+          </button>
+        </form>
       </div>
 
       <!-- TAB BAR -->
