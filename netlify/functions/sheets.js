@@ -8,11 +8,7 @@ const nodemailer = require("nodemailer");
 //  GOOGLE AUTH (Service Account JWT → Access Token)
 // ═══════════════════════════════════════════════════════════
 function base64url(str) {
-  return Buffer.from(str)
-    .toString("base64")
-    .replace(/\+/g, "-")
-    .replace(/\//g, "_")
-    .replace(/=/g, "");
+  return Buffer.from(str).toString("base64").replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
 }
 
 function formatTimestamp(isoString) {
@@ -29,10 +25,7 @@ function formatTimestamp(isoString) {
 async function getAccessToken() {
   const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
   const rawKey = process.env.GOOGLE_PRIVATE_KEY;
-  if (!email || !rawKey)
-    throw new Error(
-      "GOOGLE_SERVICE_ACCOUNT_EMAIL oder GOOGLE_PRIVATE_KEY fehlen!",
-    );
+  if (!email || !rawKey) throw new Error("GOOGLE_SERVICE_ACCOUNT_EMAIL oder GOOGLE_PRIVATE_KEY fehlen!");
 
   // Netlify speichert \n als Literal – wiederherstellen
   const privateKey = rawKey.replace(/\\n/g, "\n");
@@ -52,11 +45,7 @@ async function getAccessToken() {
 
   const signer = crypto.createSign("RSA-SHA256");
   signer.update(input);
-  const signature = signer
-    .sign(privateKey, "base64")
-    .replace(/\+/g, "-")
-    .replace(/\//g, "_")
-    .replace(/=/g, "");
+  const signature = signer.sign(privateKey, "base64").replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
 
   const jwt = `${input}.${signature}`;
 
@@ -101,14 +90,11 @@ function httpGet(url, headers) {
   return new Promise((resolve, reject) => {
     const u = new URL(url);
     https
-      .get(
-        { hostname: u.hostname, path: u.pathname + u.search, headers },
-        (res) => {
-          let data = "";
-          res.on("data", (c) => (data += c));
-          res.on("end", () => resolve(data));
-        },
-      )
+      .get({ hostname: u.hostname, path: u.pathname + u.search, headers }, (res) => {
+        let data = "";
+        res.on("data", (c) => (data += c));
+        res.on("end", () => resolve(data));
+      })
       .on("error", reject);
   });
 }
@@ -137,9 +123,7 @@ function sheetUrl(path) {
 }
 
 async function sheetsAppendRow(token, row) {
-  const url = sheetUrl(
-    ":append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS",
-  );
+  const url = sheetUrl(":append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS");
   const result = await httpPost(url, JSON.stringify({ values: [row] }), {
     Authorization: "Bearer " + token,
     "Content-Type": "application/json",
@@ -285,8 +269,7 @@ function err(msg, code = 500) {
 
 exports.handler = async (event) => {
   // Preflight
-  if (event.httpMethod === "OPTIONS")
-    return { statusCode: 200, headers: CORS_HEADERS, body: "" };
+  if (event.httpMethod === "OPTIONS") return { statusCode: 200, headers: CORS_HEADERS, body: "" };
   if (event.httpMethod !== "POST") return err("Method not allowed", 405);
 
   let body;
@@ -354,16 +337,9 @@ exports.handler = async (event) => {
   if (action === "requestHistory") {
     try {
       const all = await sheetsGetAll(token);
-      const rows = all
-        .filter((r) => r[SHEET_COLS.DATUM] === body.datum)
-        .map(rowToObject);
+      const rows = all.filter((r) => r[SHEET_COLS.DATUM] === body.datum).map(rowToObject);
 
-      const { subject, text } = buildRequestMail(
-        rows,
-        body.datum,
-        body.requester,
-        body.grund,
-      );
+      const { subject, text } = buildRequestMail(rows, body.datum, body.requester, body.grund);
       await sendMail(subject, text);
 
       return ok({ found: rows.length, rows: rows });

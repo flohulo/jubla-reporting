@@ -70,16 +70,8 @@
         font-family: "Nunito", sans-serif;
         background: var(--yellow);
         background-image:
-          radial-gradient(
-            circle at 15% 50%,
-            rgba(214, 90, 90, 0.06) 0%,
-            transparent 60%
-          ),
-          radial-gradient(
-            circle at 85% 20%,
-            rgba(47, 54, 64, 0.04) 0%,
-            transparent 50%
-          );
+          radial-gradient(circle at 15% 50%, rgba(214, 90, 90, 0.06) 0%, transparent 60%),
+          radial-gradient(circle at 85% 20%, rgba(47, 54, 64, 0.04) 0%, transparent 50%);
         min-height: 100vh;
         display: flex;
         align-items: flex-start;
@@ -223,9 +215,7 @@
       .modal-body pre {
         white-space: pre-wrap;
         word-break: break-word;
-        font-family:
-          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-          "Liberation Mono", "Courier New", monospace;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
         font-size: 0.9em;
         color: var(--dark);
       }
@@ -584,78 +574,60 @@
       <!-- LOGIN -->
       <div class="card-body" id="loginArea">
         <p class="section-title">🔒 Anmelden</p>
-        <div class="form-group">
-          <label class="form-label">Dein Name</label>
-          <input
-            type="text"
-            id="userNameInput"
-            class="form-control"
-            placeholder="Vorname"
-          />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Schar-PIN</label>
-          <div class="pin-group">
-            <input
-              type="password"
-              id="pinInput"
-              class="form-control"
-              placeholder="••••"
-              inputmode="numeric"
-              maxlength="8"
-              onkeydown="if (event.key === 'Enter') login();"
-            />
-            <button class="pin-toggle" onclick="togglePin()">👁</button>
+        <form
+          onsubmit="
+            login();
+            return false;
+          "
+        >
+          <div class="form-group">
+            <label class="form-label">Dein Name</label>
+            <input type="text" id="userNameInput" class="form-control" placeholder="Vorname" />
           </div>
-        </div>
-        <p class="error-msg" id="loginError"></p>
-        <button class="btn btn-primary" id="loginBtn" onclick="login()">
-          Anmelden
-        </button>
+          <div class="form-group">
+            <label class="form-label">Schar-PIN</label>
+            <div class="pin-group">
+              <input
+                type="password"
+                id="pinInput"
+                class="form-control"
+                placeholder="••••"
+                inputmode="numeric"
+                maxlength="8"
+                onkeydown="if (event.key === 'Enter') login();"
+              />
+              <button type="button" class="pin-toggle" onclick="togglePin()">👁</button>
+            </div>
+          </div>
+          <p class="error-msg" id="loginError"></p>
+          <button type="submit" class="btn btn-primary" id="loginBtn">Anmelden</button>
+        </form>
       </div>
 
       <!-- TAB BAR -->
       <div class="tab-bar" id="tabBar" style="display: none">
-        <button class="tab-btn active" onclick="showTab('formTab', this)">
-          📝 Report
-        </button>
-        <button class="tab-btn" onclick="showTab('requestTab', this)">
-          📨 Anfordern
-        </button>
-        <button class="tab-btn" onclick="showTab('infoTab', this)">
-          ℹ️ Infos
-        </button>
+        <button class="tab-btn active" onclick="showTab('formTab', this)">📝 Report</button>
+        <button class="tab-btn" onclick="showTab('requestTab', this)">📨 Anfordern</button>
+        <button class="tab-btn" onclick="showTab('infoTab', this)">ℹ️ Infos</button>
       </div>
 
       <!-- FORM -->
       <div class="card-body" id="formTab" style="display: none">
-        <button
-          class="btn btn-secondary"
-          onclick="
-            document.getElementById('supportBox').classList.toggle('open')
-          "
-        >
+        <button class="btn btn-secondary" onclick="document.getElementById('supportBox').classList.toggle('open')">
           💡 Hilfe & Tipps
         </button>
         <div class="support-box" id="supportBox">
-          Erfasse nach jeder Gruppenstunde einen kurzen Bericht. • Beschreibe
-          bei Dynamik 4 oder 5 die Situation genau. • Bei Dynamik 5 melde dich
-          zusätzlich bei der Scharleitung. • Partnerfeld: trage den Namen der
-          Begleitperson ein. • Diese Einträge helfen bei Problemen die Situation
-          nachzuverfolgen.
+          Erfasse nach jeder Gruppenstunde einen kurzen Bericht. • Beschreibe bei Dynamik 4 oder 5 die Situation genau.
+          • Bei Dynamik 5 melde dich zusätzlich bei der Scharleitung. • Partnerfeld: trage den Namen der Begleitperson
+          ein. • Diese Einträge helfen bei Problemen die Situation nachzuverfolgen.
         </div>
 
         <div class="form-group">
-          <label class="form-label">Datum</label
-          ><input type="date" id="f_datum" class="form-control" required />
+          <label class="form-label">Datum</label><input type="date" id="f_datum" class="form-control" required />
         </div>
         <div class="form-group">
           <label class="form-label">
-            <input
-              type="checkbox"
-              id="f_fuer_check"
-              onchange="toggleReportFor()"
-            />
+            <input type="checkbox" id="f_fuer_check" onchange="toggleReportFor()" />
             Report für andere
           </label>
         </div>
@@ -668,101 +640,51 @@
         </div>
         <div class="form-group" id="partnerGroup">
           <label class="form-label">Partner/in</label
-          ><input
-            type="text"
-            id="f_partner"
-            class="form-control"
-            placeholder="Name"
-          />
+          ><input type="text" id="f_partner" class="form-control" placeholder="Name" />
         </div>
         <div class="form-group" id="hlGroup" style="display: none">
           <label class="form-label">Hauptleitung</label
-          ><input
-            type="text"
-            id="f_hl"
-            class="form-control"
-            placeholder="Name"
-          />
+          ><input type="text" id="f_hl" class="form-control" placeholder="Name" />
         </div>
         <div class="form-group" id="hilfsGroup" style="display: none">
           <label class="form-label">Hilfsleitung</label
-          ><input
-            type="text"
-            id="f_hilfs"
-            class="form-control"
-            placeholder="Name"
-          />
+          ><input type="text" id="f_hilfs" class="form-control" placeholder="Name" />
         </div>
         <div class="form-group">
           <label class="form-label">Anzahl Kinder</label
-          ><input
-            type="number"
-            id="f_anzahl"
-            class="form-control"
-            placeholder="z.B. 12"
-            min="0"
-          />
+          ><input type="number" id="f_anzahl" class="form-control" placeholder="z.B. 12" min="0" />
         </div>
         <div class="form-group">
           <label class="form-label">Zusätzliche Leiter</label
-          ><input
-            type="number"
-            id="f_leiter"
-            class="form-control"
-            placeholder="z.B. 2"
-            min="0"
-          />
+          ><input type="number" id="f_leiter" class="form-control" placeholder="z.B. 2" min="0" />
         </div>
         <div class="form-group">
           <label class="form-label">Gruppendynamik</label>
-          <select
-            id="f_dynamik"
-            class="form-control"
-            onchange="onDynamikChange()"
-          >
+          <select id="f_dynamik" class="form-control" onchange="onDynamikChange()">
             <option value="1">1 – Alles top 😊</option>
             <option value="2">2 – Gut 🙂</option>
             <option value="3">3 – Intensiv 😐</option>
             <option value="4">4 – Schwierig 😬</option>
             <option value="5">5 – Kritisch ⛔</option>
           </select>
-          <div class="dynamik-warn" id="warnBox">
-            ⚠️ Bitte beschreibe die Situation ausführlich.
-          </div>
-          <div class="dynamik-crit" id="critBox">
-            ⛔ Bitte melde dich zusätzlich bei der Scharleitung!
-          </div>
+          <div class="dynamik-warn" id="warnBox">⚠️ Bitte beschreibe die Situation ausführlich.</div>
+          <div class="dynamik-crit" id="critBox">⛔ Bitte melde dich zusätzlich bei der Scharleitung!</div>
         </div>
         <div class="form-group">
           <label class="form-label">Bemerkungen</label
-          ><textarea
-            id="f_bemerkungen"
-            class="form-control"
-            rows="5"
-          ></textarea>
+          ><textarea id="f_bemerkungen" class="form-control" rows="5"></textarea>
         </div>
         <p class="error-msg" id="formError"></p>
-        <button class="btn btn-primary" id="submitBtn" onclick="submitReport()">
-          Report absenden 🚀
-        </button>
+        <button class="btn btn-primary" id="submitBtn" onclick="submitReport()">Report absenden 🚀</button>
       </div>
 
       <!-- REQUEST -->
       <div class="card-body" id="requestTab" style="display: none">
         <p class="section-title">📨 Auszug anfordern</p>
-        <p
-          style="
-            font-size: 0.85em;
-            color: var(--mid);
-            margin-bottom: 20px;
-            line-height: 1.5;
-          "
-        >
-          Fordere einen Bericht für ein bestimmtes Datum an. Du siehst ihn
-          anschliessend direkt. Diese Funktion ist für Fälle gedacht, in denen
-          jemand vergessen hat zu reporten oder du einen älteren Bericht
-          brauchst. Bitte gib immer einen Grund an, damit die Scharleitung
-          nachvollziehen kann, warum der Bericht angefordert wurde.
+        <p style="font-size: 0.85em; color: var(--mid); margin-bottom: 20px; line-height: 1.5">
+          Fordere einen Bericht für ein bestimmtes Datum an. Du siehst ihn anschliessend direkt. Diese Funktion ist für
+          Fälle gedacht, in denen jemand vergessen hat zu reporten oder du einen älteren Bericht brauchst. Bitte gib
+          immer einen Grund an, damit die Scharleitung nachvollziehen kann, warum der Bericht angefordert wurde.
         </p>
         <div class="form-group">
           <label class="form-label">Datum</label>
@@ -770,21 +692,10 @@
         </div>
         <div class="form-group">
           <label class="form-label">Grund der Anforderung</label>
-          <textarea
-            id="r_grund"
-            class="form-control"
-            rows="3"
-            placeholder="Bitte gib den Grund an…"
-          ></textarea>
+          <textarea id="r_grund" class="form-control" rows="3" placeholder="Bitte gib den Grund an…"></textarea>
         </div>
         <p class="error-msg" id="requestError"></p>
-        <button
-          class="btn btn-primary"
-          id="requestBtn"
-          onclick="submitRequest()"
-        >
-          Anfordern 📧
-        </button>
+        <button class="btn btn-primary" id="requestBtn" onclick="submitRequest()">Anfordern 📧</button>
       </div>
 
       <!-- INFO -->
@@ -792,58 +703,41 @@
         <p class="section-title">ℹ️ Allgemeine Infos</p>
         <div class="support-box open">
           <strong>Kontakt</strong>
-
-          Telefon: <span id="contactPhone">lade...</span>
+          Telefon: <a id="contactPhone" href="#">lade...</a>
 
           E-Mail: <span id="contactEmail">lade...</span>
 
           <strong>Allgemeines</strong>
-
-          Dieses Reporting-Tool dient zur Erfassung der Gruppenstunden-Dynamik
-          und zur Meldung kritischer Situationen an die Scharleitung. Bitte
-          fülle alle Pflichtfelder aus und beschreibe Vorfälle bei Dynamik 4 und
-          5 so präzise wie möglich.
+          Dieses Reporting-Tool dient zur Erfassung der Gruppenstunden-Dynamik und zur Meldung kritischer Situationen an
+          die Scharleitung. Bitte fülle alle Pflichtfelder aus und beschreibe Vorfälle bei Dynamik 4 und 5 so präzise
+          wie möglich.
 
           <strong>Wichtige Links</strong>
-
-          •
-          <a href="https://www.jubla.ch" target="_blank" rel="noreferrer"
-            >Jubla Webseite</a
+          <a id="jublaschweizweb" href="https://www.jubla.ch" target="_blank" rel="noreferrer"
+            >• Jubla Schweiz Webseite</a
           >
-
-          •
-          <a
-            id="githubProjectLink"
-            href="https://github.com/flohulo/jubla-reporting"
-            target="_blank"
-            rel="noreferrer"
-            >Projekt auf GitHub</a
+          <a id="githubProjectLink" href="https://github.com/flohulo/jubla-reporting" target="_blank" rel="noreferrer"
+            >• Projekt auf GitHub</a
           >
-
-          •
           <a
             id="licenseLink"
             href="https://github.com/flohulo/jubla-reporting/blob/main/LICENSE"
             target="_blank"
             rel="noreferrer"
-            >Lizenz</a
+            >• Lizenz</a
           >
-
-          •
           <a
             id="legalLink"
             href="https://github.com/flohulo/jubla-reporting/blob/main/README.md"
             target="_blank"
             rel="noreferrer"
-            >Rechtliche Hinweise</a
+            >• Rechtliche Hinweise</a
           >
         </div>
 
         <div class="accordion">
           <div class="accordion-item">
-            <button class="accordion-header" onclick="toggleAccordion(this)">
-              📞 Notrufnummern
-            </button>
+            <button class="accordion-header" onclick="toggleAccordion(this)">📞 Notrufnummern</button>
             <div class="accordion-content">
               <p><strong>Polizei:</strong> 117</p>
               <p><strong>Feuerwehr:</strong> 118</p>
@@ -852,69 +746,44 @@
               <p><strong>Vergiftungsnotruf:</strong> 145</p>
               <p><strong>REGA:</strong> 1414</p>
               <p><strong>Jubla Zürich Kriesentelefon:</strong> 0800 505 202</p>
+              <p><strong>Jubla Kriesentelefon national:</strong> 079 259 76 90</p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-header" onclick="toggleAccordion(this)">❓ Hilfe-Themen</button>
+            <div class="accordion-content">
               <p>
-                <strong>Jubla Kriesentelefon national:</strong> 079 259 76 90
+                <strong>Gruppendynamik:</strong> Nutze die Dynamik-Skala 1-5 um dies zu dokumentieren. 1 bedeutet alles
+                super, 5 bedeutet kritische Situationen. Bei 4 oder 5 bitte immer eine genaue Beschreibung der Situation
+                angeben, damit die Scharleitung die Lage einschätzen und gegebenenfalls Unterstützung anbieten kann.
+              </p>
+              <p>
+                <strong>Konflikte:</strong> Nimm Konflikte ernst. Höre beiden Seiten zu, bleibe ruhig und fair. Versuche
+                schnell zu deeskalieren durch klare Regeln und positive Verstärkung.
+              </p>
+              <p>
+                <strong>Sicherheit:</strong> Achte auf Aufsichtspflicht – Kinder dürfen nicht unbeaufsichtigt sein.
+                Beachte Altersgerechtheit von Aktivitäten, stelle Material sicher und kenne Erste-Hilfe-Grundlagen. Im
+                Notfall 144 oder 117 anrufen.
+              </p>
+              <p>
+                <strong>Notfälle:</strong> Bleibe ruhig und überlegt. Sicherheit first – Stelle sicher dass keine
+                weiteren Personen in Gefahr sind. Rufe sofort den Notruf an (117/118/144). Informiere die Scharleitung
+                und gib ihr alle wichtigen Informationen. Dokumentiere was passiert ist.
               </p>
             </div>
           </div>
           <div class="accordion-item">
-            <button class="accordion-header" onclick="toggleAccordion(this)">
-              ❓ Hilfe-Themen
-            </button>
+            <button class="accordion-header" onclick="toggleAccordion(this)">📋 Rechtliche Hinweise</button>
             <div class="accordion-content">
               <p>
-                <strong>Gruppendynamik:</strong> Eine gute Dynamik erkennst du
-                daran, dass die Kinder aktiv mitmachen, Respekt zeigen und
-                zusammenarbeiten. Eine schlechte Dynamik zeigt sich durch
-                Unruhe, Konflikte, Konzentrationsprobleme oder Desinteresse.
-                Nutze die Dynamik-Skala 1-5 um dies zu dokumentieren.
+                Diese Anwendung sammelt Daten zur Qualitätssicherung der Gruppenstunden. Alle Daten werden vertraulich
+                behandelt und nur zur internen Nutzung verwendet.
               </p>
-              <p>
-                <strong>Konflikte:</strong> Nimm Konflikte ernst. Höre beiden
-                Seiten zu, bleibe ruhig und fair. Versuche schnell zu
-                deeskalieren durch klare Regeln und positive Verstärkung.
-                Wichtig: Achte auf körperliche Grenzen und respektvolle
-                Kommunikation. Bei ernsthaften Fällen informiere die
-                Scharleitung.
-              </p>
-              <p>
-                <strong>Sicherheit:</strong> Überprüfe vor jeder Gruppenstunde
-                den Ort auf Gefahren. Achte auf Aufsichtspflicht – Kinder dürfen
-                nicht unbeaufsichtigt sein. Beachte Altersgerechtheit von
-                Aktivitäten, stelle Material sicher und kenne
-                Erste-Hilfe-Grundlagen. Im Notfall 144 oder 117 anrufen.
-              </p>
-              <p>
-                <strong>Notfälle:</strong> Bleibe ruhig und überlegt. Sicherheit
-                first – Stelle sicher dass keine weiteren Personen in Gefahr
-                sind. Rufe sofort den Notruf an (117/118/144). Informiere die
-                Scharleitung und gib ihr alle wichtigen Informationen.
-                Dokumentiere was passiert ist und berichte dies über das
-                Reporting-Tool.
-              </p>
-            </div>
-          </div>
-          <div class="accordion-item">
-            <button class="accordion-header" onclick="toggleAccordion(this)">
-              📋 Rechtliche Hinweise
-            </button>
-            <div class="accordion-content">
-              <p>
-                Diese Anwendung sammelt Daten zur Qualitätssicherung der
-                Gruppenstunden. Alle Daten werden vertraulich behandelt und nur
-                zur internen Nutzung verwendet.
-              </p>
-              <p>
-                Bei kritischen Berichten wird die Scharleitung automatisch
-                informiert.
-              </p>
+              <p>Bei kritischen Berichten wird die Scharleitung automatisch informiert.</p>
               <p>
                 Weitere Informationen in der
-                <a
-                  href="https://github.com/flohulo/jubla-reporting/blob/main/README.md"
-                  target="_blank"
-                  >README</a
-                >.
+                <a href="https://github.com/flohulo/jubla-reporting/blob/main/README.md" target="_blank">README</a>.
               </p>
             </div>
           </div>
@@ -933,23 +802,11 @@
           ></span
         >
         <span class="footer-links">
-          <a
-            href="https://github.com/flohulo/jubla-reporting"
-            target="_blank"
-            rel="noreferrer"
-            >GitHub</a
-          >
-          <a
-            id="issueLink"
-            href="https://github.com/flohulo/jubla-reporting/issues"
-            target="_blank"
-            rel="noreferrer"
+          <a href="https://github.com/flohulo/jubla-reporting" target="_blank" rel="noreferrer">GitHub</a>
+          <a id="issueLink" href="https://github.com/flohulo/jubla-reporting/issues" target="_blank" rel="noreferrer"
             >Fehler melden</a
           >
-          <a
-            href="https://github.com/flohulo/jubla-reporting/blob/main/README.md"
-            target="_blank"
-            rel="noreferrer"
+          <a href="https://github.com/flohulo/jubla-reporting/blob/main/README.md" target="_blank" rel="noreferrer"
             >Rechtliches</a
           >
         </span>
@@ -963,22 +820,8 @@
       var allRows = [];
       var API = "/.netlify/functions/sheets";
 
-      var dynLabels = [
-        "",
-        "Alles top 😊",
-        "Gut 🙂",
-        "Intensiv 😐",
-        "Schwierig 😬",
-        "Kritisch ⛔",
-      ];
-      var dynBadge = [
-        "",
-        "badge-green",
-        "badge-green",
-        "badge-blue",
-        "badge-warn",
-        "badge-crit",
-      ];
+      var dynLabels = ["", "Alles top 😊", "Gut 🙂", "Intensiv 😐", "Schwierig 😬", "Kritisch ⛔"];
+      var dynBadge = ["", "badge-green", "badge-green", "badge-blue", "badge-warn", "badge-crit"];
 
       // ── API Helper ─────────────────────────────────────────────
       function api(payload) {
@@ -1015,14 +858,9 @@
             // data.ok = HTTP-Erfolg, data.verified = PIN korrekt
             if (data.ok && data.verified) {
               currentUser = name;
-              document.getElementById("headerSubtitle").innerText =
-                "Hoi " + name + "! 👋";
-              document.getElementById("f_datum").value = new Date()
-                .toISOString()
-                .split("T")[0];
-              document.getElementById("r_datum").value = new Date()
-                .toISOString()
-                .split("T")[0];
+              document.getElementById("headerSubtitle").innerText = "Hoi " + name + "! 👋";
+              document.getElementById("f_datum").value = new Date().toISOString().split("T")[0];
+              document.getElementById("r_datum").value = new Date().toISOString().split("T")[0];
               document.getElementById("loginArea").style.display = "none";
               document.getElementById("tabBar").style.display = "flex";
               document.getElementById("formTab").style.display = "block";
@@ -1034,8 +872,7 @@
             }
           })
           .catch(function () {
-            err.innerText =
-              "Verbindungsfehler – ist die Netlify Function aktiv?";
+            err.innerText = "Verbindungsfehler. Bitte später nochmal versuchen.";
             btn.disabled = false;
             btn.innerText = "Anmelden";
           });
@@ -1050,10 +887,8 @@
         var label = document.getElementById("versionLabel");
         var link = document.getElementById("versionLink");
         var repo = "flohulo/jubla-reporting";
-        var apiRelease =
-          "https://api.github.com/repos/" + repo + "/releases/latest";
-        var apiCommit =
-          "https://api.github.com/repos/" + repo + "/commits/main";
+        var apiRelease = "https://api.github.com/repos/" + repo + "/releases/latest";
+        var apiCommit = "https://api.github.com/repos/" + repo + "/commits/main";
 
         fetch(apiRelease)
           .then(function (response) {
@@ -1074,8 +909,7 @@
                 return r.json();
               })
               .then(function (data) {
-                var version =
-                  "commit " + (data.sha ? data.sha.slice(0, 7) : "main");
+                var version = "commit " + (data.sha ? data.sha.slice(0, 7) : "main");
                 currentVersion = version;
                 label.innerText = version;
                 link.href = "https://github.com/" + repo + "/commits/main";
@@ -1094,33 +928,25 @@
           })
           .then(function (data) {
             if (!data.ok) return;
-            document.getElementById("contactPhone").innerText =
-              data.contactPhone || "Nicht verfügbar";
+            document.getElementById("contactPhone").innerHTML = data.contactPhone
+              ? '<a href="tel:' + data.contactPhone + '">' + data.contactPhone + "</a>"
+              : "Nicht verfügbar";
             var emailEl = document.getElementById("contactEmail");
             emailEl.innerHTML = data.contactEmail
-              ? '<a href="mailto:' +
-                data.contactEmail +
-                '">' +
-                data.contactEmail +
-                "</a>"
+              ? '<a href="mailto:' + data.contactEmail + '">' + data.contactEmail + "</a>"
               : "Nicht verfügbar";
             document.getElementById("issueLink").href =
-              data.issueUrl ||
-              "https://github.com/flohulo/jubla-reporting/issues";
+              data.issueUrl || "https://github.com/flohulo/jubla-reporting/issues";
             document.getElementById("githubProjectLink").href =
               data.githubUrl || "https://github.com/flohulo/jubla-reporting";
             document.getElementById("licenseLink").href =
-              data.licenseUrl ||
-              "https://github.com/flohulo/jubla-reporting/blob/main/LICENSE";
+              data.licenseUrl || "https://github.com/flohulo/jubla-reporting/blob/main/LICENSE";
             document.getElementById("legalLink").href =
-              data.legalUrl ||
-              "https://github.com/flohulo/jubla-reporting/blob/main/README.md";
+              data.legalUrl || "https://github.com/flohulo/jubla-reporting/blob/main/README.md";
           })
           .catch(function () {
-            document.getElementById("contactPhone").innerText =
-              "Nicht verfügbar";
-            document.getElementById("contactEmail").innerText =
-              "Nicht verfügbar";
+            document.getElementById("contactPhone").innerText = "Nicht verfügbar";
+            document.getElementById("contactEmail").innerText = "Nicht verfügbar";
           });
       }
 
@@ -1151,18 +977,10 @@
       // ── Toggle Report für andere ───────────────────────────────
       function toggleReportFor() {
         var checked = document.getElementById("f_fuer_check").checked;
-        document.getElementById("rolleGroup").style.display = checked
-          ? "none"
-          : "block";
-        document.getElementById("partnerGroup").style.display = checked
-          ? "none"
-          : "block";
-        document.getElementById("hlGroup").style.display = checked
-          ? "block"
-          : "none";
-        document.getElementById("hilfsGroup").style.display = checked
-          ? "block"
-          : "none";
+        document.getElementById("rolleGroup").style.display = checked ? "none" : "block";
+        document.getElementById("partnerGroup").style.display = checked ? "none" : "block";
+        document.getElementById("hlGroup").style.display = checked ? "block" : "none";
+        document.getElementById("hilfsGroup").style.display = checked ? "block" : "none";
       }
 
       // ── Toggle Accordion ───────────────────────────────────────
@@ -1179,16 +997,10 @@
 
         var datum = document.getElementById("f_datum").value;
         var checked = document.getElementById("f_fuer_check").checked;
-        var rolle = checked
-          ? "Melder"
-          : document.getElementById("f_rolle").value;
-        var partner = checked
-          ? ""
-          : document.getElementById("f_partner").value.trim();
+        var rolle = checked ? "Melder" : document.getElementById("f_rolle").value;
+        var partner = checked ? "" : document.getElementById("f_partner").value.trim();
         var hl = checked ? document.getElementById("f_hl").value.trim() : "";
-        var hilfs = checked
-          ? document.getElementById("f_hilfs").value.trim()
-          : "";
+        var hilfs = checked ? document.getElementById("f_hilfs").value.trim() : "";
         var anzahl = document.getElementById("f_anzahl").value;
         var leiter = document.getElementById("f_leiter").value;
         var dynamik = document.getElementById("f_dynamik").value;
@@ -1239,9 +1051,7 @@
                 '<div class="success-icon">✅</div>' +
                 "<h2>Gespeichert!</h2>" +
                 "<p>Dein Bericht wurde in Google Sheets eingetragen." +
-                (parseInt(dynamik) >= 4
-                  ? "<br>⚠️ Die Scharleitung wurde per Mail informiert."
-                  : "") +
+                (parseInt(dynamik) >= 4 ? "<br>⚠️ Die Scharleitung wurde per Mail informiert." : "") +
                 "</p>" +
                 '<button class="btn btn-primary" onclick="location.reload()">Neuen Report erfassen</button>' +
                 "</div>";
@@ -1299,8 +1109,7 @@
                 "</p>";
 
               if (data.rows && data.rows.length > 0) {
-                html +=
-                  '<div class="divider"></div><h3 style="text-align:center; margin-bottom:16px;">Berichte:</h3>';
+                html += '<div class="divider"></div><h3 style="text-align:center; margin-bottom:16px;">Berichte:</h3>';
                 data.rows.forEach(function (r) {
                   html +=
                     '<div class="report-card dyn-' +
@@ -1330,11 +1139,7 @@
                     r.leiterCount +
                     "</span>" +
                     '<span class="badge ' +
-                    (r.dynamik >= 4
-                      ? "badge-crit"
-                      : r.dynamik >= 3
-                        ? "badge-warn"
-                        : "badge-green") +
+                    (r.dynamik >= 4 ? "badge-crit" : r.dynamik >= 3 ? "badge-warn" : "badge-green") +
                     '">Dynamik ' +
                     r.dynamik +
                     "</span>" +
@@ -1351,8 +1156,7 @@
                 });
               }
 
-              html +=
-                '<button class="btn btn-primary" onclick="location.reload()">Neue Anforderung</button></div>';
+              html += '<button class="btn btn-primary" onclick="location.reload()">Neue Anforderung</button></div>';
               document.getElementById("requestTab").innerHTML = html;
             } else {
               err.innerText = "Fehler: " + (data.error || "Unbekannt");
@@ -1374,10 +1178,7 @@
         return p.length === 3 ? p[2] + "." + p[1] + "." + p[0] : s;
       }
       function escapeHtml(s) {
-        return String(s)
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;");
+        return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
       }
 
       // ── Service Worker Registration ────────────────────────────
