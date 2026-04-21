@@ -6,8 +6,14 @@ labels: enhancement
 
 **Was möchtest du verbessern oder hinzufügen?**
 
+- ...
+
 **Warum ist das hilfreich?**
+
+- ...
 
 **Weitere Details**
 
 Falls relevant, füge zusätzliche Informationen oder Beispiele bei.
+
+- ...
