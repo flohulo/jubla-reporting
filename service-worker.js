@@ -72,7 +72,7 @@ self.addEventListener("fetch", (event) => {
           }
 
           const responseToCache = response.clone();
-          if (request.url.startsWith('http')) {
+          if (request.url.startsWith("http")) {
             caches.open(CACHE_NAME).then((cache) => {
               cache.put(request, responseToCache);
             });
