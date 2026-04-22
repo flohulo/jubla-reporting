@@ -306,7 +306,7 @@ exports.handler = async (event) => {
       for (const kid of kidsWithStrikes) {
         await appendRow(token, STRIKES_SHEET, [
           tsFormatted,
-          formatDate(datum),
+          datum,
           leiterName,
           kid.name,
           kid.strikes,
