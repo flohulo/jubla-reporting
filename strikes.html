@@ -1,0 +1,1178 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Jubla Wald ZH – Strike-System</title>
+    <meta name="theme-color" content="#d65a5a" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --red: #d65a5a;
+        --red-dk: #b84d4d;
+        --yellow: #f7f1e3;
+        --yel-lt: #fcfaf5;
+        --blue: #576574;
+        --blu-lt: #eeeff1;
+        --dark: #2f3640;
+        --mid: #7f8c8d;
+        --light: #f5f6fa;
+        --white: #ffffff;
+        --green: #6ab04c;
+        --grn-lt: #f1f8ed;
+        --orange: #e67e22;
+        --org-lt: #fef5ec;
+        --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        --radius: 16px;
+        --modal-bg: rgba(0, 0, 0, 0.45);
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --yellow: #1a1a1a;
+          --yel-lt: #252525;
+          --dark: #f5f6fa;
+          --mid: #a0a0a0;
+          --light: #2d2d2d;
+          --white: #262626;
+          --blu-lt: #3d3d3d;
+          --blue: #a4b0be;
+          --grn-lt: #1e271a;
+          --org-lt: #2a1f10;
+          --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+          --modal-bg: rgba(0, 0, 0, 0.7);
+        }
+        .form-control {
+          border-color: #444 !important;
+        }
+        .form-control:focus {
+          background: #333 !important;
+        }
+        .kid-card {
+          border-color: #3d3d3d;
+        }
+        .kid-card.s1 {
+          border-color: rgba(230, 126, 34, 0.5);
+        }
+        .kid-card.s2 {
+          border-color: rgba(214, 90, 90, 0.5);
+        }
+        .kid-card.s3 {
+          border-color: rgba(214, 90, 90, 0.9);
+          background: #2a1a1a;
+        }
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Nunito", sans-serif;
+        background: var(--yellow);
+        background-image:
+          radial-gradient(circle at 20% 40%, rgba(214, 90, 90, 0.06) 0%, transparent 55%),
+          radial-gradient(circle at 80% 10%, rgba(47, 54, 64, 0.04) 0%, transparent 50%);
+        min-height: 100vh;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 24px 12px 60px;
+        color: var(--dark);
+      }
+
+      .card {
+        background: var(--white);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        width: 100%;
+        max-width: 480px;
+        overflow: hidden;
+        animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(28px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ── HEADER ── */
+      .card-header {
+        background: var(--red);
+        padding: 20px 24px 16px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .logo-badge {
+        width: 50px;
+        height: 50px;
+        background: white;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.7em;
+        flex-shrink: 0;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+      .card-header h1 {
+        color: white;
+        font-size: 1.2em;
+        font-weight: 900;
+        line-height: 1.2;
+      }
+      .card-header p {
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 0.8em;
+        margin-top: 3px;
+      }
+      .header-back {
+        margin-left: auto;
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 0.78em;
+        font-weight: 800;
+        text-decoration: none;
+        background: rgba(255, 255, 255, 0.15);
+        padding: 6px 12px;
+        border-radius: 8px;
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: background 0.2s;
+      }
+      .header-back:hover {
+        background: rgba(255, 255, 255, 0.25);
+      }
+
+      /* ── BODY ── */
+      .card-body {
+        padding: 22px 24px;
+      }
+
+      /* ── LOGIN ── */
+      .section-title {
+        font-size: 1.05em;
+        font-weight: 800;
+        color: var(--dark);
+        margin-bottom: 20px;
+        text-align: center;
+      }
+      .form-group {
+        margin-bottom: 16px;
+      }
+      .form-label {
+        display: block;
+        font-size: 0.72em;
+        font-weight: 800;
+        color: var(--mid);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 6px;
+      }
+      .form-control {
+        width: 100%;
+        padding: 11px 15px;
+        border: 2px solid #edf0f2;
+        border-radius: 12px;
+        font-family: "Nunito", sans-serif;
+        font-size: 0.95em;
+        color: var(--dark);
+        background: var(--light);
+        transition: 0.2s;
+      }
+      .form-control:focus {
+        outline: none;
+        border-color: var(--red);
+        background: var(--white);
+        box-shadow: 0 0 0 4px rgba(214, 90, 90, 0.1);
+      }
+      .pin-group {
+        position: relative;
+      }
+      .pin-group input {
+        font-size: 1.4em;
+        letter-spacing: 0.3em;
+        text-align: center;
+        font-weight: 700;
+      }
+      .pin-toggle {
+        position: absolute;
+        right: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--mid);
+        font-size: 1.2em;
+      }
+      .error-msg {
+        color: var(--red);
+        font-size: 0.85em;
+        font-weight: 700;
+        text-align: center;
+        min-height: 18px;
+        margin-top: 6px;
+      }
+
+      /* ── BUTTONS ── */
+      .btn {
+        width: 100%;
+        padding: 13px;
+        border: none;
+        border-radius: 12px;
+        font-family: "Nunito", sans-serif;
+        font-weight: 800;
+        cursor: pointer;
+        transition: 0.2s;
+        font-size: 1em;
+      }
+      .btn-primary {
+        background: var(--red);
+        color: white;
+        box-shadow: 0 6px 16px rgba(214, 90, 90, 0.28);
+      }
+      .btn-primary:hover {
+        box-shadow: 0 8px 20px rgba(214, 90, 90, 0.38);
+        transform: translateY(-1px);
+      }
+      .btn-primary:active {
+        transform: translateY(1px);
+      }
+      .btn-primary:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+      .btn-secondary {
+        background: var(--blu-lt);
+        color: var(--blue);
+        font-size: 0.9em;
+      }
+      .btn-secondary:hover {
+        background: #dde0e4;
+      }
+      .btn-green {
+        background: var(--green);
+        color: white;
+        box-shadow: 0 6px 16px rgba(106, 176, 76, 0.3);
+      }
+      .btn-green:hover {
+        opacity: 0.9;
+      }
+
+      /* ── STATS BAR ── */
+      .stats-strip {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        margin-bottom: 18px;
+      }
+      .stat-pill {
+        background: var(--light);
+        border-radius: 10px;
+        padding: 10px 8px;
+        text-align: center;
+        border: 1.5px solid transparent;
+      }
+      .stat-pill.active-warn {
+        border-color: rgba(230, 126, 34, 0.4);
+      }
+      .stat-pill.active-red {
+        border-color: rgba(214, 90, 90, 0.5);
+      }
+      .stat-num {
+        font-size: 1.5em;
+        font-weight: 900;
+        line-height: 1;
+      }
+      .stat-label {
+        font-size: 0.63em;
+        font-weight: 800;
+        color: var(--mid);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-top: 3px;
+      }
+      .stat-num.c-warn {
+        color: var(--orange);
+      }
+      .stat-num.c-red {
+        color: var(--red);
+      }
+      .stat-num.c-green {
+        color: var(--green);
+      }
+
+      /* ── ADD KID ── */
+      .add-row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+      .add-row input {
+        flex: 1;
+        padding: 11px 14px;
+        background: var(--light);
+        border: 2px solid #edf0f2;
+        border-radius: 12px;
+        font-family: "Nunito", sans-serif;
+        font-size: 0.93em;
+        font-weight: 600;
+        color: var(--dark);
+        outline: none;
+        transition: 0.2s;
+      }
+      .add-row input:focus {
+        border-color: var(--red);
+        background: var(--white);
+        box-shadow: 0 0 0 4px rgba(214, 90, 90, 0.1);
+      }
+      .add-row input::placeholder {
+        color: var(--mid);
+        font-weight: 500;
+      }
+      .btn-add {
+        padding: 11px 18px;
+        background: var(--red);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-family: "Nunito", sans-serif;
+        font-weight: 900;
+        font-size: 1.3em;
+        cursor: pointer;
+        transition: 0.15s;
+        flex-shrink: 0;
+      }
+      .btn-add:hover {
+        opacity: 0.88;
+      }
+      .btn-add:active {
+        transform: scale(0.93);
+      }
+
+      /* ── KID CARDS ── */
+      .kids-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 20px;
+        min-height: 60px;
+      }
+
+      .kid-card {
+        background: var(--light);
+        border: 2px solid transparent;
+        border-radius: 13px;
+        padding: 12px 14px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        animation: kidIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+        transition:
+          border-color 0.25s,
+          background 0.25s,
+          box-shadow 0.25s;
+      }
+      @keyframes kidIn {
+        from {
+          opacity: 0;
+          transform: translateY(-6px) scale(0.97);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+
+      /* Strike-Level-Styling */
+      .kid-card.s1 {
+        border-color: rgba(230, 126, 34, 0.45);
+        background: var(--org-lt);
+      }
+      .kid-card.s2 {
+        border-color: rgba(214, 90, 90, 0.45);
+        background: #fff5f5;
+      }
+      .kid-card.s3 {
+        border-color: var(--red);
+        background: #fff0f0;
+        box-shadow: 0 0 0 3px rgba(214, 90, 90, 0.1);
+        animation:
+          kidIn 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+          pulse 2.5s ease-in-out infinite 0.3s;
+      }
+      @media (prefers-color-scheme: dark) {
+        .kid-card.s2 {
+          background: #2d1a1a;
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          box-shadow: 0 0 0 3px rgba(214, 90, 90, 0.1);
+        }
+        50% {
+          box-shadow: 0 0 0 6px rgba(214, 90, 90, 0.2);
+        }
+      }
+
+      .kid-name {
+        font-weight: 800;
+        font-size: 0.97em;
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      /* Strike dots */
+      .dot-row {
+        display: flex;
+        gap: 5px;
+        flex-shrink: 0;
+      }
+      .dot {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        border: 2px solid var(--blu-lt);
+        background: transparent;
+        transition: all 0.2s;
+      }
+      .dot.d1 {
+        background: var(--orange);
+        border-color: var(--orange);
+        box-shadow: 0 0 6px rgba(230, 126, 34, 0.5);
+      }
+      .dot.d2 {
+        background: var(--red);
+        border-color: var(--red);
+        box-shadow: 0 0 6px rgba(214, 90, 90, 0.5);
+      }
+      .dot.d3 {
+        background: var(--red);
+        border-color: var(--red);
+        box-shadow: 0 0 10px rgba(214, 90, 90, 0.7);
+      }
+
+      /* Controls */
+      .kid-controls {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+        flex-shrink: 0;
+      }
+      .btn-cs {
+        width: 32px;
+        height: 32px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.05em;
+        font-weight: 900;
+        cursor: pointer;
+        transition:
+          transform 0.1s,
+          opacity 0.15s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .btn-cs:active {
+        transform: scale(0.86);
+      }
+      .btn-cs.minus {
+        background: var(--grn-lt);
+        color: var(--green);
+        border: 1.5px solid rgba(106, 176, 76, 0.3);
+      }
+      .btn-cs.minus:hover {
+        background: #d4f1c5;
+      }
+      .btn-cs.minus:disabled {
+        opacity: 0.22;
+        cursor: not-allowed;
+      }
+      .btn-cs.plus {
+        background: #fff0f0;
+        color: var(--red);
+        border: 1.5px solid rgba(214, 90, 90, 0.3);
+      }
+      .btn-cs.plus:hover {
+        background: #ffe0e0;
+      }
+      .btn-cs.plus:disabled {
+        opacity: 0.22;
+        cursor: not-allowed;
+      }
+
+      .btn-remove {
+        width: 26px;
+        height: 26px;
+        border: none;
+        border-radius: 6px;
+        background: transparent;
+        color: var(--mid);
+        font-size: 0.85em;
+        cursor: pointer;
+        transition: color 0.15s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .btn-remove:hover {
+        color: var(--red);
+      }
+
+      .banned-tag {
+        font-size: 0.68em;
+        font-weight: 800;
+        background: #fff0f0;
+        color: var(--red);
+        border: 1px solid rgba(214, 90, 90, 0.35);
+        border-radius: 6px;
+        padding: 2px 7px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
+      /* ── EMPTY STATE ── */
+      .empty-state {
+        text-align: center;
+        padding: 32px 20px;
+        color: var(--mid);
+        border: 2px dashed var(--blu-lt);
+        border-radius: 12px;
+      }
+      .empty-state .ei {
+        font-size: 2em;
+        margin-bottom: 10px;
+      }
+      .empty-state p {
+        font-size: 0.87em;
+        font-weight: 600;
+        line-height: 1.5;
+      }
+
+      /* ── DIVIDER ── */
+      .divider {
+        border: none;
+        border-top: 1px solid var(--blu-lt);
+        margin: 18px 0;
+      }
+
+      /* ── FOOTER ── */
+      .card-footer {
+        background: var(--yel-lt);
+        border-top: 1px solid rgba(0, 0, 0, 0.04);
+        padding: 11px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.73em;
+        color: var(--mid);
+      }
+      .card-footer a {
+        color: var(--red);
+        text-decoration: none;
+        font-weight: 700;
+      }
+
+      /* ── SUCCESS OVERLAY ── */
+      .overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: var(--modal-bg);
+        backdrop-filter: blur(3px);
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        z-index: 200;
+      }
+      .overlay.show {
+        display: flex;
+        animation: fadeIn 0.25s ease;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .overlay-card {
+        background: var(--white);
+        border-radius: 20px;
+        padding: 30px 26px;
+        max-width: 420px;
+        width: 100%;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+        animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+      @keyframes popIn {
+        from {
+          transform: scale(0.85);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      .overlay-icon {
+        font-size: 3em;
+        margin-bottom: 12px;
+        text-align: center;
+      }
+      .overlay-card h2 {
+        font-size: 1.25em;
+        font-weight: 900;
+        margin-bottom: 8px;
+        text-align: center;
+      }
+      .overlay-card > p {
+        font-size: 0.87em;
+        color: var(--mid);
+        text-align: center;
+        line-height: 1.5;
+        margin-bottom: 20px;
+        font-weight: 600;
+      }
+
+      /* Summary list */
+      .summary-list {
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 9px 13px;
+        border-radius: 9px;
+        font-size: 0.87em;
+      }
+      .summary-row.ok {
+        background: var(--grn-lt);
+      }
+      .summary-row.warn {
+        background: var(--org-lt);
+      }
+      .summary-row.bad {
+        background: #fff0f0;
+      }
+      .summary-name {
+        font-weight: 800;
+      }
+      .summary-val {
+        font-weight: 700;
+        font-size: 0.92em;
+      }
+      .summary-row.ok .summary-val {
+        color: var(--green);
+      }
+      .summary-row.warn .summary-val {
+        color: var(--orange);
+      }
+      .summary-row.bad .summary-val {
+        color: var(--red);
+      }
+
+      /* Saving indicator */
+      .save-status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.82em;
+        font-weight: 700;
+        color: var(--mid);
+        margin-bottom: 16px;
+        justify-content: center;
+      }
+      .save-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--mid);
+      }
+      .save-status.saving .save-dot {
+        background: var(--orange);
+        animation: blink 0.8s infinite;
+      }
+      .save-status.saved .save-dot {
+        background: var(--green);
+      }
+      .save-status.error .save-dot {
+        background: var(--red);
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.3;
+        }
+      }
+
+      /* Spinner */
+      .spinner {
+        width: 20px;
+        height: 20px;
+        border: 3px solid var(--blu-lt);
+        border-top-color: var(--red);
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+        flex-shrink: 0;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <!-- HEADER -->
+      <div class="card-header">
+        <div class="logo-badge">⚡</div>
+        <div>
+          <h1>Strike-System</h1>
+          <p id="headerSub">Jubla Wald ZH · GruStu</p>
+        </div>
+        <a href="/" class="header-back">← Reporting</a>
+      </div>
+
+      <!-- LOGIN -->
+      <div class="card-body" id="loginArea">
+        <p class="section-title">🔒 Anmelden</p>
+        <div class="form-group">
+          <label class="form-label">Dein Name</label>
+          <input
+            type="text"
+            id="loginName"
+            class="form-control"
+            placeholder="Vorname"
+            onkeydown="if (event.key === 'Enter') login();"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Schar-PIN</label>
+          <div class="pin-group">
+            <input
+              type="password"
+              id="loginPin"
+              class="form-control"
+              placeholder="••••"
+              inputmode="numeric"
+              maxlength="8"
+              onkeydown="if (event.key === 'Enter') login();"
+            />
+            <button class="pin-toggle" onclick="togglePin()">👁</button>
+          </div>
+        </div>
+        <p class="error-msg" id="loginErr"></p>
+        <button class="btn btn-primary" id="loginBtn" onclick="login()">Anmelden</button>
+      </div>
+
+      <!-- MAIN APP -->
+      <div id="appArea" style="display: none">
+        <!-- DATE BAR -->
+        <div
+          style="
+            background: var(--yel-lt);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 10px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
+          <span style="font-size: 0.8em; font-weight: 800; color: var(--mid)" id="dateLine">—</span>
+          <span style="font-size: 0.8em; font-weight: 700; color: var(--mid)" id="leiterLine">—</span>
+        </div>
+
+        <div class="card-body">
+          <!-- STATS -->
+          <div class="stats-strip" id="statsStrip">
+            <div class="stat-pill">
+              <div class="stat-num" id="sTotal">0</div>
+              <div class="stat-label">Kinder</div>
+            </div>
+            <div class="stat-pill">
+              <div class="stat-num c-warn" id="sOne">0</div>
+              <div class="stat-label">1 Strike</div>
+            </div>
+            <div class="stat-pill">
+              <div class="stat-num c-warn" id="sTwo">0</div>
+              <div class="stat-label">2 Strikes</div>
+            </div>
+            <div class="stat-pill active-red">
+              <div class="stat-num c-red" id="sThree">0</div>
+              <div class="stat-label">Ausschluss</div>
+            </div>
+          </div>
+
+          <!-- ADD -->
+          <div class="add-row">
+            <input
+              type="text"
+              id="kidInput"
+              placeholder="Kind hinzufügen …"
+              onkeydown="if (event.key === 'Enter') addKid();"
+            />
+            <button class="btn-add" onclick="addKid()">+</button>
+          </div>
+
+          <!-- LIST -->
+          <div class="kids-list" id="kidsList">
+            <div class="empty-state">
+              <div class="ei">👦</div>
+              <p>Noch keine Kinder hinzugefügt.<br />Tippe einen Namen ein und drücke +.</p>
+            </div>
+          </div>
+
+          <hr class="divider" />
+
+          <!-- END BUTTON -->
+          <button class="btn btn-primary" id="endBtn" onclick="endGrustu()">GruStu beenden &amp; speichern 📋</button>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <span>Jubla Wald ZH · Strike-System</span>
+        <a href="/">← Reporting Tool</a>
+      </div>
+    </div>
+
+    <!-- SUCCESS OVERLAY -->
+    <div class="overlay" id="successOverlay">
+      <div class="overlay-card">
+        <div class="overlay-icon">✅</div>
+        <h2>GruStu gespeichert!</h2>
+        <p id="overlayMsg">Alle Daten wurden in Google Sheets eingetragen.</p>
+
+        <div class="save-status" id="saveStatus">
+          <div class="save-dot"></div>
+          <span id="saveStatusText">Speichert…</span>
+        </div>
+
+        <div class="summary-list" id="summaryList"></div>
+
+        <button class="btn btn-green" onclick="newGrustu()" id="newBtn" disabled>Neue GruStu starten 🔄</button>
+      </div>
+    </div>
+
+    <script>
+      // ── State ───────────────────────────────────────────────
+      var kids = []; // { name, strikes }
+      var currentUser = null;
+      var API = "/.netlify/functions/strikes";
+
+      // ── Helpers ─────────────────────────────────────────────
+      function esc(s) {
+        return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      }
+      function today() {
+        var d = new Date();
+        return (
+          d.getDate().toString().padStart(2, "0") +
+          "." +
+          (d.getMonth() + 1).toString().padStart(2, "0") +
+          "." +
+          d.getFullYear()
+        );
+      }
+      function todayISO() {
+        return new Date().toISOString().split("T")[0];
+      }
+      function dayName() {
+        return ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"][new Date().getDay()];
+      }
+
+      // ── Login ───────────────────────────────────────────────
+      function togglePin() {
+        var el = document.getElementById("loginPin");
+        el.type = el.type === "password" ? "text" : "password";
+      }
+
+      function login() {
+        var name = document.getElementById("loginName").value.trim();
+        var pin = document.getElementById("loginPin").value.trim();
+        var err = document.getElementById("loginErr");
+        var btn = document.getElementById("loginBtn");
+
+        if (!name) {
+          err.innerText = "Bitte Name eingeben.";
+          return;
+        }
+        if (!pin) {
+          err.innerText = "Bitte PIN eingeben.";
+          return;
+        }
+
+        btn.disabled = true;
+        btn.innerText = "Prüfe…";
+
+        fetch(API, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "verifyPin", pin: pin }),
+        })
+          .then(function (r) {
+            return r.json();
+          })
+          .then(function (data) {
+            if (data.ok && data.verified) {
+              currentUser = name;
+              err.innerText = "";
+              document.getElementById("loginArea").style.display = "none";
+              document.getElementById("appArea").style.display = "block";
+              document.getElementById("dateLine").innerText = dayName() + ", " + today();
+              document.getElementById("leiterLine").innerText = "👤 " + name;
+              document.getElementById("kidInput").focus();
+            } else {
+              err.innerText = "Falscher PIN.";
+              document.getElementById("loginPin").value = "";
+              btn.disabled = false;
+              btn.innerText = "Anmelden";
+            }
+          })
+          .catch(function () {
+            err.innerText = "Verbindungsfehler.";
+            btn.disabled = false;
+            btn.innerText = "Anmelden";
+          });
+      }
+
+      // ── Kids ────────────────────────────────────────────────
+      function addKid() {
+        var input = document.getElementById("kidInput");
+        var name = input.value.trim();
+        if (!name) return;
+        if (
+          kids.find(function (k) {
+            return k.name.toLowerCase() === name.toLowerCase();
+          })
+        ) {
+          input.value = "";
+          return;
+        }
+        kids.push({ name: name, strikes: 0 });
+        input.value = "";
+        render();
+        // Focus back for quick entry
+        input.focus();
+      }
+
+      function changeStrike(i, delta) {
+        kids[i].strikes = Math.max(0, Math.min(3, kids[i].strikes + delta));
+        render();
+      }
+
+      function removeKid(i) {
+        kids.splice(i, 1);
+        render();
+      }
+
+      // ── Render ──────────────────────────────────────────────
+      function render() {
+        var list = document.getElementById("kidsList");
+
+        // Stats
+        var total = kids.length;
+        var one = kids.filter(function (k) {
+          return k.strikes === 1;
+        }).length;
+        var two = kids.filter(function (k) {
+          return k.strikes === 2;
+        }).length;
+        var three = kids.filter(function (k) {
+          return k.strikes >= 3;
+        }).length;
+        document.getElementById("sTotal").innerText = total;
+        document.getElementById("sOne").innerText = one;
+        document.getElementById("sTwo").innerText = two;
+        document.getElementById("sThree").innerText = three;
+
+        if (total === 0) {
+          list.innerHTML =
+            '<div class="empty-state">' +
+            '<div class="ei">👦</div>' +
+            "<p>Noch keine Kinder hinzugefügt.<br>Tippe einen Namen ein und drücke +.</p>" +
+            "</div>";
+          return;
+        }
+
+        list.innerHTML = kids
+          .map(function (kid, i) {
+            var s = kid.strikes;
+            var cls = s >= 3 ? "s3" : s === 2 ? "s2" : s === 1 ? "s1" : "";
+
+            // Dots
+            var dots = [1, 2, 3]
+              .map(function (n) {
+                var dc = n <= s ? "d" + Math.min(s, 3) : "";
+                return '<div class="dot ' + dc + '"></div>';
+              })
+              .join("");
+
+            var banned = s >= 3 ? '<span class="banned-tag">🚫 Ausschluss</span>' : "";
+
+            return (
+              '<div class="kid-card ' +
+              cls +
+              '">' +
+              '<span class="kid-name">' +
+              esc(kid.name) +
+              "</span>" +
+              banned +
+              '<div class="dot-row">' +
+              dots +
+              "</div>" +
+              '<div class="kid-controls">' +
+              '<button class="btn-cs minus" onclick="changeStrike(' +
+              i +
+              ',-1)"' +
+              (s === 0 ? " disabled" : "") +
+              ">−</button>" +
+              '<button class="btn-cs plus"  onclick="changeStrike(' +
+              i +
+              ', 1)"' +
+              (s >= 3 ? " disabled" : "") +
+              ">+</button>" +
+              "</div>" +
+              '<button class="btn-remove" onclick="removeKid(' +
+              i +
+              ')" title="Entfernen">✕</button>' +
+              "</div>"
+            );
+          })
+          .join("");
+      }
+
+      // ── End GruStu ──────────────────────────────────────────
+      function endGrustu() {
+        if (kids.length === 0) {
+          alert("Keine Kinder erfasst.");
+          return;
+        }
+
+        // Show overlay immediately
+        var overlay = document.getElementById("successOverlay");
+        overlay.classList.add("show");
+
+        // Build summary
+        var withStrikes = kids.filter(function (k) {
+          return k.strikes > 0;
+        });
+        var banned = kids.filter(function (k) {
+          return k.strikes >= 3;
+        });
+
+        var msg =
+          withStrikes.length === 0
+            ? "Heute keine Strikes – super GruStu! 🎉"
+            : withStrikes.length + " Kind" + (withStrikes.length > 1 ? "er hatten" : " hatte") + " Strikes.";
+        if (banned.length > 0) {
+          msg += "\n" + banned.length + " darf" + (banned.length > 1 ? "en" : "") + " nächstes Mal nicht kommen.";
+        }
+        document.getElementById("overlayMsg").innerText = msg;
+
+        // Summary list
+        var html = kids
+          .map(function (k) {
+            var cls = k.strikes === 0 ? "ok" : k.strikes < 3 ? "warn" : "bad";
+            var label =
+              k.strikes === 0
+                ? "✓ Kein Strike"
+                : k.strikes >= 3
+                  ? "🚫 Ausschluss"
+                  : "⚠️ " + k.strikes + " Strike" + (k.strikes > 1 ? "s" : "");
+            return (
+              '<div class="summary-row ' +
+              cls +
+              '">' +
+              '<span class="summary-name">' +
+              esc(k.name) +
+              "</span>" +
+              '<span class="summary-val">' +
+              label +
+              "</span>" +
+              "</div>"
+            );
+          })
+          .join("");
+        document.getElementById("summaryList").innerHTML = html;
+
+        // Save to Sheets
+        setSaveStatus("saving", "Speichert in Google Sheets…");
+
+        fetch(API, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: "saveStrikeDay",
+            datum: todayISO(),
+            leiterName: currentUser,
+            timestamp: new Date().toISOString(),
+            kids: kids,
+          }),
+        })
+          .then(function (r) {
+            return r.json();
+          })
+          .then(function (data) {
+            if (data.ok) {
+              setSaveStatus("saved", "Gespeichert" + (data.mailSent ? " · Mail an Scharleitung gesendet" : "") + " ✓");
+            } else {
+              setSaveStatus("error", "Fehler: " + (data.error || "Unbekannt"));
+            }
+            document.getElementById("newBtn").disabled = false;
+          })
+          .catch(function (e) {
+            setSaveStatus("error", "Netzwerkfehler: " + e.message);
+            document.getElementById("newBtn").disabled = false;
+          });
+      }
+
+      function setSaveStatus(type, text) {
+        var el = document.getElementById("saveStatus");
+        el.className = "save-status " + type;
+        document.getElementById("saveStatusText").innerText = text;
+      }
+
+      function newGrustu() {
+        kids = [];
+        document.getElementById("successOverlay").classList.remove("show");
+        document.getElementById("newBtn").disabled = true;
+        render();
+        document.getElementById("kidInput").focus();
+      }
+    </script>
+  </body>
+</html>
