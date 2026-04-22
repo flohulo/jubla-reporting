@@ -238,6 +238,12 @@ function buildPatternMail(warnings, datum) {
 // ═══════════════════════════════════════════════════════════
 //  HANDLER
 // ═══════════════════════════════════════════════════════════
+function formatDate(s) {
+  if (!s) return "–";
+  var p = s.split("-");
+  return p.length === 3 ? p[2] + "." + p[1] + "." + p[0] : s;
+}
+
 const CORS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "Content-Type",
@@ -296,7 +302,7 @@ exports.handler = async (event) => {
       for (const kid of kidsWithStrikes) {
         await appendRow(token, STRIKES_SHEET, [
           tsFormatted,
-          datum,
+          formatDate(datum),
           leiterName,
           kid.name,
           kid.strikes,

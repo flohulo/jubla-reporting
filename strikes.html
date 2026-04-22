@@ -971,8 +971,6 @@
       }
 
       function loadVersionInfo() {
-        var label = document.getElementById("versionLabel");
-        var link = document.getElementById("versionLink");
         var repo = "flohulo/jubla-reporting";
         var apiRelease = "https://api.github.com/repos/" + repo + "/releases/latest";
         var apiCommit = "https://api.github.com/repos/" + repo + "/commits/main";
@@ -983,12 +981,7 @@
             return response.json();
           })
           .then(function (data) {
-            var version = data.tag_name || data.name || "GitHub";
-            currentVersion = version;
-            label.innerText = version;
-            if (data.html_url) {
-              link.href = data.html_url;
-            }
+            currentVersion = data.tag_name || data.name || "GitHub";
           })
           .catch(function () {
             return fetch(apiCommit)
@@ -996,14 +989,10 @@
                 return r.json();
               })
               .then(function (data) {
-                var version = "commit " + (data.sha ? data.sha.slice(0, 7) : "main");
-                currentVersion = version;
-                label.innerText = version;
-                link.href = "https://github.com/" + repo + "/commits/main";
+                currentVersion = "commit " + (data.sha ? data.sha.slice(0, 7) : "main");
               })
               .catch(function () {
-                label.innerText = "GitHub";
-                link.href = "https://github.com/" + repo;
+                currentVersion = "1.4"; // Fallback
               });
           });
       }
