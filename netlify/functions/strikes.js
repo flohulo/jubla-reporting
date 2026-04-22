@@ -295,7 +295,11 @@ exports.handler = async (event) => {
           ts.getFullYear(),
         ].join(".") +
         " " +
-        [ts.getHours().toString().padStart(2, "0"), ts.getMinutes().toString().padStart(2, "0")].join(":");
+        [
+          ts.getHours().toString().padStart(2, "0"),
+          ts.getMinutes().toString().padStart(2, "0"),
+          ts.getSeconds().toString().padStart(2, "0"),
+        ].join(":");
 
       // Kinder mit Strikes ins Sheet schreiben
       const kidsWithStrikes = kids.filter((k) => k.strikes > 0);
