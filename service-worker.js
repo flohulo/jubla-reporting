@@ -1,7 +1,6 @@
-const CACHE_NAME = "jubla-reporting-v1";
+const CACHE_NAME = "jubla-reporting-v2";
 const ASSETS_TO_CACHE = [
   "/",
-  "/index.html",
   "/site.webmanifest",
   "/favicon.ico",
   "/android-chrome-192x192.png",

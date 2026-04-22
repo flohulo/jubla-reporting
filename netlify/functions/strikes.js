@@ -362,16 +362,3 @@ exports.handler = async (event) => {
 
   return err("Unbekannte Aktion: " + action, 400);
 };
-
-fetch(API, {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    action: "saveStrikeDay",
-    datum: todayISO(),
-    leiterName: currentUser,
-    timestamp: new Date().toISOString(),
-    kids: kids,
-    version: currentVersion, // Hier hinzufügen
-  }),
-});
