@@ -888,334 +888,333 @@
     </div>
 
     <script>
-            // ── State ───────────────────────────────────────────────
-            var kids = []; // { name, strikes }
-            var currentUser = null;
+      // ── State ───────────────────────────────────────────────
+      var kids = []; // { name, strikes }
+      var currentUser = null;
       var currentVersion = "";
-            var currentVersion = "";
-            var API = "/.netlify/functions/strikes";
+      var API = "/.netlify/functions/strikes";
 
-            // ── Helpers ─────────────────────────────────────────────
-            function esc(s) {
-              return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            }
-            function today() {
-              var d = new Date();
-              return (
-                d.getDate().toString().padStart(2, "0") +
-                "." +
-                (d.getMonth() + 1).toString().padStart(2, "0") +
-                "." +
-                d.getFullYear()
-              );
-            }
-            function todayISO() {
-              return new Date().toISOString().split("T")[0];
-            }
-            function dayName() {
-              return ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"][new Date().getDay()];
-            }
+      // ── Helpers ─────────────────────────────────────────────
+      function esc(s) {
+        return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      }
+      function today() {
+        var d = new Date();
+        return (
+          d.getDate().toString().padStart(2, "0") +
+          "." +
+          (d.getMonth() + 1).toString().padStart(2, "0") +
+          "." +
+          d.getFullYear()
+        );
+      }
+      function todayISO() {
+        return new Date().toISOString().split("T")[0];
+      }
+      function dayName() {
+        return ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"][new Date().getDay()];
+      }
 
-            // ── Login ───────────────────────────────────────────────
-            function togglePin() {
-              var el = document.getElementById("loginPin");
-              el.type = el.type === "password" ? "text" : "password";
-            }
+      // ── Login ───────────────────────────────────────────────
+      function togglePin() {
+        var el = document.getElementById("loginPin");
+        el.type = el.type === "password" ? "text" : "password";
+      }
 
-            function login() {
-              var name = document.getElementById("loginName").value.trim();
-              var pin = document.getElementById("loginPin").value.trim();
-              var err = document.getElementById("loginErr");
-              var btn = document.getElementById("loginBtn");
+      function login() {
+        var name = document.getElementById("loginName").value.trim();
+        var pin = document.getElementById("loginPin").value.trim();
+        var err = document.getElementById("loginErr");
+        var btn = document.getElementById("loginBtn");
 
-              if (!name) {
-                err.innerText = "Bitte Name eingeben.";
-                return;
-              }
-              if (!pin) {
-                err.innerText = "Bitte PIN eingeben.";
-                return;
-              }
+        if (!name) {
+          err.innerText = "Bitte Name eingeben.";
+          return;
+        }
+        if (!pin) {
+          err.innerText = "Bitte PIN eingeben.";
+          return;
+        }
 
-              btn.disabled = true;
-              btn.innerText = "Prüfe…";
+        btn.disabled = true;
+        btn.innerText = "Prüfe…";
 
-              fetch(API, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ action: "verifyPin", pin: pin }),
-              })
-                .then(function (r) {
-                  return r.json();
-                })
-                .then(function (data) {
-                  if (data.ok && data.verified) {
-                    currentUser = name;
-                    err.innerText = "";
-                    document.getElementById("loginArea").style.display = "none";
-                    document.getElementById("appArea").style.display = "block";
-                    document.getElementById("dateLine").innerText = dayName() + ", " + today();
-                    document.getElementById("leiterLine").innerText = "👤 " + name;
-                    document.getElementById("kidInput").focus();
-                  } else {
-                    err.innerText = "Falscher PIN.";
-                    document.getElementById("loginPin").value = "";
-                    btn.disabled = false;
-                    btn.innerText = "Anmelden";
-                  }
-                })
-                .catch(function () {
-                  err.innerText = "Verbindungsfehler.";
-                  btn.disabled = false;
-                  btn.innerText = "Anmelden";
-                });
-            }
-
-            function loadVersionInfo() {
-              var label = document.getElementById("versionLabel");
-              var link = document.getElementById("versionLink");
-              var repo = "flohulo/jubla-reporting";
-              var apiRelease = "https://api.github.com/repos/" + repo + "/releases/latest";
-              var apiCommit = "https://api.github.com/repos/" + repo + "/commits/main";
-
-              fetch(apiRelease)
-                .then(function (response) {
-                  if (!response.ok) throw new Error("Kein Release gefunden");
-                  return response.json();
-                })
-                .then(function (data) {
-                  var version = data.tag_name || data.name || "GitHub";
-                  currentVersion = version;
-                  label.innerText = version;
-                  if (data.html_url) {
-                    link.href = data.html_url;
-                  }
-                })
-                .catch(function () {
-                  return fetch(apiCommit)
-                    .then(function (r) {
-                      return r.json();
-                    })
-                    .then(function (data) {
-                      var version = "commit " + (data.sha ? data.sha.slice(0, 7) : "main");
-                      currentVersion = version;
-                      label.innerText = version;
-                      link.href = "https://github.com/" + repo + "/commits/main";
-                    })
-                    .catch(function () {
-                      label.innerText = "GitHub";
-                      link.href = "https://github.com/" + repo;
-                    });
-                });
-            }
-
-            // ── Kids ────────────────────────────────────────────────
-            function addKid() {
-              var input = document.getElementById("kidInput");
-              var name = input.value.trim();
-              if (!name) return;
-              if (
-                kids.find(function (k) {
-                  return k.name.toLowerCase() === name.toLowerCase();
-                })
-              ) {
-                input.value = "";
-                return;
-              }
-              kids.push({ name: name, strikes: 0 });
-              input.value = "";
-              render();
-              // Focus back for quick entry
-              input.focus();
-            }
-
-            function changeStrike(i, delta) {
-              kids[i].strikes = Math.max(0, Math.min(3, kids[i].strikes + delta));
-              render();
-            }
-
-            function removeKid(i) {
-              kids.splice(i, 1);
-              render();
-            }
-
-            // ── Render ──────────────────────────────────────────────
-            function render() {
-              var list = document.getElementById("kidsList");
-
-              // Stats
-              var total = kids.length;
-              var one = kids.filter(function (k) {
-                return k.strikes === 1;
-              }).length;
-              var two = kids.filter(function (k) {
-                return k.strikes === 2;
-              }).length;
-              var three = kids.filter(function (k) {
-                return k.strikes >= 3;
-              }).length;
-              document.getElementById("sTotal").innerText = total;
-              document.getElementById("sOne").innerText = one;
-              document.getElementById("sTwo").innerText = two;
-              document.getElementById("sThree").innerText = three;
-
-              if (total === 0) {
-                list.innerHTML =
-                  '<div class="empty-state">' +
-                  '<div class="ei">👦</div>' +
-                  "<p>Noch keine Kinder hinzugefügt.<br>Tippe einen Namen ein und drücke +.</p>" +
-                  "</div>";
-                return;
-              }
-
-              list.innerHTML = kids
-                .map(function (kid, i) {
-                  var s = kid.strikes;
-                  var cls = s >= 3 ? "s3" : s === 2 ? "s2" : s === 1 ? "s1" : "";
-
-                  // Dots
-                  var dots = [1, 2, 3]
-                    .map(function (n) {
-                      var dc = n <= s ? "d" + Math.min(s, 3) : "";
-                      return '<div class="dot ' + dc + '"></div>';
-                    })
-                    .join("");
-
-                  var banned = s >= 3 ? '<span class="banned-tag">🚫 Ausschluss</span>' : "";
-
-                  return (
-                    '<div class="kid-card ' +
-                    cls +
-                    '">' +
-                    '<span class="kid-name">' +
-                    esc(kid.name) +
-                    "</span>" +
-                    banned +
-                    '<div class="dot-row">' +
-                    dots +
-                    "</div>" +
-                    '<div class="kid-controls">' +
-                    '<button class="btn-cs minus" onclick="changeStrike(' +
-                    i +
-                    ',-1)"' +
-                    (s === 0 ? " disabled" : "") +
-                    ">−</button>" +
-                    '<button class="btn-cs plus"  onclick="changeStrike(' +
-                    i +
-                    ', 1)"' +
-                    (s >= 3 ? " disabled" : "") +
-                    ">+</button>" +
-                    "</div>" +
-                    '<button class="btn-remove" onclick="removeKid(' +
-                    i +
-                    ')" title="Entfernen">✕</button>' +
-                    "</div>"
-                  );
-                })
-                .join("");
-            }
-
-            // ── End GruStu ──────────────────────────────────────────
-            function endGrustu() {
-              if (kids.length === 0) {
-                alert("Keine Kinder erfasst.");
-                return;
-              }
-
-              // Show overlay immediately
-              var overlay = document.getElementById("successOverlay");
-              overlay.classList.add("show");
-
-              // Build summary
-              var withStrikes = kids.filter(function (k) {
-                return k.strikes > 0;
-              });
-              var banned = kids.filter(function (k) {
-                return k.strikes >= 3;
-              });
-
-              var msg =
-                withStrikes.length === 0
-                  ? "Heute keine Strikes – super GruStu! 🎉"
-                  : withStrikes.length + " Kind" + (withStrikes.length > 1 ? "er hatten" : " hatte") + " Strikes.";
-              if (banned.length > 0) {
-                msg += "\n" + banned.length + " darf" + (banned.length > 1 ? "en" : "") + " nächstes Mal nicht kommen.";
-              }
-              document.getElementById("overlayMsg").innerText = msg;
-
-              // Summary list
-              var html = kids
-                .map(function (k) {
-                  var cls = k.strikes === 0 ? "ok" : k.strikes < 3 ? "warn" : "bad";
-                  var label =
-                    k.strikes === 0
-                      ? "✓ Kein Strike"
-                      : k.strikes >= 3
-                        ? "🚫 Ausschluss"
-                        : "⚠️ " + k.strikes + " Strike" + (k.strikes > 1 ? "s" : "");
-                  return (
-                    '<div class="summary-row ' +
-                    cls +
-                    '">' +
-                    '<span class="summary-name">' +
-                    esc(k.name) +
-                    "</span>" +
-                    '<span class="summary-val">' +
-                    label +
-                    "</span>" +
-                    "</div>"
-                  );
-                })
-                .join("");
-              document.getElementById("summaryList").innerHTML = html;
-
-              // Save to Sheets
-              setSaveStatus("saving", "Speichert in Google Sheets…");
-
-              fetch(API, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  action: "saveStrikeDay",
-                  datum: todayISO(),
-                  leiterName: currentUser,
-                  timestamp: new Date().toISOString(),
-                  kids: kids,
-                  version: currentVersion,
-                }),
-              })
-                .then(function (r) {
-                  return r.json();
-                })
-                .then(function (data) {
-                  if (data.ok) {
-                    setSaveStatus("saved", "Gespeichert" + (data.mailSent ? " · Mail an Scharleitung gesendet" : "") + " ✓");
-                  } else {
-                    setSaveStatus("error", "Fehler: " + (data.error || "Unbekannt"));
-                  }
-                  document.getElementById("newBtn").disabled = false;
-                })
-                .catch(function (e) {
-                  setSaveStatus("error", "Netzwerkfehler: " + e.message);
-                  document.getElementById("newBtn").disabled = false;
-                });
-            }
-
-            function setSaveStatus(type, text) {
-              var el = document.getElementById("saveStatus");
-              el.className = "save-status " + type;
-              document.getElementById("saveStatusText").innerText = text;
-            }
-
-            function newGrustu() {
-              kids = [];
-              document.getElementById("successOverlay").classList.remove("show");
-              document.getElementById("newBtn").disabled = true;
-              render();
+        fetch(API, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "verifyPin", pin: pin }),
+        })
+          .then(function (r) {
+            return r.json();
+          })
+          .then(function (data) {
+            if (data.ok && data.verified) {
+              currentUser = name;
+              err.innerText = "";
+              document.getElementById("loginArea").style.display = "none";
+              document.getElementById("appArea").style.display = "block";
+              document.getElementById("dateLine").innerText = dayName() + ", " + today();
+              document.getElementById("leiterLine").innerText = "👤 " + name;
               document.getElementById("kidInput").focus();
+            } else {
+              err.innerText = "Falscher PIN.";
+              document.getElementById("loginPin").value = "";
+              btn.disabled = false;
+              btn.innerText = "Anmelden";
             }
+          })
+          .catch(function () {
+            err.innerText = "Verbindungsfehler.";
+            btn.disabled = false;
+            btn.innerText = "Anmelden";
+          });
+      }
 
-            loadVersionInfo();
+      function loadVersionInfo() {
+        var label = document.getElementById("versionLabel");
+        var link = document.getElementById("versionLink");
+        var repo = "flohulo/jubla-reporting";
+        var apiRelease = "https://api.github.com/repos/" + repo + "/releases/latest";
+        var apiCommit = "https://api.github.com/repos/" + repo + "/commits/main";
+
+        fetch(apiRelease)
+          .then(function (response) {
+            if (!response.ok) throw new Error("Kein Release gefunden");
+            return response.json();
+          })
+          .then(function (data) {
+            var version = data.tag_name || data.name || "GitHub";
+            currentVersion = version;
+            label.innerText = version;
+            if (data.html_url) {
+              link.href = data.html_url;
+            }
+          })
+          .catch(function () {
+            return fetch(apiCommit)
+              .then(function (r) {
+                return r.json();
+              })
+              .then(function (data) {
+                var version = "commit " + (data.sha ? data.sha.slice(0, 7) : "main");
+                currentVersion = version;
+                label.innerText = version;
+                link.href = "https://github.com/" + repo + "/commits/main";
+              })
+              .catch(function () {
+                label.innerText = "GitHub";
+                link.href = "https://github.com/" + repo;
+              });
+          });
+      }
+
+      // ── Kids ────────────────────────────────────────────────
+      function addKid() {
+        var input = document.getElementById("kidInput");
+        var name = input.value.trim();
+        if (!name) return;
+        if (
+          kids.find(function (k) {
+            return k.name.toLowerCase() === name.toLowerCase();
+          })
+        ) {
+          input.value = "";
+          return;
+        }
+        kids.push({ name: name, strikes: 0 });
+        input.value = "";
+        render();
+        // Focus back for quick entry
+        input.focus();
+      }
+
+      function changeStrike(i, delta) {
+        kids[i].strikes = Math.max(0, Math.min(3, kids[i].strikes + delta));
+        render();
+      }
+
+      function removeKid(i) {
+        kids.splice(i, 1);
+        render();
+      }
+
+      // ── Render ──────────────────────────────────────────────
+      function render() {
+        var list = document.getElementById("kidsList");
+
+        // Stats
+        var total = kids.length;
+        var one = kids.filter(function (k) {
+          return k.strikes === 1;
+        }).length;
+        var two = kids.filter(function (k) {
+          return k.strikes === 2;
+        }).length;
+        var three = kids.filter(function (k) {
+          return k.strikes >= 3;
+        }).length;
+        document.getElementById("sTotal").innerText = total;
+        document.getElementById("sOne").innerText = one;
+        document.getElementById("sTwo").innerText = two;
+        document.getElementById("sThree").innerText = three;
+
+        if (total === 0) {
+          list.innerHTML =
+            '<div class="empty-state">' +
+            '<div class="ei">👦</div>' +
+            "<p>Noch keine Kinder hinzugefügt.<br>Tippe einen Namen ein und drücke +.</p>" +
+            "</div>";
+          return;
+        }
+
+        list.innerHTML = kids
+          .map(function (kid, i) {
+            var s = kid.strikes;
+            var cls = s >= 3 ? "s3" : s === 2 ? "s2" : s === 1 ? "s1" : "";
+
+            // Dots
+            var dots = [1, 2, 3]
+              .map(function (n) {
+                var dc = n <= s ? "d" + Math.min(s, 3) : "";
+                return '<div class="dot ' + dc + '"></div>';
+              })
+              .join("");
+
+            var banned = s >= 3 ? '<span class="banned-tag">🚫 Ausschluss</span>' : "";
+
+            return (
+              '<div class="kid-card ' +
+              cls +
+              '">' +
+              '<span class="kid-name">' +
+              esc(kid.name) +
+              "</span>" +
+              banned +
+              '<div class="dot-row">' +
+              dots +
+              "</div>" +
+              '<div class="kid-controls">' +
+              '<button class="btn-cs minus" onclick="changeStrike(' +
+              i +
+              ',-1)"' +
+              (s === 0 ? " disabled" : "") +
+              ">−</button>" +
+              '<button class="btn-cs plus"  onclick="changeStrike(' +
+              i +
+              ', 1)"' +
+              (s >= 3 ? " disabled" : "") +
+              ">+</button>" +
+              "</div>" +
+              '<button class="btn-remove" onclick="removeKid(' +
+              i +
+              ')" title="Entfernen">✕</button>' +
+              "</div>"
+            );
+          })
+          .join("");
+      }
+
+      // ── End GruStu ──────────────────────────────────────────
+      function endGrustu() {
+        if (kids.length === 0) {
+          alert("Keine Kinder erfasst.");
+          return;
+        }
+
+        // Show overlay immediately
+        var overlay = document.getElementById("successOverlay");
+        overlay.classList.add("show");
+
+        // Build summary
+        var withStrikes = kids.filter(function (k) {
+          return k.strikes > 0;
+        });
+        var banned = kids.filter(function (k) {
+          return k.strikes >= 3;
+        });
+
+        var msg =
+          withStrikes.length === 0
+            ? "Heute keine Strikes – super GruStu! 🎉"
+            : withStrikes.length + " Kind" + (withStrikes.length > 1 ? "er hatten" : " hatte") + " Strikes.";
+        if (banned.length > 0) {
+          msg += "\n" + banned.length + " darf" + (banned.length > 1 ? "en" : "") + " nächstes Mal nicht kommen.";
+        }
+        document.getElementById("overlayMsg").innerText = msg;
+
+        // Summary list
+        var html = kids
+          .map(function (k) {
+            var cls = k.strikes === 0 ? "ok" : k.strikes < 3 ? "warn" : "bad";
+            var label =
+              k.strikes === 0
+                ? "✓ Kein Strike"
+                : k.strikes >= 3
+                  ? "🚫 Ausschluss"
+                  : "⚠️ " + k.strikes + " Strike" + (k.strikes > 1 ? "s" : "");
+            return (
+              '<div class="summary-row ' +
+              cls +
+              '">' +
+              '<span class="summary-name">' +
+              esc(k.name) +
+              "</span>" +
+              '<span class="summary-val">' +
+              label +
+              "</span>" +
+              "</div>"
+            );
+          })
+          .join("");
+        document.getElementById("summaryList").innerHTML = html;
+
+        // Save to Sheets
+        setSaveStatus("saving", "Speichert in Google Sheets…");
+
+        fetch(API, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: "saveStrikeDay",
+            datum: todayISO(),
+            leiterName: currentUser,
+            timestamp: new Date().toISOString(),
+            kids: kids,
+            version: currentVersion,
+          }),
+        })
+          .then(function (r) {
+            return r.json();
+          })
+          .then(function (data) {
+            if (data.ok) {
+              setSaveStatus("saved", "Gespeichert" + (data.mailSent ? " · Mail an Scharleitung gesendet" : "") + " ✓");
+            } else {
+              setSaveStatus("error", "Fehler: " + (data.error || "Unbekannt"));
+            }
+            document.getElementById("newBtn").disabled = false;
+          })
+          .catch(function (e) {
+            setSaveStatus("error", "Netzwerkfehler: " + e.message);
+            document.getElementById("newBtn").disabled = false;
+          });
+      }
+
+      function setSaveStatus(type, text) {
+        var el = document.getElementById("saveStatus");
+        el.className = "save-status " + type;
+        document.getElementById("saveStatusText").innerText = text;
+      }
+
+      function newGrustu() {
+        kids = [];
+        document.getElementById("successOverlay").classList.remove("show");
+        document.getElementById("newBtn").disabled = true;
+        render();
+        document.getElementById("kidInput").focus();
+      }
+
+      loadVersionInfo();
     </script>
   </body>
 </html>
