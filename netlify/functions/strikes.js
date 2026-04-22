@@ -5,8 +5,6 @@ const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 
 const STRIKES_SHEET = "Strikes";
-const VERSION = "1.4";
-
 // ═══════════════════════════════════════════════════════════
 //  GOOGLE AUTH
 // ═══════════════════════════════════════════════════════════
@@ -303,7 +301,7 @@ exports.handler = async (event) => {
           kid.name,
           kid.strikes,
           kid.strikes >= 3 ? "JA" : "NEIN",
-          VERSION,
+          body.version || "1.4",
         ]);
       }
 
@@ -364,3 +362,16 @@ exports.handler = async (event) => {
 
   return err("Unbekannte Aktion: " + action, 400);
 };
+
+fetch(API, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    action: "saveStrikeDay",
+    datum: todayISO(),
+    leiterName: currentUser,
+    timestamp: new Date().toISOString(),
+    kids: kids,
+    version: currentVersion, // Hier hinzufügen
+  }),
+});
