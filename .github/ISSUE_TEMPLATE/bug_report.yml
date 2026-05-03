@@ -1,0 +1,46 @@
+name: 🐛 Bug Report
+description: Melde ein Problem mit dem Reporting-Tool
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Vielen Dank, dass du dir die Zeit nimmst, einen Fehler zu melden!
+  - type: textarea
+    id: description
+    attributes:
+      label: Beschreibung
+      description: Beschreibe das Problem so genau wie möglich.
+      placeholder: Was ist passiert?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Schritte zum Reproduzieren
+      description: Wie können wir den Fehler finden?
+      placeholder: |
+        1. Gehe zu...
+        2. Klicke auf...
+        3. Siehe Fehler...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Erwartetes Verhalten
+      description: Was sollte stattdessen passieren?
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Screenshots / Logs
+      description: Falls vorhanden, füge bitte Screenshots oder Fehlermeldungen bei.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Selbst-Check
+      options:
+        - label: Ich nutze die aktuellste Version des Tools.
+          required: true

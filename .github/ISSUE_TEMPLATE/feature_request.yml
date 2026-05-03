@@ -1,0 +1,28 @@
+name: 🚀 Feature Request
+description: Vorschlag für eine neue Funktion oder Verbesserung
+labels: [enhancement]
+body:
+  - type: textarea
+    id: feature
+    attributes:
+      label: Was möchtest du verbessern oder hinzufügen?
+      description: Beschreibe die gewünschte Funktion.
+    validations:
+      required: true
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Warum ist das hilfreich?
+      description: Welches Problem löst diese Funktion oder wie verbessert sie den Workflow?
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Weitere Details
+      description: Falls relevant, füge zusätzliche Informationen oder Beispiele bei.
+    attributes:
+      label: Selbst-Check
+      options:
+        - label: Ich nutze die aktuellste Version des Tools.
+          required: true

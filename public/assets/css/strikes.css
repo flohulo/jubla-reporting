@@ -1,0 +1,397 @@
+/* Specific styles for the Strike System */
+:root {
+  --orange: #e67e22;
+  --org-lt: #fef5ec;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --org-lt: #2a1f10;
+  }
+
+  .kid-card {
+    border-color: #3d3d3d;
+  }
+
+  .kid-card.s1 {
+    border-color: rgb(230 126 34 / 50%);
+  }
+
+  .kid-card.s2 {
+    border-color: rgb(214 90 90 / 50%);
+  }
+
+  .kid-card.s3 {
+    border-color: rgb(214 90 90 / 90%);
+    background: #2a1a1a;
+  }
+}
+
+.header-back {
+  margin-left: auto;
+  color: rgb(255 255 255 / 85%);
+  font-size: 0.78em;
+  font-weight: 800;
+  text-decoration: none;
+  background: rgb(255 255 255 / 15%);
+  padding: 6px 12px;
+  border-radius: 8px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.header-back:hover {
+  background: rgb(255 255 255 / 25%);
+}
+
+.btn-green {
+  background: var(--green);
+  color: white;
+  box-shadow: 0 6px 16px rgb(106 176 76 / 30%);
+}
+
+.btn-green:hover {
+  opacity: 0.9;
+}
+
+/* Stats */
+.stats-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.stat-pill {
+  background: var(--light);
+  border-radius: 10px;
+  padding: 10px 8px;
+  text-align: center;
+  border: 1.5px solid transparent;
+}
+
+.stat-pill.active-warn {
+  border-color: rgb(230 126 34 / 40%);
+}
+
+.stat-pill.active-red {
+  border-color: rgb(214 90 90 / 50%);
+}
+
+.stat-num {
+  font-size: 1.5em;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.63em;
+  font-weight: 800;
+  color: var(--mid);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-top: 3px;
+}
+
+.stat-num.c-warn {
+  color: var(--orange);
+}
+
+.stat-num.c-red {
+  color: var(--red);
+}
+
+.stat-num.c-green {
+  color: var(--green);
+}
+
+/* Add Kid form */
+.add-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.btn-add {
+  padding: 11px 18px;
+  background: var(--red);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-family: Nunito, sans-serif;
+  font-weight: 900;
+  font-size: 1.3em;
+  cursor: pointer;
+  transition: 0.15s;
+  flex-shrink: 0;
+}
+
+.btn-add:hover {
+  opacity: 0.88;
+}
+
+.btn-add:active {
+  transform: scale(0.93);
+}
+
+/* Kid Cards */
+.kids-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+  min-height: 60px;
+}
+
+.kid-card {
+  background: var(--light);
+  border: 2px solid transparent;
+  border-radius: 13px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: kid-in 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
+}
+
+@keyframes kid-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.kid-card.s1 {
+  border-color: rgb(230 126 34 / 45%);
+  background: var(--org-lt);
+}
+
+.kid-card.s2 {
+  border-color: rgb(214 90 90 / 45%);
+  background: #fff5f5;
+}
+
+.kid-card.s3 {
+  border-color: var(--red);
+  background: #fff0f0;
+  box-shadow: 0 0 0 3px rgb(214 90 90 / 10%);
+  animation: kid-in 0.22s cubic-bezier(0.16, 1, 0.3, 1), pulse 2.5s ease-in-out infinite 0.3s;
+}
+
+@media (prefers-color-scheme: dark) {
+  .kid-card.s2 {
+    background: #2d1a1a;
+  }
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 3px rgb(214 90 90 / 10%);
+  }
+
+  50% {
+    box-shadow: 0 0 0 6px rgb(214 90 90 / 20%);
+  }
+}
+
+.kid-name {
+  font-weight: 800;
+  font-size: 0.97em;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Dots */
+.dot-row {
+  display: flex;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--blu-lt);
+  background: transparent;
+  transition: all 0.2s;
+}
+
+.dot.d1 {
+  background: var(--orange);
+  border-color: var(--orange);
+  box-shadow: 0 0 6px rgb(230 126 34 / 50%);
+}
+
+.dot.d2 {
+  background: var(--red);
+  border-color: var(--red);
+  box-shadow: 0 0 6px rgb(214 90 90 / 50%);
+}
+
+.dot.d3 {
+  background: var(--red);
+  border-color: var(--red);
+  box-shadow: 0 0 10px rgb(214 90 90 / 70%);
+}
+
+/* Kid Controls */
+.kid-controls {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.btn-cs {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.05em;
+  font-weight: 900;
+  cursor: pointer;
+  transition: transform 0.1s, opacity 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-cs:active {
+  transform: scale(0.86);
+}
+
+.btn-cs.minus {
+  background: var(--grn-lt);
+  color: var(--green);
+  border: 1.5px solid rgb(106 176 76 / 30%);
+}
+
+.btn-cs.plus {
+  background: #fff0f0;
+  color: var(--red);
+  border: 1.5px solid rgb(214 90 90 / 30%);
+}
+
+.btn-remove {
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--mid);
+  font-size: 0.85em;
+  cursor: pointer;
+  transition: color 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.banned-tag {
+  font-size: 0.68em;
+  font-weight: 800;
+  background: #fff0f0;
+  color: var(--red);
+  border: 1px solid rgb(214 90 90 / 35%);
+  border-radius: 6px;
+  padding: 2px 7px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 32px 20px;
+  color: var(--mid);
+  border: 2px dashed var(--blu-lt);
+  border-radius: 12px;
+}
+
+/* Success Overlay (Moved to main.css) */
+
+
+.summary-list {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 13px;
+  border-radius: 9px;
+  font-size: 0.87em;
+}
+
+.summary-row.ok {
+  background: var(--grn-lt);
+}
+
+.summary-row.warn {
+  background: var(--org-lt);
+}
+
+.summary-row.bad {
+  background: #fff0f0;
+}
+
+.save-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82em;
+  font-weight: 700;
+  color: var(--mid);
+  margin-bottom: 16px;
+  justify-content: center;
+}
+
+.save-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--mid);
+}
+
+.save-status.saving .save-dot {
+  background: var(--orange);
+  animation: blink 0.8s infinite;
+}
+
+.save-status.saved .save-dot {
+  background: var(--green);
+}
+
+.save-status.error .save-dot {
+  background: var(--red);
+}
+
+@keyframes blink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.3;
+  }
+}

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title id="pageTitle">Jubla Wald ZH – Strike-System</title>
+  <meta name="theme-color" content="#d65a5a" />
+  <link rel="stylesheet" href="/assets/css/main.css" />
+  <link rel="stylesheet" href="/assets/css/strikes.css" />
+  <script src="/assets/js/config.js"></script>
+</head>
+
+<body>
+  <div class="card">
+    <!-- HEADER -->
+    <div class="card-header">
+      <div class="logo-badge">⚡</div>
+      <div>
+        <h1 id="strikeSystemTitle">Strike-System</h1>
+        <p id="headerSub">Jubla Wald ZH · GruStu</p>
+      </div>
+      <a href="/" class="header-back">← Reporting</a>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="card-body" id="loginArea">
+      <p class="section-title" id="loginTitle">🔒 Anmelden</p>
+      <div class="form-group">
+        <label class="form-label" id="nameLabel">Dein Name</label>
+        <input type="text" id="loginName" class="form-control" placeholder="Vorname"
+          onkeydown="if (event.key === 'Enter') login();" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" id="pinLabel">Schar-PIN</label>
+        <div class="pin-group">
+          <input type="password" id="loginPin" class="form-control" placeholder="••••" inputmode="numeric" maxlength="8"
+            autocomplete="current-password" onkeydown="if (event.key === 'Enter') login();" />
+          <span class="toggle-pin" onclick="UI.togglePin()">👁️‍🗨️</span>
+        </div>
+      </div>
+      <p class="error-msg" id="loginErr"></p>
+      <button class="btn btn-primary" id="loginBtn" onclick="login()">Anmelden</button>
+    </div>
+
+    <!-- MAIN AREA -->
+    <div class="card-body" id="mainArea" style="display: none">
+      <!-- Stats -->
+      <div class="stats-strip">
+        <div class="stat-pill">
+          <div class="stat-num" id="statTotal">0</div>
+          <div class="stat-label" id="kidsLabel">Kinder</div>
+        </div>
+        <div class="stat-pill">
+          <div class="stat-num c-green" id="statWith">0</div>
+          <div class="stat-label" id="strikesLabel">Strikes</div>
+        </div>
+        <div class="stat-pill" id="pillWarn">
+          <div class="stat-num c-warn" id="statWarn">0</div>
+          <div class="stat-label" id="attentionLabel">Achtung</div>
+        </div>
+        <div class="stat-pill" id="pillRed">
+          <div class="stat-num c-red" id="statRed">0</div>
+          <div class="stat-label" id="bannedLabel">Banned</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Add Kid -->
+      <div class="add-row">
+        <input type="text" id="kidInput" placeholder="Name des Kindes..."
+          onkeydown="if (event.key === 'Enter') addKid();" />
+        <button class="btn-add" onclick="addKid()">+</button>
+      </div>
+
+      <!-- List -->
+      <div class="kids-list" id="kidsList">
+        <!-- JS dynamic -->
+      </div>
+
+      <div class="divider"></div>
+
+      <p class="error-msg" id="saveErr"></p>
+      <button class="btn btn-primary" id="saveBtn" onclick="saveDay()">GruStu abschliessen & speichern 💾</button>
+    </div>
+
+    <div class="card-footer">
+      <span><a id="versionLink" class="footer-link" href="https://github.com/flohulo/jubla-reporting/releases"
+          target="_blank" rel="noreferrer"><span id="versionText">Version</span> <span id="versionLabel">lade...</span></a></span>
+      <span class="footer-links">
+        <a id="issueLink" href="https://github.com/flohulo/jubla-reporting/issues" target="_blank"
+          rel="noreferrer">Fehler melden</a>
+        <a id="footerLegalLink" href="https://github.com/flohulo/jubla-reporting/blob/main/LEGAL.md" target="_blank"
+          rel="noreferrer">Rechtliches</a>
+        <a id="strikesLink" href="index.html">Reporting</a>
+      </span>
+    </div>
+  </div>
+
+  <!-- SUCCESS OVERLAY -->
+  <div class="overlay" id="successOverlay">
+    <div class="overlay-card">
+      <div class="overlay-icon">🚀</div>
+      <h2 id="successTitle">GruStu gespeichert!</h2>
+      <p id="successSub">Alle Strikes wurden erfolgreich in Google Sheets übertragen.</p>
+
+      <div class="summary-list" id="summaryList">
+        <!-- JS dynamic -->
+      </div>
+
+      <div class="save-status saved" id="summaryMail" style="display: none">
+        <div class="save-dot"></div>
+        <span>Scharleitung wurde informiert.</span>
+      </div>
+
+      <button class="btn btn-primary" id="newGruStuBtn" onclick="location.reload()">Neue GruStu starten</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/strikes-ui.js"></script>
+  <script>
+    // Initiales Branding wird bereits in strikes-ui.js im load-Event aufgerufen.
+  </script>
+</body>
+
+</html>
