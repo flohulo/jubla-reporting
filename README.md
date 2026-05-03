@@ -18,10 +18,12 @@ Dieses Tool ermöglicht es Leitenden, Berichte zu Gruppenstunden schnell und unk
 *   ☁️ **Serverless:** Kostengünstiges Hosting via Netlify Functions.
 
 ## 📸 Screenshots
-![Anmeldung](docs/screenshots/login.png)
-![Gruppenstunde eintragen](docs/screenshots/bericht.png)
-![Auszug anfordern](docs/screenshots/auszug.png)
-![Strikes eintragen](docs/screenshots/strikes.png)
+<div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 10px;">
+  <img src="docs/screenshots/login.png" alt="Anmeldung" width="200" style="max-width: 100%; height: auto;">
+  <img src="docs/screenshots/bericht.png" alt="Gruppenstunde eintragen" width="200" style="max-width: 100%; height: auto;">
+  <img src="docs/screenshots/auszug.png" alt="Auszug anfordern" width="200" style="max-width: 100%; height: auto;">
+  <img src="docs/screenshots/strikes.png" alt="Strikes eintragen" width="200" style="max-width: 100%; height: auto;">
+</div>
 
 ---
 
