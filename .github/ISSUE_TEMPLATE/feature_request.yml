@@ -21,6 +21,8 @@ body:
     attributes:
       label: Weitere Details
       description: Falls relevant, füge zusätzliche Informationen oder Beispiele bei.
+  - type: checkboxes
+    id: check
     attributes:
       label: Selbst-Check
       options:
