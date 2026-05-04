@@ -185,6 +185,22 @@
   animation: kid-in 0.22s cubic-bezier(0.16, 1, 0.3, 1), pulse 2.5s ease-in-out infinite 0.3s;
 }
 
+#kidInput {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 15px;
+  border: 2px solid var(--blu-lt);
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 1em;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+#kidInput:focus {
+  border-color: var(--orange);
+}
+
 @media (prefers-color-scheme: dark) {
   .kid-card.s2 {
     background: #2d1a1a;
