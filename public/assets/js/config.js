@@ -75,7 +75,7 @@ window.APP_CONFIG = {
 
         // Strikes specific
         strikeSystemTitle: "Strike-System",
-        strikeSystemSub: "{org} · GruStu",
+        strikeSystemSub: "{org}",
         bannedTag: "🚫 Ausschluss",
         kidsLabel: "Kinder",
         strikesLabel: "Strikes",
