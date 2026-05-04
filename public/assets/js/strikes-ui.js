@@ -8,9 +8,18 @@ let kids = []; // { name, strikes }
 const UI = {
   togglePin() {
     const el = document.getElementById("loginPin");
-    if (el) el.type = el.type === "password" ? "text" : "password";
+    const icon = document.querySelector(".toggle-pin i");
+    if (el && icon) {
+      if (el.type === "password") {
+        el.type = "text";
+        icon.className = "fa-regular fa-eye-slash";
+      } else {
+        el.type = "password";
+        icon.className = "fa-regular fa-eye";
+      }
+    }
   },
-  
+
   updateStats() {
     const total = kids.length;
     const withStrikes = kids.filter(k => k.strikes > 0).length;
@@ -34,7 +43,7 @@ const UI = {
       const emptyMsg = (cfg.labels && cfg.labels.noKidsOnList) || "Noch keine Kinder auf der Liste.<br>Gib oben einen Namen ein.";
       list.innerHTML = `
         <div class="empty-state">
-          <div class="ei">🧒</div>
+          <div class="ei"><i class="fa-solid fa-child"></i></div>
           <p>${emptyMsg}</p>
         </div>`;
       return;
@@ -44,19 +53,19 @@ const UI = {
     kids.forEach((k, idx) => {
       const card = document.createElement("div");
       card.className = `kid-card s${k.strikes}`;
-      const bannedTag = (cfg.labels && cfg.labels.bannedTag) || "🚫 Ausschluss";
+      const bannedTag = (cfg.labels && cfg.labels.bannedTag) || "Ausschluss";
       card.innerHTML = `
-        <button class="btn-remove" onclick="removeKid(${idx})">✕</button>
+        <button class="btn-remove" onclick="removeKid(${idx})"><i class="fa-solid fa-xmark"></i></button>
         <div class="kid-name">${HELPERS.escapeHtml(k.name)}</div>
-        ${k.strikes >= 3 ? `<span class="banned-tag">${bannedTag}</span>` : ""}
+        ${k.strikes >= 3 ? `<span class="banned-tag"><i class="fa-solid fa-circle-xmark"></i> ${bannedTag}</span>` : ""}
         <div class="dot-row">
           <div class="dot ${k.strikes >= 1 ? "d1" : ""}"></div>
           <div class="dot ${k.strikes >= 2 ? "d2" : ""}"></div>
           <div class="dot ${k.strikes >= 3 ? "d3" : ""}"></div>
         </div>
         <div class="kid-controls">
-          <button class="btn-cs minus" onclick="changeStrike(${idx}, -1)" ${k.strikes === 0 ? "disabled" : ""}>–</button>
-          <button class="btn-cs plus" onclick="changeStrike(${idx}, 1)" ${k.strikes >= 3 ? "disabled" : ""}>+</button>
+          <button class="btn-cs minus" onclick="changeStrike(${idx}, -1)" ${k.strikes === 0 ? "disabled" : ""}><i class="fa-solid fa-minus"></i></button>
+          <button class="btn-cs plus" onclick="changeStrike(${idx}, 1)" ${k.strikes >= 3 ? "disabled" : ""}><i class="fa-solid fa-plus"></i></button>
         </div>
       `;
       list.appendChild(card);
@@ -73,8 +82,14 @@ const UI = {
     const orgEl = document.getElementById('appOrgName'); // if present
     if (orgEl) orgEl.innerText = cfg.branding.orgName;
 
-    const iconEl = document.querySelector('.logo-badge');
-    if (iconEl && cfg.branding.strikeIcon) iconEl.innerText = cfg.branding.strikeIcon;
+    const iconEl = document.querySelector('.logo-badge i');
+    if (iconEl && cfg.branding.strikeIcon) {
+      if (cfg.branding.strikeIcon.startsWith('fa-')) {
+        iconEl.className = cfg.branding.strikeIcon;
+      } else {
+        iconEl.innerText = cfg.branding.strikeIcon;
+      }
+    }
 
     const subEl = document.getElementById('headerSub');
     if (subEl) {
@@ -116,12 +131,12 @@ const UI = {
     if (document.getElementById("loginPin")) {
       document.getElementById("loginPin").placeholder = cfg.placeholders.pin;
     }
-    
+
     // Footer
     if (document.getElementById("issueLink")) document.getElementById("issueLink").innerText = cfg.links.reportIssue;
     if (document.getElementById("footerLegalLink")) document.getElementById("footerLegalLink").innerText = cfg.links.legalText;
     if (document.getElementById("strikesLink")) document.getElementById("strikesLink").innerText = cfg.labels.backToStrikes;
-    
+
     const versionLabel = document.getElementById("versionText");
     if (versionLabel && cfg.labels.versionLabel) versionLabel.innerText = cfg.labels.versionLabel;
 
@@ -212,9 +227,9 @@ async function saveDay() {
       version: currentVersion
     });
 
-  if (data.ok) {
-    showSummary(data);
-  } else {
+    if (data.ok) {
+      showSummary(data);
+    } else {
       throw new Error(data.error);
     }
   } catch (e) {
@@ -232,7 +247,7 @@ function showSummary(data) {
 
   const withStrikes = kids.filter(k => k.strikes > 0);
   if (withStrikes.length === 0) {
-    const noStrikesMsg = (cfg.messages && cfg.messages.noStrikes) || "Keine Strikes heute. Alles vorbildlich! 🌟";
+    const noStrikesMsg = (cfg.messages && cfg.messages.noStrikes) || "Keine Strikes heute. Alles vorbildlich! <i class='fa-solid fa-star'></i>";
     list.innerHTML = `<p style='text-align:center; padding:10px;'>${noStrikesMsg}</p>`;
   } else {
     withStrikes.forEach(k => {
@@ -261,7 +276,7 @@ window.addEventListener("load", async () => {
     const versionEl = document.getElementById("versionLabel");
     if (versionEl) versionEl.innerText = currentVersion;
     UI.applyBranding();
-    
+
     // Version prüfen
     HELPERS.checkVersion(vInfo);
   } catch (e) {

@@ -8,6 +8,7 @@
   <meta name="theme-color" content="#d65a5a" />
   <link rel="stylesheet" href="/assets/css/main.css" />
   <link rel="stylesheet" href="/assets/css/strikes.css" />
+  <link rel="stylesheet" href="assets/vendor/fontawesome/css/all.min.css" />
   <script src="/assets/js/config.js"></script>
 </head>
 
@@ -15,17 +16,17 @@
   <div class="card">
     <!-- HEADER -->
     <div class="card-header">
-      <div class="logo-badge">⚡</div>
+      <div class="logo-badge"><i class="fa-solid fa-bolt"></i></div>
       <div>
         <h1 id="strikeSystemTitle">Strike-System</h1>
         <p id="headerSub">Strikesystem</p>
       </div>
-      <a href="/" class="header-back">← Reporting</a>
+      <a href="/" class="header-back"><i class="fa-solid fa-arrow-left"></i> Reporting</a>
     </div>
 
     <!-- LOGIN -->
     <div class="card-body" id="loginArea">
-      <p class="section-title" id="loginTitle">🔒 Anmelden</p>
+      <p class="section-title"><i class="fa-solid fa-lock"></i> <span id="loginTitle">Anmelden</span></p>
       <div class="form-group">
         <label class="form-label" id="nameLabel">Dein Name</label>
         <input type="text" id="loginName" class="form-control" placeholder="Vorname"
@@ -36,7 +37,7 @@
         <div class="pin-group">
           <input type="password" id="loginPin" class="form-control" placeholder="••••" inputmode="numeric" maxlength="8"
             autocomplete="current-password" onkeydown="if (event.key === 'Enter') login();" />
-          <span class="toggle-pin" onclick="UI.togglePin()">👁️‍🗨️</span>
+          <span class="toggle-pin" onclick="UI.togglePin()"><i class="fa-regular fa-eye"></i></span>
         </div>
       </div>
       <p class="error-msg" id="loginErr"></p>
@@ -71,7 +72,7 @@
       <div class="add-row">
         <input type="text" id="kidInput" placeholder="Name des Kindes..."
           onkeydown="if (event.key === 'Enter') addKid();" />
-        <button class="btn-add" onclick="addKid()">+</button>
+        <button class="btn-add" onclick="addKid()"><i class="fa-solid fa-plus"></i></button>
       </div>
 
       <!-- List -->
@@ -82,7 +83,7 @@
       <div class="divider"></div>
 
       <p class="error-msg" id="saveErr"></p>
-      <button class="btn btn-primary" id="saveBtn" onclick="saveDay()">GruStu abschliessen & speichern 💾</button>
+      <button class="btn btn-primary" onclick="saveDay()"><span id="saveBtn">GruStu abschliessen & speichern</span> <i class="fa-solid fa-floppy-disk"></i></button>
     </div>
 
     <div class="card-footer">
@@ -101,7 +102,7 @@
   <!-- SUCCESS OVERLAY -->
   <div class="overlay" id="successOverlay">
     <div class="overlay-card">
-      <div class="overlay-icon">🚀</div>
+      <div class="overlay-icon"><i class="fa-solid fa-rocket"></i></div>
       <h2 id="successTitle">GruStu gespeichert!</h2>
       <p id="successSub">Alle Strikes wurden erfolgreich in Google Sheets übertragen.</p>
 

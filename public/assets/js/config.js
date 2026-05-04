@@ -8,8 +8,8 @@ window.APP_CONFIG = {
         orgName: "Jubla Wald ZH",
         heroTitle: "Reporting Tool",
         heroSubtitle: "Einfach und schnell Berichte erfassen.",
-        reportIcon: "🏕",
-        strikeIcon: "⚡",
+        reportIcon: "fa-solid fa-tree",
+        strikeIcon: "fa-solid fa-bolt",
     },
 
     tabs: {
@@ -24,15 +24,15 @@ window.APP_CONFIG = {
         generalInfoTitle: "Allgemeines",
         privacyTitle: "Datenschutz & Dienste",
         linksTitle: "Wichtige Links",
-        emergencyTitle: "📞 Notrufnummern",
-        helpTopicsTitle: "❓ Hilfe-Themen",
-        legalTitle: "📋 Rechtliche Hinweise",
+        emergencyTitle: "Notrufnummern",
+        helpTopicsTitle: "Hilfe-Themen",
+        legalTitle: "Rechtliche Hinweise",
 
         // Form Section Titles
-        loginTitle: "🔒 Anmelden",
-        requestTitle: "📨 Auszug anfordern",
-        infoSectionTitle: "ℹ️ Allgemeine Infos",
-        helpTipsBtn: "💡 Hilfe & Tipps",
+        loginTitle: "Anmelden",
+        requestTitle: "Auszug anfordern",
+        infoSectionTitle: "Allgemeine Infos",
+        helpTipsBtn: "Hilfe & Tipps",
 
         // Form Labels
         nameLabel: "Dein Name",
@@ -54,16 +54,16 @@ window.APP_CONFIG = {
 
         // Buttons
         loginBtn: "Anmelden",
-        submitReportBtn: "Report absenden 🚀",
-        requestCodeBtn: "Verifizierungs-Code anfordern 🔑",
-        showReportsBtn: "Berichte anzeigen 📧",
+        submitReportBtn: "Report absenden",
+        requestCodeBtn: "Verifizierungs-Code anfordern",
+        showReportsBtn: "Berichte anzeigen",
         newReportBtn: "Neuer Bericht",
         newRequestBtn: "Neue Anforderung",
 
         // Loading states
         checking: "Prüfe…",
-        sending: "Wird gesendet… ⏳",
-        verifying: "Wird verifiziert… ⏳",
+        sending: "Wird gesendet…",
+        verifying: "Wird verifiziert…",
         saving: "Wird gespeichert…",
         checkingAuth: "Prüfe Berechtigung…",
 
@@ -76,13 +76,13 @@ window.APP_CONFIG = {
         // Strikes specific
         strikeSystemTitle: "Strike-System",
         strikeSystemSub: "{org}",
-        bannedTag: "🚫 Ausschluss",
+        bannedTag: "Ausschluss",
         kidsLabel: "Kinder",
         strikesLabel: "Strikes",
         attentionLabel: "Achtung",
         bannedLabel: "Ausgeschlossen",
         addKidPlaceholder: "Name des Kindes...",
-        completeGruStuBtn: "GruStu abschliessen & speichern 💾",
+        completeGruStuBtn: "GruStu abschliessen & speichern",
         newGruStuBtn: "Neue GruStu starten",
         noKidsOnList: "Noch keine Kinder auf der Liste.<br>Gib oben einen Namen ein.",
         successTitle: "GruStu gespeichert!",
@@ -106,11 +106,11 @@ window.APP_CONFIG = {
     },
 
     dynamikOptions: [
-        { value: "1", label: "1 – Alles top 😊" },
-        { value: "2", label: "2 – Gut 🙂" },
-        { value: "3", label: "3 – Intensiv 😐" },
-        { value: "4", label: "4 – Schwierig 😬" },
-        { value: "5", label: "5 – Kritisch ⛔" }
+        { value: "1", label: "1 – Alles top" },
+        { value: "2", label: "2 – Gut" },
+        { value: "3", label: "3 – Intensiv" },
+        { value: "4", label: "4 – Schwierig" },
+        { value: "5", label: "5 – Kritisch" }
     ],
 
     roles: [
@@ -119,7 +119,7 @@ window.APP_CONFIG = {
     ],
 
     messages: {
-        loginSuccess: "Hoi {name}! 👋",
+        loginSuccess: "Hoi {name}!",
         loginError: "Falscher PIN. Bitte nochmal versuchen.",
         loginMissing: "Bitte Name und PIN eingeben.",
         reportSuccess: "Bericht gesendet!",
@@ -134,14 +134,14 @@ window.APP_CONFIG = {
         saveError: "Fehler beim Speichern.",
 
         // Dynamik warnings
-        dynamikWarn: "⚠️ Bitte beschreibe die Situation ausführlich.",
-        dynamikCrit: "⛔ Bitte melde dich zusätzlich bei der Scharleitung!",
+        dynamikWarn: "Bitte beschreibe die Situation ausführlich.",
+        dynamikCrit: "Bitte melde dich zusätzlich bei der Scharleitung!",
 
         // Strikes specific
         strikeSuccess: "GruStu gespeichert!",
         strikeSuccessSub: "Alle Strikes wurden erfolgreich in Google Sheets übertragen.",
         strikeMailSent: "Scharleitung wurde informiert.",
-        noStrikes: "Keine Strikes heute. Alles vorbildlich! 🌟",
+        noStrikes: "Keine Strikes heute. Alles vorbildlich!",
         noKidsInList: "Keine Kinder in der Liste."
     },
 

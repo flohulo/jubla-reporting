@@ -79,7 +79,7 @@ async function submitReport() {
 
   err.innerText = "";
   btn.disabled = true;
-  btn.innerText = (cfg.labels && cfg.labels.sending) || "Wird gesendet… ⏳";
+  btn.innerText = (cfg.labels && cfg.labels.sending) || "Wird gesendet…";
 
   try {
     const data = await API_CLIENT.post("sheets", body);
@@ -89,7 +89,7 @@ async function submitReport() {
       const newReportBtn = (cfg.labels && cfg.labels.newReportBtn) || "Neuer Bericht";
       document.getElementById("formTab").innerHTML = `
         <div class="success-card">
-          <div class="success-icon">✅</div>
+          <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
           <h2>${successTitle}</h2>
           <p>${successSub}</p>
           <button class="btn btn-primary" onclick="location.reload()">${newReportBtn}</button>
@@ -100,7 +100,7 @@ async function submitReport() {
   } catch (e) {
     err.innerText = `Fehler: ${e.message}`;
     btn.disabled = false;
-    btn.innerText = (cfg.labels && cfg.labels.submitReportBtn) || "Report absenden 🚀";
+    btn.innerText = (cfg.labels && cfg.labels.submitReportBtn) || "Report absenden";
   }
 }
 
@@ -135,7 +135,7 @@ async function requestCode() {
     err.style.color = "var(--red)";
     err.innerText = e.message;
     btn.disabled = false;
-    btn.innerText = (cfg.labels && cfg.labels.requestCodeBtn) || "Verifizierungs-Code anfordern 🔑";
+    btn.innerText = (cfg.labels && cfg.labels.requestCodeBtn) || "Verifizierungs-Code anfordern";
   }
 }
 
@@ -157,7 +157,7 @@ async function submitRequest() {
   }
 
   btn.disabled = true;
-  btn.innerText = (cfg.labels && cfg.labels.verifying) || "Wird verifiziert… ⏳";
+  btn.innerText = (cfg.labels && cfg.labels.verifying) || "Wird verifiziert…";
 
   try {
     const data = await API_CLIENT.post("sheets", {
@@ -178,7 +178,7 @@ async function submitRequest() {
 
       let html = `
         <div class="success-card">
-          <div class="success-icon">📧</div>
+          <div class="success-icon"><i class="fa-solid fa-envelope-circle-check"></i></div>
           <h2>${successTitle}</h2>
           <p>${successSub}
           ${data.found === 0 ? `<br><em>${noFoundText}</em>` : ` (${foundTextTemplate.replace("{count}", data.found)})`}
@@ -221,7 +221,7 @@ async function submitRequest() {
   } catch (e) {
     err.innerText = `Fehler: ${e.message}`;
     btn.disabled = false;
-    btn.innerText = (cfg.labels && cfg.labels.showReportsBtn) || "Berichte anzeigen 📧";
+    btn.innerText = (cfg.labels && cfg.labels.showReportsBtn) || "Berichte anzeigen";
   }
 }
 
