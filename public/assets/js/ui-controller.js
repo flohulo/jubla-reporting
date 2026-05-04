@@ -18,10 +18,10 @@ const UI = {
     onDynamikChange() {
         const val = parseInt(document.getElementById("f_dynamik").value);
         const cfg = window.APP_CONFIG.messages;
-        
+
         const warnBox = document.getElementById("warnBox");
         const critBox = document.getElementById("critBox");
-        
+
         if (warnBox) {
             warnBox.innerText = cfg.dynamikWarn;
             warnBox.classList.toggle("show", val === 4);
@@ -54,7 +54,16 @@ const UI = {
     // PIN-Sichtbarkeit umschalten
     togglePin() {
         const el = document.getElementById("pinInput");
-        if (el) el.type = el.type === "password" ? "text" : "password";
+        const icon = document.querySelector(".toggle-pin i");
+        if (el && icon) {
+            if (el.type === "password") {
+                el.type = "text";
+                icon.className = "fa-regular fa-eye-slash";
+            } else {
+                el.type = "password";
+                icon.className = "fa-regular fa-eye";
+            }
+        }
     },
 
     // Hilfe-Punkte aus Config laden
@@ -76,10 +85,16 @@ const UI = {
 
         const orgEl = document.getElementById('appOrgName');
         const subEl = document.getElementById('headerSubtitle');
-        const iconEl = document.querySelector('.logo-badge');
+        const iconEl = document.querySelector('.logo-badge i');
         if (orgEl) orgEl.innerText = cfg.branding.orgName;
         if (subEl) subEl.innerText = cfg.branding.heroSubtitle;
-        if (iconEl && cfg.branding.reportIcon) iconEl.innerText = cfg.branding.reportIcon;
+        if (iconEl && cfg.branding.reportIcon) {
+            if (cfg.branding.reportIcon.startsWith('fa-')) {
+                iconEl.className = cfg.branding.reportIcon;
+            } else {
+                iconEl.innerText = cfg.branding.reportIcon;
+            }
+        }
 
         const versionLabel = document.getElementById('versionLabelPrefix');
         if (versionLabel && cfg.labels.versionLabel) versionLabel.innerText = cfg.labels.versionLabel + " ";
@@ -256,7 +271,7 @@ const UI = {
         if (document.getElementById("issueLink")) document.getElementById("issueLink").innerText = cfg.reportIssue;
         if (document.getElementById("strikesLink")) document.getElementById("strikesLink").innerText = cfg.strikes;
         if (document.getElementById("footerLegalLink")) document.getElementById("footerLegalLink").innerText = cfg.legalText;
-        
+
         const vLabel = document.getElementById("versionText");
         if (vLabel && window.APP_CONFIG.labels.versionLabel) vLabel.innerText = window.APP_CONFIG.labels.versionLabel;
     }

@@ -1,4 +1,4 @@
-const CACHE_NAME = "jubla-reporting-v1.1";
+const CACHE_NAME = "jubla-reporting-v1.2";
 const ASSETS_TO_CACHE = [
   "/",
   "/index.html",
@@ -14,7 +14,11 @@ const ASSETS_TO_CACHE = [
   "/assets/js/reporting.js",
   "/assets/js/strikes-ui.js",
   "/assets/fonts/Nunito-VariableFont_wght.ttf",
-  "/assets/fonts/Nunito-Italic-VariableFont_wght.ttf"
+  "/assets/fonts/Nunito-Italic-VariableFont_wght.ttf",
+  "/assets/vendor/fontawesome/css/all.min.css",
+  "/assets/vendor/fontawesome/webfonts/fa-solid-900.woff2",
+  "/assets/vendor/fontawesome/webfonts/fa-regular-400.woff2",
+  "/assets/vendor/fontawesome/webfonts/fa-brands-400.woff2"
 ];
 
 // ── Install: Cache assets ──────────────────────────────────
