@@ -75,7 +75,7 @@ window.APP_CONFIG = {
 
         // Strikes specific
         strikeSystemTitle: "Strike-System",
-        strikeSystemSub: "{org} · GruStu",
+        strikeSystemSub: "{org}",
         bannedTag: "🚫 Ausschluss",
         kidsLabel: "Kinder",
         strikesLabel: "Strikes",
@@ -153,9 +153,8 @@ window.APP_CONFIG = {
     },
 
     descriptions: {
-        requestInfo: "Fordere einen Bericht für ein bestimmtes Datum an. Du siehst ihn anschliessend direkt. Diese Funktion ist für Fälle gedacht, in denen jemand vergessen hat zu reporten oder du einen älteren Bericht brauchst. Bitte gib immer einen Grund an, damit die Scharleitung nachvollziehen kann, warum der Bericht angefordert wurde.",
-        generalInfo: "Dieses Reporting-Tool dient zur Erfassung der Gruppenstunden-Dynamik und zur Meldung kritischer Situationen an die Scharleitung. Bitte fülle alle Pflichtfelder aus und beschreibe Vorfälle bei Dynamik 4 und 5 so präzise wie möglich.",
-        privacyInfo: "Dieses Tool nutzt Google Fonts zur Darstellung von Schriftarten. Dabei wird Ihre IP-Adresse an Google übertragen. Daten werden in Google Sheets gespeichert und sind nur für autorisierte Personen zugänglich."
+        requestInfo: "Fordere einen Bericht für ein bestimmtes Datum an. Du siehst ihn anschliessend direkt. Diese Funktion ist für Fälle gedacht, in denen du einen älteren Bericht brauchst. Bitte gib immer einen Grund an, damit die Scharleitung nachvollziehen kann, warum der Bericht angefordert wurde.",
+        generalInfo: "Dieses Reporting-Tool dient zur Erfassung der Gruppenstunden-Dynamik und zur Meldung kritischer Situationen an die Scharleitung. Bitte fülle alle Pflichtfelder aus und beschreibe Vorfälle bei Dynamik 4 und 5 so präzise wie möglich."
     },
 
     emergencyNumbers: [
