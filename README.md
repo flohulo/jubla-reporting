@@ -32,7 +32,7 @@ Dieses Tool ermöglicht es Leitenden, Berichte zu Gruppenstunden schnell und unk
 
 Wir stehen noch ganz am Anfang, aber das Ziel ist gross! Nutzt deine Schar dieses Tool bereits? Wir freuen uns über jede Schar, die dabei ist.
 
-[![Schar anmelden](https://img.shields.io/badge/Schar-anmelden-orange?style=for-the-badge&logo=googleforms)]([https://forms.gle/KRdkHDU6gAN6WzHbA](https://forms.gle/KRdkHDU6gAN6WzHbA))
+[![Schar anmelden](https://img.shields.io/badge/Schar-anmelden-orange?style=for-the-badge&logo=googleforms)](https://forms.gle/KRdkHDU6gAN6WzHbA)
 
 ### Aktive Scharen:
 *Deine Schar könnte die erste sein!*
@@ -43,23 +43,36 @@ Wir stehen noch ganz am Anfang, aber das Ziel ist gross! Nutzt deine Schar diese
 
 ---
 
-## 🚀 Quick Start (In 5 Minuten online)
+## 🚀 Quick Start für deine Schar
 
 1.  **Forke** dieses Repository.
 2.  Erstelle ein **Google Sheet** (Vorlage siehe [Setup-Guide](docs/setup-sheets.md)).
 3.  Verknüpfe das Repo mit **Netlify**.
-4.  Hinterlege die `SHEET_ID` in den Umgebungsvariablen – das sind die "geheimen Schlüssel", damit das Tool mit Google kommunizieren kann.
-5.  **Fertig!** Deine Schar hat nun ein eigenes Reporting-System.
+4.  Hinterlege alle Umgebungsvariablen – das sind die "geheimen Schlüssel", damit das Tool mit Google kommunizieren kann.
+6.  **Fertig!** Deine Schar hat nun ein eigenes Reporting-System.
 
 ---
 
 ## 🛠 Setup & Dokumentation
 
 Detaillierte Anleitungen findest du hier:
-- 📑 [Google Sheets Setup (Spalten & Tabs)](docs/setup-sheets.md)
-- 🎨 [Branding & Anpassungen (config.js)](docs/branding.md)
-- ⚖️ [Rechtliche Hinweise & Datenschutz](LEGAL.md)
-- 🛡️ [Sicherheitsrichtlinie (Security Policy)](SECURITY.md)
+- 📑 [**Google Sheets Setup** – Spaltenstruktur & Tab‑Übersicht](docs/setup-sheets.md)
+- 🎨 [**Branding & Konfiguration** – Farben, Logos & Einstellungen](docs/branding.md)
+- ⚖️ [**Rechtliches & Datenschutz**](LEGAL.md)
+- 🛡️ [**Security Policy** – Sicherheitsrichtlinien & Meldewege](SECURITY.md)
+
+---
+
+## 🤝 Support & Kontakt
+
+Wenn du Fragen hast, auf Probleme stösst oder Feedback geben möchtest, stehen wir dir gerne zur Verfügung:
+
+- 📬 **E-Mail‑Support:** jubla-reporting.factsheet290@passfwd.com
+- 🐞 **Bug Reports & Issues:** Bitte direkt im GitHub‑Repository unter *Issues* melden
+- 💡 **Feature‑Vorschläge:** Bitte direkt im GitHub‑Repository unter *Issues* melden
+- 🔧 **Technische Fragen:** Siehe Dokumentation oder kontaktiere uns bei Unklarheiten
+
+*Falls du kein GitHub‑Issue erstellen kannst oder möchtest, darfst du uns selbstverständlich auch per E‑Mail kontaktieren.
 
 ---
 
@@ -67,7 +80,7 @@ Detaillierte Anleitungen findest du hier:
 
 Hast du eine Idee für ein neues Feature?
 *   Erstelle ein **Issue** für Fehler oder Vorschläge.
-*   Sende einen **Pull Request**, wenn du direkt am Code mithelfen willst.
+*   Sende einen **Pull Request**, wenn du direkt am Code mithelfen willst. Wir freuen uns!
 
 ---
 
