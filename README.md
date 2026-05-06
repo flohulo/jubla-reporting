@@ -81,6 +81,7 @@ Wenn du Fragen hast, auf Probleme stösst oder Feedback geben möchtest, stehen 
 Hast du eine Idee für ein neues Feature?
 *   Erstelle ein **Issue** für Fehler oder Vorschläge.
 *   Sende einen **Pull Request**, wenn du direkt am Code mithelfen willst. Wir freuen uns!
+*   Die Änderungen werden durch ein Erstellen von einem Release veröffentlicht.
 
 ---
 
