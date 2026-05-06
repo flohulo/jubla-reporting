@@ -1,0 +1,22 @@
+version: 2
+updates:
+  # 1. Überprüfung der npm-Pakete
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    groups:
+      dependencies:
+        patterns:
+          - "*"
+    commit-message:
+      prefix: "chore"
+
+  # 2. Überprüfung von GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    commit-message:
+      prefix: "chore"
