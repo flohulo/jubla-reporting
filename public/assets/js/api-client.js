@@ -79,13 +79,17 @@ const HELPERS = {
   escapeHtml(str) {
     return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   },
-  
+  nl2br(str) {
+    if (!str) return "";
+    return this.escapeHtml(str).replace(/\n/g, "<br>");
+  },
+
   // ── Version Check & Update ──
   showUpdatePopup(newVersion) {
     const overlay = document.createElement("div");
     overlay.className = "overlay show";
     overlay.style.zIndex = "9999";
-    
+
     const card = document.createElement("div");
     card.className = "overlay-card";
     card.innerHTML = `
@@ -95,10 +99,10 @@ const HELPERS = {
       <p style="font-size: 0.85em; opacity: 0.8;">Die App wird nun aktualisiert um alle neuen Funktionen anzuzeigen.</p>
       <button class="btn btn-primary" id="reloadBtn">Neu laden 🔄</button>
     `;
-    
+
     overlay.appendChild(card);
     document.body.appendChild(overlay);
-    
+
     document.getElementById("reloadBtn").onclick = () => {
       localStorage.clear();
       if ("serviceWorker" in navigator) {
@@ -117,11 +121,11 @@ const HELPERS = {
   async checkVersion(vInfo) {
     const savedVersion = localStorage.getItem("app_version");
     const currentV = vInfo.version;
-    
+
     if (savedVersion && savedVersion !== currentV) {
       this.showUpdatePopup(currentV);
     }
-    
+
     localStorage.setItem("app_version", currentV);
   },
 

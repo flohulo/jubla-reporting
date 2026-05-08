@@ -104,7 +104,7 @@ async function submitReport() {
     anzahl: document.getElementById("f_anzahl").value,
     leiterCount: document.getElementById("f_leiter").value, 
     dynamik: document.getElementById("f_dynamik").value,
-    bemerkungen: document.getElementById("f_bemerkungen").value.trim(), 
+    bemerkungen: document.getElementById("f_bemerkungen").value.trim().replace(/\r\n/g, "\n"), 
     version: currentVersion,
     checked: checked
   };
@@ -246,7 +246,7 @@ async function submitRequest() {
                   ${cfg.labels.dynamicsLabel} ${r.dynamik}
                 </span>
               </div>
-              <div class="report-note">${HELPERS.escapeHtml(r.bemerkungen || "(keine)")}</div>
+              <div class="report-note">${r.bemerkungen ? HELPERS.nl2br(r.bemerkungen) : "(keine)"}</div>
             </div>`;
         });
       }
