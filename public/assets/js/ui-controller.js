@@ -253,6 +253,8 @@ const UI = {
 
         const mapping = {
             "jublaschweizweb": cfg.website,
+            "jublakanton": cfg.kanton,
+            "jublaschar": cfg.schar,
             "githubProjectLink": cfg.github,
             "licenseLink": cfg.license,
             "legalLink": cfg.legal

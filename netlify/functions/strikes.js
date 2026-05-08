@@ -136,10 +136,16 @@ exports.handler = async (event) => {
     return err("Invalid JSON", 400);
   }
 
-  const { action } = body;
+  const { action, pin } = body;
+  const correctPin = process.env.SCHAR_PIN || "1234";
+
+  // ── 1. PIN prüfen (Mandatorisch für alle Aktionen) ──────────
+  if (pin !== correctPin) {
+    return err("Ungültiger PIN. Zugriff verweigert.", 403);
+  }
 
   if (action === "verifyPin") {
-    return ok({ verified: body.pin === (process.env.SCHAR_PIN || "1234") });
+    return ok({ verified: true });
   }
 
   try {

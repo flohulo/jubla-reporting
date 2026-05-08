@@ -132,13 +132,17 @@ exports.handler = async (event) => {
     return err("Invalid JSON", 400);
   }
 
-  const { action } = body;
+  const { action, pin } = body;
   const sheetName = process.env.SHEET_NAME || "Reporting";
+  const correctPin = process.env.SCHAR_PIN || "1234";
 
-  // ── 1. PIN prüfen ──────────────────────────────────────────
+  // ── 1. PIN prüfen (Mandatorisch für alle Aktionen) ──────────
+  if (pin !== correctPin) {
+    return err("Ungültiger PIN. Zugriff verweigert.", 403);
+  }
+
   if (action === "verifyPin") {
-    const correct = process.env.SCHAR_PIN || "1234";
-    return ok({ verified: body.pin === correct });
+    return ok({ verified: true });
   }
 
   // ── 2. Alle anderen Aktionen benötigen Google-Token ────────

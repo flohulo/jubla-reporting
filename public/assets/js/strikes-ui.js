@@ -166,10 +166,12 @@ async function login() {
     const data = await API_CLIENT.post("strikes", { action: "verifyPin", pin });
     if (data.ok && data.verified) {
       currentUser = name;
+      AUTH.saveSession(name, pin);
       const loginMsg = (cfg.messages && cfg.messages.loginSuccess) || "Hoi {name}! 👋";
       document.getElementById("headerSub").innerText = loginMsg.replace("{name}", name);
       document.getElementById("loginArea").style.display = "none";
       document.getElementById("mainArea").style.display = "block";
+      if (document.getElementById("logoutBtnTop")) document.getElementById("logoutBtnTop").style.display = "flex";
       UI.renderKids();
     } else {
       err.innerText = (cfg.messages && cfg.messages.loginError) || "Falscher PIN.";
@@ -181,6 +183,38 @@ async function login() {
     btn.disabled = false;
     btn.innerText = (cfg.labels && cfg.labels.loginBtn) || "Anmelden";
   }
+}
+
+async function autoLogin() {
+  const session = AUTH.getSession();
+  if (!session) return;
+
+  const { name, pin } = session;
+  const cfg = window.APP_CONFIG || {};
+
+  try {
+    const data = await API_CLIENT.post("strikes", { action: "verifyPin", pin });
+    if (data.ok && data.verified) {
+      currentUser = name;
+      const loginMsg = (cfg.messages && cfg.messages.loginSuccess) || "Hoi {name}! 👋";
+      if (document.getElementById("headerSub")) {
+        document.getElementById("headerSub").innerText = loginMsg.replace("{name}", name);
+      }
+      document.getElementById("loginArea").style.display = "none";
+      document.getElementById("mainArea").style.display = "block";
+      if (document.getElementById("logoutBtnTop")) document.getElementById("logoutBtnTop").style.display = "flex";
+      UI.renderKids();
+    } else {
+      AUTH.clearSession();
+    }
+  } catch (e) {
+    console.warn("Auto-login failed", e);
+  }
+}
+
+function logout() {
+  AUTH.clearSession();
+  location.reload();
 }
 
 function addKid() {
@@ -276,11 +310,15 @@ window.addEventListener("load", async () => {
     const versionEl = document.getElementById("versionLabel");
     if (versionEl) versionEl.innerText = currentVersion;
     UI.applyBranding();
+    
+    // Auto-Login versuchen
+    autoLogin();
 
     // Version prüfen
     HELPERS.checkVersion(vInfo);
   } catch (e) {
     console.warn("Konnte Version nicht laden", e);
     UI.applyBranding();
+    autoLogin();
   }
 });

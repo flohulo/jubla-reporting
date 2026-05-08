@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title id="pageTitle">Jubla Wald ZH – Strike-System</title>
+  <title id="pageTitle">Strike-System</title>
   <meta name="theme-color" content="#d65a5a" />
   <link rel="stylesheet" href="/assets/css/main.css" />
   <link rel="stylesheet" href="/assets/css/strikes.css" />
@@ -17,11 +17,14 @@
     <!-- HEADER -->
     <div class="card-header">
       <div class="logo-badge"><i class="fa-solid fa-bolt"></i></div>
-      <div>
+      <div class="header-titles">
         <h1 id="strikeSystemTitle">Strike-System</h1>
         <p id="headerSub">Strikesystem</p>
       </div>
-      <a href="/" class="header-back"><i class="fa-solid fa-arrow-left"></i> Reporting</a>
+      <a href="app.html" class="header-back"><i class="fa-solid fa-arrow-left"></i> Reporting</a>
+      <button id="logoutBtnTop" class="btn-logout" onclick="logout()" style="display: none">
+        <i class="fa-solid fa-right-from-bracket"></i>
+      </button>
     </div>
 
     <!-- LOGIN -->
@@ -83,18 +86,20 @@
       <div class="divider"></div>
 
       <p class="error-msg" id="saveErr"></p>
-      <button class="btn btn-primary" onclick="saveDay()"><span id="saveBtn">GruStu abschliessen & speichern</span> <i class="fa-solid fa-floppy-disk"></i></button>
+      <button class="btn btn-primary" onclick="saveDay()"><span id="saveBtn">GruStu abschliessen & speichern</span> <i
+          class="fa-solid fa-floppy-disk"></i></button>
     </div>
 
     <div class="card-footer">
       <span><a id="versionLink" class="footer-link" href="https://github.com/flohulo/jubla-reporting/releases"
-          target="_blank" rel="noreferrer"><span id="versionText">Version</span> <span id="versionLabel">lade...</span></a></span>
+          target="_blank" rel="noreferrer"><span id="versionText">Version</span> <span
+            id="versionLabel">lade...</span></a></span>
       <span class="footer-links">
         <a id="issueLink" href="https://github.com/flohulo/jubla-reporting/issues" target="_blank"
           rel="noreferrer">Fehler melden</a>
         <a id="footerLegalLink" href="https://github.com/flohulo/jubla-reporting/blob/main/LEGAL.md" target="_blank"
           rel="noreferrer">Rechtliches</a>
-        <a id="strikesLink" href="index.html">Reporting</a>
+        <a id="strikesLink" href="app.html">Reporting</a>
       </span>
     </div>
   </div>

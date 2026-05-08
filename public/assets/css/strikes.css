@@ -27,23 +27,6 @@
   }
 }
 
-.header-back {
-  margin-left: auto;
-  color: rgb(255 255 255 / 85%);
-  font-size: 0.78em;
-  font-weight: 800;
-  text-decoration: none;
-  background: rgb(255 255 255 / 15%);
-  padding: 6px 12px;
-  border-radius: 8px;
-  white-space: nowrap;
-  flex-shrink: 0;
-  transition: background 0.2s;
-}
-
-.header-back:hover {
-  background: rgb(255 255 255 / 25%);
-}
 
 .btn-green {
   background: var(--green);
