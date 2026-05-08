@@ -202,7 +202,11 @@
           if (btn.classList.contains('btn-nav')) {
             btn.textContent = 'Zum Tool';
           } else {
-            btn.innerHTML = `Hoi ${authName}! <i class="fa-solid fa-right-to-bracket"></i>`;
+            btn.textContent = "";
+            btn.appendChild(document.createTextNode(`Hoi ${authName}! `));
+            const icon = document.createElement("i");
+            icon.className = "fa-solid fa-right-to-bracket";
+            btn.appendChild(icon);
           }
         });
       }
