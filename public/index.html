@@ -40,9 +40,9 @@
           <a href="https://github.com/flohulo/jubla-reporting" target="_blank" class="btn-lg btn-outline">GitHub Repo <i
               class="fa-brands fa-github"></i></a>
         </div>
-        <p class="login-note"><i class="fa-solid fa-circle-info"></i> Nur für autorisierte Leitende von <span
-            class="dynamic-org">unserer Schar</span> möglich.
-        </p>
+        <div class="login-note"><i class="fa-solid fa-circle-info"></i> Login für autorisierte Leitende von <span
+            class="dynamic-org">unserer Schar</span>
+        </div>
       </div>
       <div class="hero-image">
         <img src="/assets/images/hero.png" alt="Jubla Reporting App Vorschau">
@@ -191,6 +191,20 @@
         if (window.APP_CONFIG.branding.appName) {
           document.title = window.APP_CONFIG.branding.appName + ' – Landing Page';
         }
+      }
+
+      // Check if logged in
+      const authName = sessionStorage.getItem("auth_name");
+      const authPin = sessionStorage.getItem("auth_pin");
+      if (authName && authPin) {
+        const loginBtns = document.querySelectorAll('a[href="app.html"]');
+        loginBtns.forEach(btn => {
+          if (btn.classList.contains('btn-nav')) {
+            btn.textContent = 'Zum Tool';
+          } else {
+            btn.innerHTML = `Hoi ${authName}! <i class="fa-solid fa-right-to-bracket"></i>`;
+          }
+        });
       }
     });
   </script>

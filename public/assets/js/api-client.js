@@ -1,15 +1,36 @@
 /**
  * Shared API client for communicating with Netlify functions.
  */
+const AUTH = {
+  saveSession(name, pin) {
+    sessionStorage.setItem("auth_name", name);
+    sessionStorage.setItem("auth_pin", pin);
+  },
+  getSession() {
+    const name = sessionStorage.getItem("auth_name");
+    const pin = sessionStorage.getItem("auth_pin");
+    if (name && pin) return { name, pin };
+    return null;
+  },
+  clearSession() {
+    sessionStorage.removeItem("auth_name");
+    sessionStorage.removeItem("auth_pin");
+  }
+};
+
 const API_CLIENT = {
   /**
    * Helper to perform a POST request to a function.
    */
   async post(endpoint, payload) {
+    // Session-Daten (PIN) automatisch hinzufügen, falls vorhanden
+    const session = AUTH.getSession();
+    const enrichedPayload = session ? { ...payload, pin: session.pin } : payload;
+
     const response = await fetch(`/.netlify/functions/${endpoint}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(enrichedPayload),
     });
     return response.json();
   },

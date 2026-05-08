@@ -24,6 +24,7 @@ async function login() {
     const data = await API_CLIENT.post("sheets", { action: "verifyPin", pin });
     if (data.ok && data.verified) {
       currentUser = name;
+      AUTH.saveSession(name, pin);
       const loginMsg = (cfg.messages && cfg.messages.loginSuccess) || "Hoi {name}! 👋";
       document.getElementById("headerSubtitle").innerText = loginMsg.replace("{name}", name);
       document.getElementById("f_datum").value = new Date().toISOString().split("T")[0];
@@ -31,6 +32,7 @@ async function login() {
       document.getElementById("loginArea").style.display = "none";
       document.getElementById("tabBar").style.display = "flex";
       document.getElementById("formTab").style.display = "block";
+      if (document.getElementById("logoutBtnTop")) document.getElementById("logoutBtnTop").style.display = "flex";
 
       // UI Initialisierung nach Login
       UI.populateHelpPoints();
@@ -45,6 +47,42 @@ async function login() {
     btn.disabled = false;
     btn.innerText = (cfg.labels && cfg.labels.loginBtn) || "Anmelden";
   }
+}
+
+async function autoLogin() {
+  const session = AUTH.getSession();
+  if (!session) return;
+
+  const { name, pin } = session;
+  const cfg = window.APP_CONFIG || {};
+
+  try {
+    const data = await API_CLIENT.post("sheets", { action: "verifyPin", pin });
+    if (data.ok && data.verified) {
+      currentUser = name;
+      const loginMsg = (cfg.messages && cfg.messages.loginSuccess) || "Hoi {name}! 👋";
+      if (document.getElementById("headerSubtitle")) {
+        document.getElementById("headerSubtitle").innerText = loginMsg.replace("{name}", name);
+      }
+      document.getElementById("f_datum").value = new Date().toISOString().split("T")[0];
+      document.getElementById("r_datum").value = new Date().toISOString().split("T")[0];
+      document.getElementById("loginArea").style.display = "none";
+      document.getElementById("tabBar").style.display = "flex";
+      document.getElementById("formTab").style.display = "block";
+      if (document.getElementById("logoutBtnTop")) document.getElementById("logoutBtnTop").style.display = "flex";
+      UI.populateHelpPoints();
+      UI.applyBranding();
+    } else {
+      AUTH.clearSession();
+    }
+  } catch (e) {
+    console.warn("Auto-login failed", e);
+  }
+}
+
+function logout() {
+  AUTH.clearSession();
+  location.reload();
 }
 
 // ── Submit Report ──
@@ -250,4 +288,7 @@ window.addEventListener("load", async () => {
   } catch (e) { }
 
   UI.applyBranding();
+  
+  // Auto-Login versuchen
+  autoLogin();
 });
