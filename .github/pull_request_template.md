@@ -17,4 +17,3 @@ Warum sind diese Änderungen notwendig oder welches Issue wurde behandelt?
 - Code kompiliert / Funktionsfähig
 - Kein hart codiertes Passwort oder geheime Daten im Code
 - README bei Bedarf aktualisiert
-- service-worker.js aktualisiert
