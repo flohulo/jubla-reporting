@@ -35,7 +35,7 @@ Wir stehen noch ganz am Anfang, aber das Ziel ist gross! Nutzt deine Schar diese
 [![Schar anmelden](https://img.shields.io/badge/Schar-anmelden-orange?style=for-the-badge&logo=googleforms)](https://forms.gle/KRdkHDU6gAN6WzHbA)
 
 ### Aktive Scharen:
-*Deine Schar könnte die erste sein!*
+*Deine Schar könnte hier stehen!*
 
 | | | |
 |:---:|:---:|:---:|
