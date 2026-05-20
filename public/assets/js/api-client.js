@@ -127,17 +127,5 @@ const HELPERS = {
     }
 
     localStorage.setItem("app_version", currentV);
-  },
-
-  // ── Service Worker ──
-  registerServiceWorker() {
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/service-worker.js").catch(console.error);
-    }
   }
 };
-
-// Auto-Register
-window.addEventListener("load", () => {
-  HELPERS.registerServiceWorker();
-});

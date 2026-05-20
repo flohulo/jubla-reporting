@@ -28,7 +28,8 @@ async function login() {
       const loginMsg = (cfg.messages && cfg.messages.loginSuccess) || "Hoi {name}! 👋";
       document.getElementById("headerSubtitle").innerText = loginMsg.replace("{name}", name);
       document.getElementById("f_datum").value = new Date().toISOString().split("T")[0];
-      document.getElementById("r_datum").value = new Date().toISOString().split("T")[0];
+      document.getElementById("r_datum_von").value = new Date().toISOString().split("T")[0];
+      document.getElementById("r_datum_bis").value = new Date().toISOString().split("T")[0];
       document.getElementById("loginArea").style.display = "none";
       document.getElementById("tabBar").style.display = "flex";
       document.getElementById("formTab").style.display = "block";
@@ -65,7 +66,8 @@ async function autoLogin() {
         document.getElementById("headerSubtitle").innerText = loginMsg.replace("{name}", name);
       }
       document.getElementById("f_datum").value = new Date().toISOString().split("T")[0];
-      document.getElementById("r_datum").value = new Date().toISOString().split("T")[0];
+      document.getElementById("r_datum_von").value = new Date().toISOString().split("T")[0];
+      document.getElementById("r_datum_bis").value = new Date().toISOString().split("T")[0];
       document.getElementById("loginArea").style.display = "none";
       document.getElementById("tabBar").style.display = "flex";
       document.getElementById("formTab").style.display = "block";
@@ -182,15 +184,21 @@ async function submitRequest() {
   const err = document.getElementById("requestError");
   const email = document.getElementById("r_email").value.trim();
   const pin = document.getElementById("r_pin").value.trim();
-  const datum = document.getElementById("r_datum").value;
+  const startDate = document.getElementById("r_datum_von").value;
+  const endDate = document.getElementById("r_datum_bis").value;
   const grund = document.getElementById("r_grund").value.trim();
   const cfg = window.APP_CONFIG || {};
 
   err.style.color = "var(--red)";
   err.innerText = "";
 
-  if (!datum || !grund || !pin) {
+  if (!startDate || !endDate || !grund || !pin) {
     err.innerText = (cfg.messages && cfg.messages.fieldsMissing) || "Bitte alle Felder ausfüllen.";
+    return;
+  }
+  
+  if (new Date(startDate) > new Date(endDate)) {
+    err.innerText = "Das Startdatum darf nicht nach dem Enddatum liegen.";
     return;
   }
 
@@ -201,15 +209,17 @@ async function submitRequest() {
     const data = await API_CLIENT.post("sheets", {
       action: "requestHistory",
       email,
-      pin,
-      datum,
+      tokenCode: pin, // Verifizierungs-Code umbenennen, damit er nicht vom Schar-PIN überschrieben wird
+      startDate,
+      endDate,
       grund,
     });
 
     if (data.ok) {
       const successTitle = (cfg.messages && cfg.messages.requestSuccess) || "Angefordert!";
+      const dateStr = startDate === endDate ? HELPERS.formatDate(startDate) : `${HELPERS.formatDate(startDate)} bis ${HELPERS.formatDate(endDate)}`;
       const successSubTemplate = (cfg.messages && cfg.messages.requestSuccessSub) || "Der Auszug für {date} wurde per E-Mail gesendet.";
-      const successSub = successSubTemplate.replace("{date}", HELPERS.escapeHtml(HELPERS.formatDate(datum)));
+      const successSub = successSubTemplate.replace("{date}", HELPERS.escapeHtml(dateStr));
       const noFoundText = (cfg.labels && cfg.labels.noEntriesFound) || "Keine Einträge gefunden.";
       const foundTextTemplate = (cfg.labels && cfg.labels.entriesFound) || "{count} Einträge";
       const newRequestBtn = (cfg.labels && cfg.labels.newRequestBtn) || "Neue Anforderung";
@@ -249,6 +259,16 @@ async function submitRequest() {
               <div class="report-note">${r.bemerkungen ? HELPERS.nl2br(r.bemerkungen) : "(keine)"}</div>
             </div>`;
         });
+      }
+
+      if (data.pdfBase64) {
+        window.downloadPdf = function() {
+          const link = document.createElement('a');
+          link.href = 'data:application/pdf;base64,' + data.pdfBase64;
+          link.download = `Auszug_${startDate}_bis_${endDate}.pdf`;
+          link.click();
+        };
+        html += `<div style="margin-bottom: 20px; text-align: center;"><button class="btn btn-secondary" onclick="window.downloadPdf()"><i class="fa-solid fa-download"></i> PDF herunterladen</button></div>`;
       }
 
       html += `<button class="btn btn-primary" onclick="location.reload()">${newRequestBtn}</button></div>`;
