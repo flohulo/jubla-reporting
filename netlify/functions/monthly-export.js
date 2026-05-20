@@ -1,5 +1,4 @@
-const { jsPDF } = require("jspdf");
-const autoTable = require("jspdf-autotable");
+
 const { getAccessToken } = require("./lib/google-auth");
 const { getAllRows } = require("./lib/sheets-api");
 const nodemailer = require("nodemailer");
@@ -71,98 +70,38 @@ const mailexport = async () => {
             return !isNaN(date) && date >= firstDayLastMonth && date <= lastDayLastMonth;
         });
 
-        const doc = new jsPDF();
+        const { generatePdf } = require("./lib/pdf-gen");
+        const metadata = {
+            title: `${orgName} Export – ${monthName}`,
+            subtitle: `Erstellt am: ${now.toLocaleString("de-DE")}`,
+            orgName,
+            appName
+        };
+        
+        // Konvertiere Arrays zu Objekten für pdf-gen
+        const reports = monthlyReports.map(r => ({
+            datum: r[COL.DATUM],
+            hl: r[COL.HL],
+            kinder: r[COL.KINDER],
+            dynamik: r[COL.DYNAMIK],
+            bemerkungen: r[COL.BEMERKUNGEN]
+        }));
+        
+        const strikes = monthlyStrikes.map(s => ({
+            datum: s[STRIKE_COL.DATUM],
+            name: s[STRIKE_COL.NAME],
+            strikes: s[STRIKE_COL.STRIKES],
+            ausschluss: s[STRIKE_COL.AUSSCHLUSS]
+        }));
+        
+        const alarms = monthlyAlarms.map(a => ({
+            datum: a[ALARM_COL.DATUM],
+            name: a[ALARM_COL.NAME],
+            strikes: a[ALARM_COL.STRIKES],
+            grund: a[ALARM_COL.GRUND]
+        }));
 
-        doc.setFontSize(20);
-        doc.text(`${orgName} Export – ${monthName}`, 14, 22);
-        doc.setFontSize(10);
-        doc.text(`Erstellt am: ${now.toLocaleString("de-DE")}`, 14, 30);
-        doc.text(`Automatisch erstellt durch das ${appName}.`, 14, 36);
-
-        // --- Tabelle 1: Berichte ---
-        doc.setFontSize(14);
-        doc.text(`Berichte ${monthName}`, 14, 48);
-
-        const reportData = monthlyReports.map((r) => [
-            r[COL.DATUM] || "",
-            r[COL.HL] || "",
-            r[COL.KINDER] || "0",
-            r[COL.DYNAMIK] || "1",
-            r[COL.BEMERKUNGEN] || "",
-        ]);
-
-        autoTable.default(doc, {
-            startY: 53,
-            head: [["Datum", "Hauptleitung", "Kinder", "Dyn.", "Bemerkungen"]],
-            body: reportData,
-            theme: "grid",
-            headStyles: { fillColor: [41, 128, 185] },
-            columnStyles: {
-                0: { cellWidth: 25 },
-                1: { cellWidth: 35 },
-                2: { cellWidth: 15 },
-                3: { cellWidth: 15 },
-                4: { cellWidth: "auto" },
-            },
-            styles: { overflow: "linebreak" }
-        });
-
-        // --- Tabelle 2: Strikes ---
-        let currentY = doc.lastAutoTable.finalY || 53;
-        doc.setFontSize(14);
-        doc.text(`Strikes im ${monthName}`, 14, currentY + 15);
-
-        const strikeData = monthlyStrikes.map((s) => [
-            s[STRIKE_COL.DATUM] || "",
-            s[STRIKE_COL.NAME] || "",
-            s[STRIKE_COL.STRIKES] || "0",
-            s[STRIKE_COL.AUSSCHLUSS] || "NEIN",
-        ]);
-
-        autoTable.default(doc, {
-            startY: currentY + 20,
-            head: [["Datum", "Name (Kind)", "Strikes", "Ausschluss"]],
-            body: strikeData,
-            theme: "striped",
-            headStyles: { fillColor: [192, 57, 43] },
-            columnStyles: { 0: { cellWidth: 30 } },
-        });
-
-        // --- Tabelle 3: Alarme (Mustererkennungen) ---
-        currentY = doc.lastAutoTable.finalY || currentY + 20;
-
-        // Check if there's enough space, otherwise add new page
-        if (currentY > 240 && monthlyAlarms.length > 0) {
-            doc.addPage();
-            currentY = 20;
-        }
-
-        doc.setFontSize(14);
-        doc.text(`Erkannte Verhaltensmuster (Alarme) ${monthName}`, 14, currentY + 15);
-
-        const alarmData = monthlyAlarms.map((a) => [
-            a[ALARM_COL.DATUM] || "",
-            a[ALARM_COL.NAME] || "",
-            a[ALARM_COL.STRIKES] || "0",
-            a[ALARM_COL.GRUND] || "",
-        ]);
-
-        autoTable.default(doc, {
-            startY: currentY + 20,
-            head: [["Datum", "Name", "S.", "Erkanntes Muster / Grund"]],
-            body: alarmData,
-            theme: "grid",
-            headStyles: { fillColor: [230, 126, 34] }, // Orange für Alarme
-            columnStyles: {
-                0: { cellWidth: 25 },
-                1: { cellWidth: 35 },
-                2: { cellWidth: 10 },
-                3: { cellWidth: "auto" }
-            },
-            styles: { fontSize: 9 }
-        });
-
-        const pdfBuffer = Buffer.from(doc.output("arraybuffer"));
+        const pdfBuffer = generatePdf(reports, strikes, alarms, metadata);
 
         const transporter = nodemailer.createTransport({
             host: "smtp.gmail.com",

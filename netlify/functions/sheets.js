@@ -214,27 +214,93 @@ ${appName}`;
 
     // ── 2.3 Auszug anfordern ──────────────────────────────────
     if (action === "requestHistory") {
-      const { email, pin, datum, grund } = body;
-      if (!email || !pin) return err("E-Mail oder Code fehlt", 400);
+      const { email, tokenCode, startDate, endDate, grund } = body;
+      if (!email || !tokenCode) return err("E-Mail oder Code fehlt", 400);
 
       const tokenRows = await getAllRows(token, "Tokens");
       const validToken = tokenRows.reverse().find(
         (t) =>
           (t[0] || "").toLowerCase() === email.toLowerCase() &&
-          t[1] === pin &&
+          t[1] === tokenCode &&
           new Date(t[2]) > new Date()
       );
       if (!validToken) {
         return err("Ungültiger oder abgelaufener Code.", 403);
       }
+      
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      end.setHours(23, 59, 59);
 
-      const all = await getAllRows(token, sheetName);
-      const rows = all.filter((r) => r[SHEET_COLS.DATUM] === datum).map(rowToObject);
+      // Berichte
+      const allReports = await getAllRows(token, sheetName);
+      const reports = allReports.filter((r) => {
+        const d = new Date(r[SHEET_COLS.DATUM]);
+        return !isNaN(d) && d >= start && d <= end;
+      }).map(rowToObject);
 
-      const { subject, text } = buildRequestMail(rows, datum, email, grund);
-      await sendMail(subject, text);
+      // Strikes
+      const allStrikes = await getAllRows(token, "Strikes").catch(() => []);
+      const strikes = allStrikes.filter((r) => {
+        const d = new Date(r[1]); // STRIKE_COL.DATUM = 1
+        return !isNaN(d) && d >= start && d <= end;
+      }).map(s => ({
+        datum: s[1], name: s[3], strikes: s[4], ausschluss: s[5]
+      }));
 
-      return ok({ found: rows.length, rows });
+      // Alarme
+      const allAlarms = await getAllRows(token, "Alarme").catch(() => []);
+      const alarms = allAlarms.filter((r) => {
+        const d = new Date(r[1]); // ALARM_COL.DATUM = 1
+        return !isNaN(d) && d >= start && d <= end;
+      }).map(a => ({
+        datum: a[1], name: a[2], strikes: a[3], grund: a[4]
+      }));
+
+      const dateRangeStr = startDate === endDate ? startDate : `${startDate} bis ${endDate}`;
+      const { subject, text } = buildRequestMail(reports, dateRangeStr, email, grund);
+      
+      const appName = process.env.APP_NAME || "Jubla-Reporting Tool";
+
+      // Generate PDF
+      const { generatePdf } = require("./lib/pdf-gen");
+      const pdfBuffer = generatePdf(reports, strikes, alarms, {
+          title: `${appName} Auszug`,
+          subtitle: `Zeitraum: ${dateRangeStr}`,
+          orgName: process.env.ORG_NAME || "Jubla",
+          appName: appName,
+          requestedBy: email,
+          requestedAt: new Date().toLocaleString("de-CH")
+      });
+      
+      // Mail senden mit PDF
+      const transporter = require("nodemailer").createTransport({
+          host: "smtp.gmail.com",
+          port: 465,
+          secure: true,
+          auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+      });
+      
+      const adminLabel = process.env.ORG_ADMIN_LABEL || "Scharleitung";
+      
+      await transporter.sendMail({
+          from: `"${appName}" <${process.env.SMTP_USER}>`,
+          to: process.env.SCHARLEITUNG_EMAIL || process.env.SMTP_USER,
+          subject: subject,
+          text: text,
+          attachments: [
+              {
+                  filename: `Auszug_${startDate}_bis_${endDate}.pdf`,
+                  content: pdfBuffer,
+              },
+          ],
+      });
+
+      return ok({ 
+        found: reports.length, 
+        rows: reports, 
+        pdfBase64: pdfBuffer.toString("base64") 
+      });
     }
   } catch (e) {
     return err(e.message);
