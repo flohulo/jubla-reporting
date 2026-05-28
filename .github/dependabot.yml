@@ -5,9 +5,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 5
     groups:
-      dependencies:
+      npm-dependencies:
         patterns:
           - "*"
     commit-message:
@@ -18,5 +17,9 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
+    groups:
+      action-dependencies:
+        patterns:
+          - "*"
     commit-message:
       prefix: "chore"
