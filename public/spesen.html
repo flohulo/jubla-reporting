@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spesenabrechnung – Jubla Wald</title>
+  <link rel="stylesheet" href="/assets/vendor/fontawesome/css/all.min.css">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f4f4f0;
+      color: #1a1a1a;
+      font-size: 14px;
+    }
+
+    .header {
+      background: #1a1a1a;
+      color: #fff;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header h1 {
+      font-size: 17px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .view {
+      padding: 1.5rem;
+      max-width: 600px;
+      margin: 0 auto;
+      min-height: 100vh;
+    }
+
+    /* Step Indicator */
+    .step-progress {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      position: relative;
+      padding: 0 10px;
+    }
+
+    .step-progress::before {
+      content: '';
+      position: absolute;
+      top: 15px;
+      left: 10px;
+      right: 10px;
+      height: 2px;
+      background: #ddd;
+      z-index: 1;
+    }
+
+    .step-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #fff;
+      border: 2px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: #888;
+      z-index: 2;
+      transition: all 0.3s;
+      position: relative;
+    }
+
+    .step-dot.active {
+      border-color: #1a1a1a;
+      color: #1a1a1a;
+      background: #fff;
+      transform: scale(1.1);
+      box-shadow: 0 0 0 4px rgba(26, 26, 26, 0.1);
+    }
+
+    .step-dot.completed {
+      background: #1a1a1a;
+      border-color: #1a1a1a;
+      color: #fff;
+    }
+
+    .step-label {
+      position: absolute;
+      top: 40px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+      color: #888;
+    }
+
+    .step-dot.active .step-label {
+      color: #1a1a1a;
+      font-weight: 600;
+    }
+
+    .card {
+      background: #fff;
+      border: 0.5px solid #ddd;
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+      transition: transform 0.3s, opacity 0.3s;
+    }
+
+    .step-content {
+      display: none;
+    }
+
+    .step-content.active {
+      display: block;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 1.25rem;
+    }
+
+    .upload-zone {
+      border: 2px dashed #eee;
+      border-radius: 12px;
+      padding: 3rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #fafafa;
+    }
+
+    .upload-zone:hover {
+      border-color: #ccc;
+      background: #f5f5f5;
+    }
+
+    .upload-icon {
+      font-size: 40px;
+      margin-bottom: 1rem;
+      opacity: 0.7;
+    }
+
+    .upload-label {
+      font-size: 15px;
+      font-weight: 500;
+      color: #333;
+    }
+
+    .upload-sub {
+      font-size: 12px;
+      color: #999;
+      margin-top: 6px;
+    }
+
+    #previewImg {
+      width: 100%;
+      max-height: 300px;
+      object-fit: contain;
+      border-radius: 10px;
+      margin-top: 1rem;
+      border: 0.5px solid #eee;
+      display: none;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 12px;
+      color: #666;
+      font-weight: 600;
+    }
+
+    input[type=text],
+    input[type=number],
+    input[type=date],
+    input[type=password],
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 15px;
+      font-family: inherit;
+      background: #fff;
+      color: #1a1a1a;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: #1a1a1a;
+      box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.05);
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 2rem;
+    }
+
+    .btn {
+      padding: 14px 24px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      font-weight: 600;
+      transition: all 0.2s;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: #1a1a1a;
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      background: #fff;
+      color: #1a1a1a;
+      border: 1px solid #ddd;
+    }
+
+    .btn-secondary:hover {
+      background: #f9f9f9;
+      border-color: #bbb;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1a1a1a;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 999;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+
+    .spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (max-width: 500px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-group.full {
+        grid-column: 1;
+      }
+
+      .btn-row {
+        flex-direction: column-reverse;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <h1><i class="fa-solid fa-receipt"></i> Spesen-Assistent</h1>
+  </div>
+
+  <div class="view">
+    <div class="step-progress">
+      <div class="step-dot active" id="dot-1">1 <span class="step-label" style="left: -15px;">Leiter</span></div>
+      <div class="step-dot" id="dot-2">2 <span class="step-label" style="left: -10px;">Beleg</span></div>
+      <div class="step-dot" id="dot-3">3 <span class="step-label" style="left: -10px;">Daten</span></div>
+    </div>
+
+    <!-- STEP 1: LEITER -->
+    <div id="step-1" class="step-content active">
+      <div class="card">
+        <p class="card-title">Schritt 1: Absender</p>
+        <form onsubmit="return false;">
+          <div class="form-grid">
+            <div class="form-group full">
+              <label>Leiter/in *</label>
+              <input type="text" id="ex-name" placeholder="Vor- und Nachname" autocomplete="name">
+            </div>
+            <div class="form-group full">
+              <label>Schar-PIN *</label>
+              <input type="password" id="ex-pin" placeholder="••••" autocomplete="current-password">
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="nextStep(2)">Weiter zu Beleg <i
+                class="fa-solid fa-chevron-right"></i></button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- STEP 2: BELEG -->
+    <div id="step-2" class="step-content">
+      <div class="card">
+        <p class="card-title">Schritt 2: Beleg-Erfassung</p>
+        <div id="uploadZone" class="upload-zone" onclick="document.getElementById('fileInput').click()">
+          <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleFile(event)">
+          <div class="upload-icon"><i class="fa-solid fa-camera"></i></div>
+          <div class="upload-label">Beleg fotografieren</div>
+          <div class="upload-sub">Das Formular wird automatisch ausgefüllt</div>
+        </div>
+
+        <div id="uploadResult" style="display:none">
+          <img id="previewImg">
+          <button class="btn btn-secondary" onclick="document.getElementById('fileInput').click()"
+            style="margin-top:1rem; width:100%">
+            <i class="fa-solid fa-rotate-right"></i> Anderes Foto aufnehmen
+          </button>
+        </div>
+
+        <div id="ocrStatus"
+          style="display:none;margin-top:1.25rem;padding:12px 16px;background:#f0f4fe;border-radius:10px;font-size:14px;color:#1a56db;border: 1px solid #d0e0ff">
+          <span id="ocrStatusText"><i class="fa-solid fa-magnifying-glass"></i> Beleg wird analysiert...</span>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-secondary" onclick="prevStep(1)">Zurück</button>
+          <button class="btn btn-primary" id="ocrNextBtn" onclick="nextStep(3)" disabled>Daten prüfen <i
+              class="fa-solid fa-chevron-right"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: DATEN -->
+    <div id="step-3" class="step-content">
+      <div class="card">
+        <p class="card-title">Schritt 3: Daten-Check</p>
+        <form onsubmit="return false;">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Datum *</label>
+              <input type="date" id="f-datum">
+            </div>
+            <div class="form-group">
+              <label>Betrag (CHF) *</label>
+              <input type="number" id="f-betrag" step="0.01" min="0" placeholder="0.00">
+            </div>
+            <div class="form-group full">
+              <label>Bereich *</label>
+              <select id="f-bereich" onchange="updateSubCategories()">
+                <option value="">Auswählen ...</option>
+                <option value="Lager">Lager</option>
+                <option value="Leitung">Leitung / Höck</option>
+                <option value="Gruppenstunde">Gruppenstunde</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label>Kategorie *</label>
+              <select id="f-kategorie">
+                <option value="">Zuerst Bereich wählen ...</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label>Beschreibung</label>
+              <input type="text" id="f-beschreibung" placeholder="z.B. Grillkohle Scharanlass">
+            </div>
+            <div class="form-group">
+              <label>Zahlungsart</label>
+              <select id="f-zahlung">
+                <option>Privat bezahlt</option>
+                <option>Schar-Karte</option>
+                <option>Rechnung an Schar</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label>Notiz (optional)</label>
+              <input type="text" id="f-notiz" placeholder="z.B. Projekt, Anmerkung ...">
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-secondary" onclick="prevStep(2)">Zurück</button>
+            <button class="btn btn-primary" id="saveBtn" onclick="saveToSheets()" style="background:#1a7a47">An Google
+              senden <i class="fa-solid fa-check"></i></button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script src="assets/js/api-client.js"></script>
+  <script>
+    let currentStep = 1;
+    let currentImageDataUrl = null;
+
+    async function goToStep(n) {
+      if (n === 2) {
+        const name = document.getElementById('ex-name').value.trim();
+        const pin = document.getElementById('ex-pin').value.trim();
+        if (!name || !pin) { alert('Bitte Name und PIN eingeben.'); return; }
+
+        // Sofortige PIN-Prüfung
+        const btn = document.querySelector('#step-1 .btn-primary');
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> Prüfe PIN...';
+
+        try {
+          const res = await API_CLIENT.post('marketing', { action: 'verify', pin });
+          if (!res.ok && res.error && res.error.includes('PIN')) {
+            alert('Der Schar-PIN ist falsch.');
+            return;
+          }
+        } catch (e) {
+          console.error(e);
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = originalText;
+        }
+      }
+      if (n === 3) {
+        if (!currentImageDataUrl) { alert('Bitte zuerst ein Foto des Belegs hochladen.'); return; }
+      }
+      document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+      document.getElementById('step-' + n).classList.add('active');
+      document.querySelectorAll('.step-dot').forEach((dot, idx) => {
+        dot.classList.remove('active', 'completed');
+        if (idx + 1 < n) dot.classList.add('completed');
+        if (idx + 1 === n) dot.classList.add('active');
+      });
+      currentStep = n;
+      window.scrollTo(0, 0);
+    }
+
+    async function nextStep(n) { await goToStep(n); }
+    function prevStep(n) { goToStep(n); }
+
+    function handleFile(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      if (!file.type.startsWith('image/')) { alert('Bitte ein Bild auswählen.'); return; }
+      const reader = new FileReader();
+      reader.onload = ev => {
+        currentImageDataUrl = ev.target.result;
+        document.getElementById('previewImg').src = currentImageDataUrl;
+        document.getElementById('previewImg').style.display = 'block';
+        document.getElementById('uploadZone').style.display = 'none';
+        document.getElementById('uploadResult').style.display = 'block';
+        analyzeWithOCR(currentImageDataUrl);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function analyzeWithOCR(imageDataUrl) {
+      const statusBox = document.getElementById('ocrStatus');
+      const statusText = document.getElementById('ocrStatusText');
+      const nextBtn = document.getElementById('ocrNextBtn');
+
+      statusBox.style.display = 'block';
+      statusText.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> Beleg wird analysiert...';
+      nextBtn.disabled = true;
+      nextBtn.innerHTML = '<span class="spinner"></span> Analysiere...';
+
+      try {
+        const worker = await Tesseract.createWorker(['deu', 'eng']);
+        const { data: { text } } = await worker.recognize(imageDataUrl);
+        await worker.terminate();
+
+        const filled = parseOCRText(text);
+        statusText.innerHTML = filled.length
+          ? '<i class="fa-solid fa-check"></i> Belegdaten erkannt: ' + filled.join(', ')
+          : '<i class="fa-solid fa-triangle-exclamation"></i> Daten konnten nicht vollständig gelesen werden.';
+      } catch (err) {
+        statusText.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Analyse-Fehler: ' + err.message;
+      } finally {
+        nextBtn.disabled = false;
+        nextBtn.innerHTML = 'Daten prüfen <i class="fa-solid fa-chevron-right"></i>';
+      }
+    }
+
+    function parseOCRText(text) {
+      const filled = [];
+      const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+      const datumPatterns = [/\b(\d{1,2})[.\-\/](\d{1,2})[.\-\/](20\d{2})\b/, /\b(20\d{2})[.\-\/](\d{1,2})[.\-\/](\d{1,2})\b/];
+      for (const line of lines) {
+        for (const p of datumPatterns) {
+          const m = line.match(p);
+          if (m) {
+            const d = p === datumPatterns[0] ? `${m[3]}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}` : `${m[1]}-${m[2].padStart(2, '0')}-${m[3].padStart(2, '0')}`;
+            document.getElementById('f-datum').value = d;
+            filled.push('Datum');
+            break;
+          }
+        }
+        if (filled.includes('Datum')) break;
+      }
+      const betragsPattern = /(\d{1,6}[.,]\d{2})/g;
+      const allBetraege = [...text.matchAll(betragsPattern)].map(m => parseFloat(m[1].replace(',', '.'))).filter(v => !isNaN(v) && v > 0);
+      if (allBetraege.length) {
+        document.getElementById('f-betrag').value = Math.max(...allBetraege).toFixed(2);
+        filled.push('Betrag');
+      }
+      for (const line of lines) {
+        if (line.length >= 5 && !/^\d+([.,]\d+)?$/.test(line)) {
+          document.getElementById('f-beschreibung').value = line.substring(0, 40);
+          filled.push('Beschreibung');
+          break;
+        }
+      }
+      return filled;
+    }
+
+    function updateSubCategories() {
+      const bereich = document.getElementById('f-bereich').value;
+      const katSelect = document.getElementById('f-kategorie');
+      katSelect.innerHTML = '';
+
+      const subs = {
+        'Lager': ['Verpflegung', 'Material / Programm', 'Miete / Platz', 'Transport', 'Diverses Lager'],
+        'Leitung': ['Höck / Verpflegung', 'Weekend / Ausflug', 'Weiterbildung', 'Diverses Leitung'],
+        'Gruppenstunde': ['Bastelmaterial', 'Verpflegung GS', 'Programm GS', 'Diverses Gruppenstunde']
+      };
+
+      if (!bereich || !subs[bereich]) {
+        katSelect.innerHTML = '<option value="">Zuerst Bereich wählen ...</option>';
+        return;
+      }
+
+      subs[bereich].forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s;
+        opt.textContent = s;
+        katSelect.appendChild(opt);
+      });
+    }
+
+    async function saveToSheets() {
+      const name = document.getElementById('ex-name').value.trim();
+      const pin = document.getElementById('ex-pin').value.trim();
+      const datum = document.getElementById('f-datum').value;
+      const betrag = parseFloat(document.getElementById('f-betrag').value);
+      const bereich = document.getElementById('f-bereich').value;
+      const kat = document.getElementById('f-kategorie').value;
+
+      if (!datum || isNaN(betrag) || !bereich || !kat) { alert('Bitte alle Pflichtfelder (*) ausfüllen.'); return; }
+
+      const saveBtn = document.getElementById('saveBtn');
+      const originalText = saveBtn.innerHTML;
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = '<span class="spinner"></span> Wird gesendet...';
+      toast('Wird übertragen...');
+
+      try {
+        const entry = {
+          datum, kategorie: `${bereich}: ${kat}`,
+          beschreibung: document.getElementById('f-beschreibung').value.trim(),
+          zahlung: document.getElementById('f-zahlung').value,
+          notiz: document.getElementById('f-notiz').value.trim(),
+          betrag, kostenstelle: 'Schar-Rechnung 8730',
+          bild: currentImageDataUrl || null
+        };
+        const res = await API_CLIENT.post('marketing', { action: 'saveExpenses', pin, entries: [entry], metadata: { name } });
+
+        if (res.ok) {
+          toast('Erfolgreich gespeichert <i class="fa-solid fa-check"></i>');
+          alert('Erfolg: Der Beleg wurde übertragen.');
+          location.reload();
+        } else {
+          throw new Error(res.error || 'Fehler beim Speichern');
+        }
+      } catch (err) {
+        alert('Fehler: ' + err.message);
+        toast('Fehler <i class="fa-solid fa-circle-xmark"></i>');
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = originalText;
+      }
+    }
+
+    function clearForm() {
+      ['f-datum', 'f-betrag', 'f-beschreibung', 'f-notiz'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('f-bereich').selectedIndex = 0;
+      updateSubCategories();
+      document.getElementById('previewImg').style.display = 'none';
+      document.getElementById('uploadZone').style.display = 'block';
+      document.getElementById('uploadResult').style.display = 'none';
+      document.getElementById('fileInput').value = '';
+      document.getElementById('ocrStatus').style.display = 'none';
+      currentImageDataUrl = null;
+      goToStep(1);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const session = AUTH.getSession ? AUTH.getSession() : null;
+      if (session) {
+        if (document.getElementById('ex-name')) document.getElementById('ex-name').value = session.name || '';
+        if (document.getElementById('ex-pin')) document.getElementById('ex-pin').value = session.pin || '';
+      }
+    });
+
+    function toast(msg) {
+      const el = document.getElementById('toast');
+      el.innerHTML = msg;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 2500);
+    }
+  </script>
+</body>
+
+</html>

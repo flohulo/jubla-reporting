@@ -33,6 +33,9 @@ Wenn du das Strike-System zur Qualitätssicherung nutzt, lege diese Tabs an:
 ### Tab `Alarme`
 *   Spalten: `Zeitstempel`, `Datum`, `Name`, `Strikes`, `Gründe`, `Leiter`
 
+### Tab `Marketing` (Spesenabrechnung)
+*   Spalten: `Zeitstempel`, `Belegdatum`, `Mitarbeiter`, `Kategorie`, `WB Nr.`, `Beschreibung`, `Betrag`, `Zahlungsart`, `Notiz`, `Beleg vorhanden`, `Abrechnungszeitraum`
+
 ## 4. Sicherheit & Zugriff (Token-System)
 Damit Berichte sicher abgerufen werden können, braucht es diese Verzeichnis-Tabs:
 
@@ -55,3 +58,11 @@ Die ID findest du in der Web-Adresse deines Sheets:
 `.../d/DEINE_SHEET_ID/edit`
 
 Kopiere diesen Teil und trage ihn in Netlify oder deine `.env` als `GOOGLE_SHEET_ID` ein.
+
+## 7. Google Drive für Belege (Optional)
+Wenn du möchtest, dass Belegfotos automatisch in einem Google Drive Ordner gespeichert werden:
+1. Erstelle einen Ordner in Google Drive.
+2. Klicke auf den Ordnernamen > **Teilen** und gib dem Service Account (siehe Punkt 5) **Editor-Rechte**.
+3. Kopiere die **Folder ID** aus der URL (der Teil nach `.../folders/`).
+4. Trage die ID in Netlify oder deine `.env` als `GOOGLE_DRIVE_FOLDER_ID` ein.
+5. In der Spesen-Tabelle wird dann automatisch der Link zum Foto in Google Drive hinterlegt.

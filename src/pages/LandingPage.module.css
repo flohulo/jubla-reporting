@@ -1,0 +1,133 @@
+.landingContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+}
+
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 4rem 0;
+}
+
+.heroContent {
+  flex: 1;
+  max-width: 600px;
+}
+
+.title {
+  font-size: 4rem;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+}
+
+.highlight {
+  color: var(--primary-color);
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.loginNote {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.heroImage {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.heroImage img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 16px;
+  box-shadow: var(--glass-shadow);
+}
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.sectionHeader h2 {
+  font-size: 2.5rem;
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.featureCard {
+  padding: 2rem;
+  border-radius: 16px;
+  transition: transform var(--transition-fast);
+}
+
+.featureCard:hover {
+  transform: translateY(-5px);
+}
+
+.featureCard h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.benefitRow {
+  display: flex;
+  align-items: center;
+  gap: 4rem;
+  margin-bottom: 4rem;
+}
+
+.benefitContent {
+  flex: 1;
+}
+
+.benefitContent ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 1.5rem;
+}
+
+.benefitContent li {
+  margin-bottom: 0.5rem;
+}
+
+.benefitImage {
+  flex: 1;
+}
+
+.benefitImage img {
+  width: 100%;
+  border-radius: 16px;
+  box-shadow: var(--glass-shadow);
+}
+
+@media (max-width: 768px) {
+  .hero, .benefitRow {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .actions {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}

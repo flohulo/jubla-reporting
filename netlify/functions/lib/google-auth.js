@@ -23,7 +23,7 @@ async function getAccessToken() {
   const now = Math.floor(Date.now() / 1000);
   const claim = {
     iss: email,
-    scope: "https://www.googleapis.com/auth/spreadsheets",
+    scope: "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file",
     aud: "https://oauth2.googleapis.com/token",
     exp: now + 3600,
     iat: now,
