@@ -18,80 +18,78 @@ window.APP_CONFIG = {
         info: "Info"
     },
 
-    labels: {
-        // Titles
-        contactTitle: "Kontakt & Support",
-        generalInfoTitle: "Allgemeines",
-        privacyTitle: "Datenschutz & Dienste",
-        linksTitle: "Wichtige Links",
-        emergencyTitle: "Notrufnummern",
-        helpTopicsTitle: "Hilfe-Themen",
-        legalTitle: "Rechtliche Hinweise",
+    // Titles
+    contactTitle: "Kontakt & Support",
+    generalInfoTitle: "Allgemeines",
+    privacyTitle: "Datenschutz & Dienste",
+    linksTitle: "Wichtige Links",
+    emergencyTitle: "Notrufnummern",
+    helpTopicsTitle: "Hilfe-Themen",
+    legalTitle: "Rechtliche Hinweise",
 
-        // Form Section Titles
-        loginTitle: "Anmelden",
-        requestTitle: "Auszug anfordern",
-        infoSectionTitle: "Allgemeine Infos",
-        helpTipsBtn: "Hilfe & Tipps",
+    // Form Section Titles
+    loginTitle: "Anmelden",
+    requestTitle: "Auszug anfordern",
+    infoSectionTitle: "Allgemeine Infos",
+    helpTipsBtn: "Hilfe & Tipps",
 
-        // Form Labels
-        nameLabel: "Dein Name",
-        pinLabel: "Schar-PIN",
-        dateLabel: "Datum",
-        reportForOthersLabel: "Report für andere",
-        roleLabel: "Meine Rolle",
-        partnerLabel: "Partner/in",
-        hlLabel: "Hauptleitung",
-        hilfsLabel: "Hilfsleitung",
-        kidsCountLabel: "Anzahl Kinder",
-        leadersCountLabel: "Zusätzliche Leiter",
-        dynamicsLabel: "Gruppendynamik",
-        remarksLabel: "Bemerkungen",
-        emailLabel: "Deine E-Mail",
-        requestDateLabel: "Datum der Berichte",
-        requestReasonLabel: "Grund der Anforderung",
-        verificationCodeLabel: "Bitte gib den 6-stelligen Code aus deiner E-Mail ein:",
+    // Form Labels
+    nameLabel: "Dein Name",
+    pinLabel: "Schar-PIN",
+    dateLabel: "Datum",
+    reportForOthersLabel: "Report für andere",
+    roleLabel: "Meine Rolle",
+    partnerLabel: "Partner/in",
+    hlLabel: "Hauptleitung",
+    hilfsLabel: "Hilfsleitung",
+    kidsCountLabel: "Anzahl Kinder",
+    leadersCountLabel: "Zusätzliche Leiter",
+    dynamicsLabel: "Gruppendynamik",
+    remarksLabel: "Bemerkungen",
+    emailLabel: "Deine E-Mail",
+    requestDateLabel: "Datum der Berichte",
+    requestReasonLabel: "Grund der Anforderung",
+    verificationCodeLabel: "Bitte gib den 6-stelligen Code aus deiner E-Mail ein:",
 
-        // Buttons
-        loginBtn: "Anmelden",
-        submitReportBtn: "Report absenden",
-        requestCodeBtn: "Verifizierungs-Code anfordern",
-        showReportsBtn: "Berichte anzeigen",
-        newReportBtn: "Neuer Bericht",
-        newRequestBtn: "Neue Anforderung",
+    // Buttons
+    loginBtn: "Anmelden",
+    submitReportBtn: "Report absenden",
+    requestCodeBtn: "Verifizierungs-Code anfordern",
+    showReportsBtn: "Berichte anzeigen",
+    newReportBtn: "Neuer Bericht",
+    newRequestBtn: "Neue Anforderung",
 
-        // Loading states
-        checking: "Prüfe…",
-        sending: "Wird gesendet…",
-        verifying: "Wird verifiziert…",
-        saving: "Wird gespeichert…",
-        checkingAuth: "Prüfe Berechtigung…",
+    // Loading states
+    checking: "Prüfe…",
+    sending: "Wird gesendet…",
+    verifying: "Wird verifiziert…",
+    saving: "Wird gespeichert…",
+    checkingAuth: "Prüfe Berechtigung…",
 
-        // History Display
-        reportedBy: "von {name} ({role})",
-        defaultRole: "Leitung",
-        noEntriesFound: "Keine Einträge gefunden.",
-        entriesFound: "{count} Einträge",
+    // History Display
+    reportedBy: "von {name} ({role})",
+    defaultRole: "Leitung",
+    noEntriesFound: "Keine Einträge gefunden.",
+    entriesFound: "{count} Einträge",
 
-        // Strikes specific
-        strikeSystemTitle: "Strike-System",
-        strikeSystemSub: "{org}",
-        bannedTag: "Ausschluss",
-        kidsLabel: "Kinder",
-        strikesLabel: "Strikes",
-        attentionLabel: "Achtung",
-        bannedLabel: "Ausgeschlossen",
-        addKidPlaceholder: "Name des Kindes...",
-        completeGruStuBtn: "GruStu abschliessen & speichern",
-        newGruStuBtn: "Neue GruStu starten",
-        noKidsOnList: "Noch keine Kinder auf der Liste.<br>Gib oben einen Namen ein.",
-        successTitle: "GruStu gespeichert!",
-        successSub: "Alle Strikes wurden erfolgreich in Google Sheets übertragen.",
-        strikeMailSent: "Scharleitung wurde informiert.",
-        backToReporting: "← Reporting",
-        backToStrikes: "Reporting", // Footer link in strikes.html
-        versionLabel: "Version",
-    },
+    // Strikes specific
+    strikeSystemTitle: "Strike-System",
+    strikeSystemSub: "{org}",
+    bannedTag: "Ausschluss",
+    kidsLabel: "Kinder",
+    oneStrikeLabel: "1 Strike",
+    attentionLabel: "2 Strike",
+    bannedLabel: "3 Strike",
+    successTitle: "GruStu gespeichert!",
+    successSub: "Alle Strikes wurden erfolgreich in Google Sheets übertragen.",
+    addKidPlaceholder: "Name des Kindes...",
+    completeGruStuBtn: "GruStu abschliessen & speichern",
+    newGruStuBtn: "Neue GruStu starten",
+    noKidsOnList: "Noch keine Kinder auf der Liste.<br>Gib oben einen Namen ein.",
+    strikeMailSent: "Scharleitung wurde informiert.",
+    backToReporting: "← Reporting",
+    backToStrikes: "← Strikes",
+    versionLabel: "Version",
 
     placeholders: {
         name: "Dein Name",
@@ -207,9 +205,10 @@ window.APP_CONFIG = {
         github: { label: "Projekt auf GitHub", url: "https://github.com/flohulo/jubla-reporting" },
         license: { label: "Lizenz", url: "https://github.com/flohulo/jubla-reporting/blob/main/LICENSE" },
         legal: { label: "Rechtliche Hinweise", url: "https://github.com/flohulo/jubla-reporting/blob/main/LEGAL.md" },
-        reportIssue: "Fehler melden",
-        strikes: "Strikes",
-        legalText: "Rechtliches",
-        githubShort: "GitHub"
-    }
+        reportIssue: "Fehler melden"
+    },
+
+    strikes: "Strikes",
+    legalText: "Rechtliches",
+    githubShort: "GitHub"
 };

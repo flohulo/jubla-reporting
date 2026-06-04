@@ -13,23 +13,26 @@
 </head>
 
 <body>
-  <div class="card">
-    <!-- HEADER -->
-    <div class="card-header">
-      <div class="logo-badge"><i class="fa-solid fa-bolt"></i></div>
-      <div class="header-titles">
-        <h1 id="strikeSystemTitle">Strike-System</h1>
-        <p id="headerSub">Strikesystem</p>
-      </div>
-      <a href="app.html" class="header-back"><i class="fa-solid fa-arrow-left"></i> Reporting</a>
+  <header class="top-nav">
+    <div class="nav-left">
+      <span class="nav-title" id="appOrgName">Jubla Reporting</span>
+      <span id="strikeSystemTitle" style="display: none;"></span>
+      <span id="headerSub" style="display: none;"></span>
+    </div>
+    <div class="nav-right">
+      <a href="#">Spesen</a>
+      <a href="app.html">Reporting</a>
+      <a href="strikes.html">Strikes</a>
       <button id="logoutBtnTop" class="btn-logout" onclick="logout()" style="display: none">
         <i class="fa-solid fa-right-from-bracket"></i>
       </button>
     </div>
+  </header>
 
+  <div class="card">
     <!-- LOGIN -->
     <div class="card-body" id="loginArea">
-      <p class="section-title"><i class="fa-solid fa-lock"></i> <span id="loginTitle">Anmelden</span></p>
+      <p class="section-title login-title"><span id="loginTitle">Anmelden</span></p>
       <div class="form-group">
         <label class="form-label" id="nameLabel">Dein Name</label>
         <input type="text" id="loginName" class="form-control" placeholder="Vorname"
@@ -56,16 +59,16 @@
           <div class="stat-label" id="kidsLabel">Kinder</div>
         </div>
         <div class="stat-pill">
-          <div class="stat-num c-green" id="statWith">0</div>
-          <div class="stat-label" id="strikesLabel">Strikes</div>
+          <div class="stat-num" id="statOne">0</div>
+          <div class="stat-label" id="oneStrikeLabel">1 Strike</div>
         </div>
         <div class="stat-pill" id="pillWarn">
           <div class="stat-num c-warn" id="statWarn">0</div>
-          <div class="stat-label" id="attentionLabel">Achtung</div>
+          <div class="stat-label" id="attentionLabel">2 Strike</div>
         </div>
         <div class="stat-pill" id="pillRed">
           <div class="stat-num c-red" id="statRed">0</div>
-          <div class="stat-label" id="bannedLabel">Banned</div>
+          <div class="stat-label" id="bannedLabel">3 Strike</div>
         </div>
       </div>
 
@@ -99,7 +102,6 @@
           rel="noreferrer">Fehler melden</a>
         <a id="footerLegalLink" href="https://github.com/flohulo/jubla-reporting/blob/main/LEGAL.md" target="_blank"
           rel="noreferrer">Rechtliches</a>
-        <a id="strikesLink" href="app.html">Reporting</a>
       </span>
     </div>
   </div>

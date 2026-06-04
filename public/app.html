@@ -13,21 +13,25 @@
 </head>
 
 <body>
-  <div class="card">
-    <div class="card-header">
-      <div class="logo-badge"><i class="fa-solid fa-tree"></i></div>
-      <div class="header-titles">
-        <h1 id="appOrgName">Reporting</h1>
-        <p id="headerSubtitle">Reporting Tool</p>
-      </div>
+  <header class="top-nav">
+    <div class="nav-left">
+      <span class="nav-title" id="appOrgName">Jubla Reporting</span>
+      <span id="headerSubtitle" style="display: none;"></span>
+    </div>
+    <div class="nav-right">
+      <a href="#">Spesen</a>
+      <a href="app.html">Reporting</a>
+      <a href="strikes.html">Strikes</a>
       <button id="logoutBtnTop" class="btn-logout" onclick="logout()" style="display: none">
         <i class="fa-solid fa-right-from-bracket"></i>
       </button>
     </div>
+  </header>
 
+  <div class="card">
     <!-- LOGIN -->
     <div class="card-body" id="loginArea">
-      <p class="section-title"><i class="fa-solid fa-lock"></i> <span id="loginTitle">Anmelden</span></p>
+      <p class="section-title login-title"><span id="loginTitle">Anmelden</span></p>
       <form onsubmit="login(); return false;">
         <div class="form-group">
           <label class="form-label" id="nameLabel">Dein Name</label>
@@ -228,7 +232,6 @@
           rel="noreferrer">Fehler melden</a>
         <a id="footerLegalLink" href="https://github.com/flohulo/jubla-reporting/blob/main/LEGAL.md" target="_blank"
           rel="noreferrer">Rechtliches</a>
-        <a id="strikesLink" href="strikes.html">Strikes</a>
       </span>
     </div>
   </div>

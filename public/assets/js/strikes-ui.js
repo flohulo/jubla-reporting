@@ -22,12 +22,15 @@ const UI = {
 
   updateStats() {
     const total = kids.length;
+    const oneStrike = kids.filter(k => k.strikes === 1).length;
     const withStrikes = kids.filter(k => k.strikes > 0).length;
     const warns = kids.filter(k => k.strikes === 2).length;
     const red = kids.filter(k => k.strikes >= 3).length;
 
     document.getElementById("statTotal").innerText = total;
-    document.getElementById("statWith").innerText = withStrikes;
+    document.getElementById("statOne").innerText = oneStrike;
+    const statWithEl = document.getElementById("statWith");
+    if (statWithEl) statWithEl.innerText = withStrikes;
     document.getElementById("statWarn").innerText = warns;
     document.getElementById("statRed").innerText = red;
 
@@ -38,6 +41,8 @@ const UI = {
   renderKids() {
     const list = document.getElementById("kidsList");
     const cfg = window.APP_CONFIG || {};
+
+    this.updateStats();
 
     if (kids.length === 0) {
       const emptyMsg = (cfg.labels && cfg.labels.noKidsOnList) || "Noch keine Kinder auf der Liste.<br>Gib oben einen Namen ein.";
@@ -70,7 +75,6 @@ const UI = {
       `;
       list.appendChild(card);
     });
-    this.updateStats();
   },
 
   applyBranding() {
@@ -108,12 +112,13 @@ const UI = {
       "pinLabel": "pinLabel",
       "loginBtn": "loginBtn",
       "kidsLabel": "kidsLabel",
+      "oneStrikeLabel": "oneStrikeLabel",
       "strikesLabel": "strikesLabel",
       "attentionLabel": "attentionLabel",
       "bannedLabel": "bannedLabel",
       "saveBtn": "completeGruStuBtn",
-      "successTitle": "strikeSuccess",
-      "successSub": "strikeSuccessSub",
+      "successTitle": "successTitle",
+      "successSub": "successSub",
       "newGruStuBtn": "newGruStuBtn"
     };
 
