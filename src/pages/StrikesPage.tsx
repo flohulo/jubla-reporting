@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { apiClient, AUTH } from '../api/client';
 import styles from './StrikesPage.module.css';
+import pkg from '../../package.json';
 
 interface Kid {
   id: string;
@@ -11,6 +12,7 @@ interface Kid {
 const StrikesPage: React.FC = () => {
   const [userName, setUserName] = useState<string | null>(null);
   const [pin, setPin] = useState<string>('');
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -24,17 +26,35 @@ const StrikesPage: React.FC = () => {
     if (session) {
       setUserName(session.name);
       setPin(session.pin);
+      setIsAuthenticated(true);
     }
   }, []);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!userName || !pin) {
       setError('Bitte Name und PIN eingeben.');
       return;
     }
-    AUTH.saveSession(userName, pin);
+    
+    setLoading(true);
     setError(null);
+    try {
+      await apiClient.post('strikes', { action: 'verifyPin', pin });
+      AUTH.saveSession(userName, pin);
+      setIsAuthenticated(true);
+    } catch (err: any) {
+      setError('Falscher PIN oder Serverfehler.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLogout = () => {
+    AUTH.clearSession();
+    setUserName(null);
+    setPin('');
+    setIsAuthenticated(false);
   };
 
   const addKid = () => {
@@ -77,11 +97,14 @@ const StrikesPage: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      await apiClient.post('strike', {
-        action: 'saveDay',
+      await apiClient.post('strikes', {
+        action: 'saveStrikeDay',
         pin,
-        metadata: { name: userName },
-        entries: kids.map(k => ({ name: k.name, strikes: k.strikes }))
+        datum: new Date().toISOString().split("T")[0],
+        leiterName: userName,
+        timestamp: new Date().toISOString(),
+        version: pkg.version,
+        kids: kids.map(k => ({ name: k.name, strikes: k.strikes }))
       });
       
       setSuccessOverlay(true);
@@ -97,7 +120,7 @@ const StrikesPage: React.FC = () => {
     setSuccessOverlay(false);
   };
 
-  if (!AUTH.getSession() && (!userName || !pin)) {
+  if (!isAuthenticated) {
     return (
       <div className={styles.container}>
         <div className={`glass-panel ${styles.loginCard}`}>
@@ -123,27 +146,32 @@ const StrikesPage: React.FC = () => {
 
   const stats = {
     total: kids.length,
-    withStrikes: kids.filter(k => k.strikes > 0).length,
-    warn: kids.filter(k => k.strikes >= 1 && k.strikes <= 2).length,
+    oneStrike: kids.filter(k => k.strikes === 1).length,
+    twoStrikes: kids.filter(k => k.strikes === 2).length,
     banned: kids.filter(k => k.strikes >= 3).length
   };
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.pageTitle}>Strike-System</h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+        <h1 className={styles.pageTitle} style={{ margin: 0 }}>Strike-System</h1>
+        <button onClick={handleLogout} className="btn" style={{ padding: '0.5rem 1rem', background: 'var(--surface-color)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'var(--text-secondary)', cursor: 'pointer' }}>
+          <i className="fa-solid fa-right-from-bracket" style={{ marginRight: '0.5rem' }}></i> Abmelden
+        </button>
+      </div>
 
       <div className={styles.statsStrip}>
         <div className={styles.statPill}>
           <div className={styles.statNum}>{stats.total}</div>
           <div className={styles.statLabel}>Kinder</div>
         </div>
-        <div className={styles.statPill}>
-          <div className={`${styles.statNum} ${styles.cGreen}`}>{stats.withStrikes}</div>
-          <div className={styles.statLabel}>Mit Strikes</div>
+        <div className={`${styles.statPill} ${stats.oneStrike > 0 ? styles.pillWarn : ''}`}>
+          <div className={`${styles.statNum} ${styles.cWarn}`}>{stats.oneStrike}</div>
+          <div className={styles.statLabel}>1 Strike</div>
         </div>
-        <div className={`${styles.statPill} ${stats.warn > 0 ? styles.pillWarn : ''}`}>
-          <div className={`${styles.statNum} ${styles.cWarn}`}>{stats.warn}</div>
-          <div className={styles.statLabel}>Achtung</div>
+        <div className={`${styles.statPill} ${stats.twoStrikes > 0 ? styles.pillWarn : ''}`}>
+          <div className={`${styles.statNum} ${styles.cWarn}`}>{stats.twoStrikes}</div>
+          <div className={styles.statLabel}>2 Strikes</div>
         </div>
         <div className={`${styles.statPill} ${stats.banned > 0 ? styles.pillRed : ''}`}>
           <div className={`${styles.statNum} ${styles.cRed}`}>{stats.banned}</div>
