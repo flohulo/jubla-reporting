@@ -20,9 +20,10 @@ jobs:
       - uses: googleapis/release-please-action@v5
         id: release
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           release-type: node
 
-  # Dieser Job läuft nur, wenn ein Release gemerget wurde
+  # Dieser Job läuft nur, wenn ein Release gemerget wurde oder manuell gestartet wurde
   deploy:
     needs: release-please
     if: ${{ needs.release-please.outputs.release_created || github.event_name == 'workflow_dispatch' }}
@@ -40,7 +41,7 @@ jobs:
         run: npm ci
 
       - name: Deploy to Netlify
-        run: npx netlify-cli deploy --dir=public --prod
+        run: npx netlify-cli deploy --dir=public --prod-if-unlocked
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
