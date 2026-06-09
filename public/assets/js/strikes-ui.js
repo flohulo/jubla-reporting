@@ -138,8 +138,8 @@ const UI = {
     }
 
     // Footer
-    if (document.getElementById("issueLink")) document.getElementById("issueLink").innerText = cfg.links.reportIssue;
-    if (document.getElementById("footerLegalLink")) document.getElementById("footerLegalLink").innerText = cfg.links.legalText;
+    if (document.getElementById("issueLink")) document.getElementById("issueLink").innerText = cfg.reportIssue || "Fehler melden";
+    if (document.getElementById("footerLegalLink")) document.getElementById("footerLegalLink").innerText = window.APP_CONFIG.legalText || cfg.links?.legalText || "Rechtliches";
     if (document.getElementById("strikesLink")) document.getElementById("strikesLink").innerText = cfg.labels.backToStrikes;
 
     const versionLabel = document.getElementById("versionText");
