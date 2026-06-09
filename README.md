@@ -3,8 +3,6 @@
 > Das effiziente Tool zur Erfassung von Gruppenstunden-Berichten und zur Qualitätssicherung für Jubla-Scharen – optimiert für die Nutzung auf dem Smartphone.
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/5f437261-5c16-4d69-87a1-6d7bb4cb87f6/deploy-status)](https://app.netlify.com/projects/jubla-wald-reporting/deploys)
-![License](https://img.shields.io/github/license/flohulo/jubla-reporting)
-![Release](https://img.shields.io/github/v/release/flohulo/jubla-reporting)
 
 Dieses Tool ermöglicht es Leitenden, Berichte zu Gruppenstunden schnell und unkompliziert digital einzureichen – direkt nach dem Höck oder im Bus. Die Daten landen sicher in einem Google Sheet, und die Scharleitung wird bei kritischen Vorfällen automatisch per Mail benachrichtigt.
 

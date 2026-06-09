@@ -160,7 +160,8 @@ exports.handler = async (event) => {
           entry.betrag.toString().replace(".", ","),
           entry.zahlung,
           entry.notiz,
-          pdfDriveLink
+          pdfDriveLink,
+          metadata.version || ""
         ];
 
         await appendRow(token, sheetName, row);
@@ -169,8 +170,8 @@ exports.handler = async (event) => {
       return ok({ count: entries.length });
     }
 
-    if (action === "verify") {
-      return ok({ message: "PIN korrekt" });
+    if (action === "verifyPin" || action === "verify") {
+      return ok({ verified: true, message: "PIN korrekt" });
     }
 
     return err("Unbekannte Aktion: " + action, 400);

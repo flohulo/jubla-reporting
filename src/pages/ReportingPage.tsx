@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { apiClient, AUTH } from '../api/client';
 import styles from './ReportingPage.module.css';
+import pkg from '../../package.json';
 
 const ReportingPage: React.FC = () => {
   const [userName, setUserName] = useState<string | null>(null);
   const [pin, setPin] = useState<string>('');
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<'form' | 'request' | 'info'>('form');
   
   const [loading, setLoading] = useState(false);
@@ -36,29 +38,36 @@ const ReportingPage: React.FC = () => {
     if (session) {
       setUserName(session.name);
       setPin(session.pin);
+      setIsAuthenticated(true);
     }
   }, []);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const nameInput = (document.getElementById('userNameInput') as HTMLInputElement).value;
-    const pinInput = (document.getElementById('pinInput') as HTMLInputElement).value;
     
-    if (!nameInput || !pinInput) {
+    if (!userName || !pin) {
       setError('Bitte Name und PIN eingeben.');
       return;
     }
     
-    AUTH.saveSession(nameInput, pinInput);
-    setUserName(nameInput);
-    setPin(pinInput);
+    setLoading(true);
     setError(null);
+    try {
+      await apiClient.post('sheets', { action: 'verifyPin', pin });
+      AUTH.saveSession(userName, pin);
+      setIsAuthenticated(true);
+    } catch (err: any) {
+      setError('Falscher PIN oder Serverfehler.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleLogout = () => {
     AUTH.clearSession();
     setUserName(null);
     setPin('');
+    setIsAuthenticated(false);
   };
 
   const submitReport = async () => {
@@ -71,20 +80,18 @@ const ReportingPage: React.FC = () => {
     setError(null);
     try {
       const payload = {
-        action: 'submitReport',
+        action: 'appendRow',
         pin,
-        reportData: {
-          datum,
-          rolle,
-          partner,
-          hl: fuerAndere ? hl : '',
-          hilfs: fuerAndere ? hilfs : '',
-          anzahl,
-          leiter,
-          dynamik,
-          bemerkungen,
-          name: userName
-        }
+        timestamp: new Date().toISOString(),
+        datum,
+        leiterName: userName,
+        hl: fuerAndere ? hl : (rolle === 'Hauptleitung' ? userName : partner),
+        hilfs: fuerAndere ? hilfs : (rolle === 'Hilfsleitung' ? userName : partner),
+        anzahl: parseInt(anzahl) || 0,
+        leiterCount: parseInt(leiter) || 0,
+        dynamik,
+        bemerkungen,
+        version: pkg.version
       };
       await apiClient.post('sheets', payload);
       setSuccess('Bericht erfolgreich gesendet!');
@@ -145,7 +152,7 @@ const ReportingPage: React.FC = () => {
     }
   };
 
-  if (!userName) {
+  if (!isAuthenticated) {
     return (
       <div className={styles.container}>
         <div className={`glass-panel ${styles.loginCard}`}>
@@ -153,11 +160,11 @@ const ReportingPage: React.FC = () => {
           <form onSubmit={handleLogin}>
             <div className={styles.formGroup}>
               <label>Dein Name</label>
-              <input type="text" id="userNameInput" className={styles.input} placeholder="Vorname" required />
+              <input type="text" value={userName || ''} onChange={e => setUserName(e.target.value)} className={styles.input} placeholder="Vorname" required />
             </div>
             <div className={styles.formGroup}>
               <label>Schar-PIN</label>
-              <input type="password" id="pinInput" className={styles.input} placeholder="••••" required />
+              <input type="password" value={pin} onChange={e => setPin(e.target.value)} className={styles.input} placeholder="••••" required />
             </div>
             {error && <p className={styles.error}>{error}</p>}
             <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '1rem' }}>

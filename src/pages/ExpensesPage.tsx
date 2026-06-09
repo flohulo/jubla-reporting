@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Tesseract from 'tesseract.js';
 import { apiClient, AUTH } from '../api/client';
 import styles from './ExpensesPage.module.css';
+import pkg from '../../package.json';
 
 const ExpensesPage: React.FC = () => {
   const [step, setStep] = useState(1);
@@ -49,15 +50,21 @@ const ExpensesPage: React.FC = () => {
     setError(null);
     setLoading(true);
     try {
-      // Dummy validation call (similar to original)
-      // await apiClient.post('spesen', { action: 'verify', pin });
+      await apiClient.post('spesen', { action: 'verifyPin', pin });
       AUTH.saveSession(name, pin);
       setStep(2);
     } catch (err: any) {
-      setError(err.message || 'Der Schar-PIN ist falsch.');
+      setError('Falscher PIN oder Serverfehler.');
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleLogout = () => {
+    AUTH.clearSession();
+    setName('');
+    setPin('');
+    setStep(1);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -181,7 +188,7 @@ const ExpensesPage: React.FC = () => {
         bild: imageDataUrl
       };
 
-      await apiClient.post('spesen', { action: 'saveExpenses', pin, entries: [entry], metadata: { name } });
+      await apiClient.post('spesen', { action: 'saveExpenses', pin, entries: [entry], metadata: { name, version: pkg.version } });
       
       showToast('Erfolgreich gespeichert!');
       // Reset form
@@ -203,7 +210,14 @@ const ExpensesPage: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.pageTitle}>Spesen-Assistent</h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+        <h1 className={styles.pageTitle} style={{ margin: 0 }}>Spesen-Assistent</h1>
+        {step > 1 && (
+          <button onClick={handleLogout} className="btn" style={{ padding: '0.5rem 1rem', background: 'var(--surface-color)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'var(--text-secondary)', cursor: 'pointer' }}>
+            <i className="fa-solid fa-right-from-bracket" style={{ marginRight: '0.5rem' }}></i> Abmelden
+          </button>
+        )}
+      </div>
 
       <div className={styles.stepper}>
         <div className={`${styles.step} ${step >= 1 ? styles.active : ''}`}>1. Leiter</div>
