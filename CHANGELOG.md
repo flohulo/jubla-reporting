@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/flohulo/jubla-reporting/compare/v0.4.0...v0.5.0) (2026-06-09)
+
+
+### Features
+
+* Github Links in pages ([#39](https://github.com/flohulo/jubla-reporting/issues/39)) ([63f185d](https://github.com/flohulo/jubla-reporting/commit/63f185d1491ab7129f71fc129ab93b4e4acdc26f))
+
 ## [0.4.0](https://github.com/flohulo/jubla-reporting/compare/v0.3.0...v0.4.0) (2026-06-04)
 
 
