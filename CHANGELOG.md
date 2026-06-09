@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/flohulo/jubla-reporting/compare/v0.3.0...v0.4.0) (2026-06-04)
+
+
+### Features
+
+* Menuleiste ([#35](https://github.com/flohulo/jubla-reporting/issues/35)) ([db0b061](https://github.com/flohulo/jubla-reporting/commit/db0b0610f4b22f75cd89033d421d932a2ed13a11))
+
 ## [0.3.0](https://github.com/flohulo/jubla-reporting/compare/v0.2.0...v0.3.0) (2026-05-20)
 
 
