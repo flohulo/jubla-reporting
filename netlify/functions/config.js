@@ -27,10 +27,10 @@ exports.handler = async (event) => {
       ok: true,
       contactEmail: process.env.CONTACT_EMAIL || "",
       contactPhone: process.env.CONTACT_PHONE || "",
-      issueUrl: "https://github.com/flohulo/jubla-reporting/issues",
+      issueUrl: "/report.html",
       githubUrl: "https://github.com/flohulo/jubla-reporting",
-      licenseUrl: "https://github.com/flohulo/jubla-reporting/blob/main/LICENSE",
-      legalUrl: "https://github.com/flohulo/jubla-reporting/blob/main/LEGAL.md",
+      licenseUrl: "/license.html",
+      legalUrl: "/legal.html",
     }),
   };
 };

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fehler melden – Jubla Reporting</title>
+  <meta name="description"
+    content="Melde einen Fehler oder schlage eine neue Funktion für das Jubla Reporting Tool vor.">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/vendor/fontawesome/css/all.min.css">
+  <style>
+    /* ── Report page overrides ─────────────────────────────── */
+    body {
+      background: var(--light);
+    }
+
+    .card {
+      margin-top: 0;
+      max-width: 560px;
+      animation: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Type toggle */
+    .type-toggle {
+      display: flex;
+      gap: 0;
+      background: var(--light);
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 22px;
+    }
+
+    .type-toggle button {
+      flex: 1;
+      padding: 11px 12px;
+      border: none;
+      border-radius: 10px;
+      background: transparent;
+      font-family: Nunito, sans-serif;
+      font-weight: 700;
+      font-size: 0.88em;
+      color: var(--mid);
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .type-toggle button.active {
+      background: var(--white);
+      color: var(--red);
+      box-shadow: 0 2px 8px rgb(0 0 0 / 8%);
+    }
+
+    .type-toggle button:hover:not(.active) {
+      color: var(--dark);
+    }
+
+    /* Required indicator */
+    .required::after {
+      content: ' *';
+      color: var(--red);
+      font-weight: 700;
+    }
+
+    /* Checkbox group */
+    .checkbox-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: var(--light);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-top: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+      border: 2px solid transparent;
+    }
+
+    .checkbox-group:hover {
+      border-color: var(--red);
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      accent-color: var(--red);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .checkbox-group span {
+      font-size: 0.9em;
+      color: var(--dark);
+      line-height: 1.5;
+    }
+
+    /* Info hint */
+    .field-hint {
+      font-size: 0.78em;
+      color: var(--mid);
+      margin-top: 5px;
+      line-height: 1.5;
+    }
+
+    /* Intro message */
+    .form-intro {
+      background: var(--light);
+      border-left: 4px solid var(--red);
+      border-radius: 0 10px 10px 0;
+      padding: 14px 16px;
+      margin-bottom: 22px;
+      font-size: 0.88em;
+      color: var(--mid);
+      line-height: 1.6;
+    }
+
+    .form-intro i {
+      color: var(--red);
+      margin-right: 6px;
+    }
+
+    /* Textarea placeholder styling */
+    textarea.form-control::placeholder {
+      color: var(--mid);
+      opacity: 0.6;
+    }
+
+    /* Success state */
+    .success-view {
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .success-view .success-icon {
+      font-size: 3.5em;
+      margin-bottom: 14px;
+      color: var(--green);
+      animation: pop-in 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .success-view h2 {
+      color: var(--green);
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .success-view p {
+      color: var(--mid);
+      font-size: 0.9em;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .issue-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--light);
+      padding: 12px 20px;
+      border-radius: 12px;
+      text-decoration: none;
+      color: var(--dark);
+      font-weight: 700;
+      font-size: 0.9em;
+      transition: 0.2s;
+      margin-bottom: 16px;
+    }
+
+    .issue-link:hover {
+      background: var(--blu-lt);
+      transform: translateY(-2px);
+    }
+
+    .issue-link i {
+      color: var(--red);
+    }
+
+    /* Section divider inside form */
+    .form-divider {
+      border: none;
+      border-top: 1px solid var(--blu-lt);
+      margin: 24px 0 20px;
+    }
+
+    /* Hidden sections for feature vs bug */
+    .bug-only,
+    .feature-only {
+      transition: all 0.3s ease;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <header class="top-nav">
+    <div class="nav-left">
+      <span class="nav-title" id="appOrgName">Jubla Reporting</span>
+    </div>
+    <div class="nav-right">
+      <a href="app.html">Reporting</a>
+      <a href="strikes.html">Strikes</a>
+    </div>
+  </header>
+
+  <!-- Card -->
+  <div class="card">
+
+    <!-- Header -->
+    <div class="card-header">
+      <div class="logo-badge"><i class="fa-solid fa-bug"></i></div>
+      <div class="header-titles">
+        <h1 id="pageHeading">Fehler melden</h1>
+        <p>Hilf uns, das Tool zu verbessern.</p>
+      </div>
+    </div>
+
+    <!-- Form body -->
+    <div class="card-body" id="formArea">
+
+      <!-- Type toggle -->
+      <div class="type-toggle" id="typeToggle">
+        <button class="active" data-type="bug" onclick="switchType('bug', this)">
+          <i class="fa-solid fa-bug"></i> Bug Report
+        </button>
+        <button data-type="feature" onclick="switchType('feature', this)">
+          <i class="fa-solid fa-rocket"></i> Feature Request
+        </button>
+      </div>
+
+      <!-- Intro (bug) -->
+      <div class="form-intro bug-only" id="bugIntro">
+        <i class="fa-solid fa-heart"></i>
+        Sicherheitslücke melden? → <a href="/security.html">Hier klicken</a>
+        <br>
+        Vielen Dank, dass du dir die Zeit nimmst, einen Fehler zu melden!
+      </div>
+
+      <!-- BUG FIELDS -->
+
+      <!-- Beschreibung -->
+      <div class="form-group">
+        <label class="form-label required" for="f_description" id="descLabel">Beschreibung</label>
+        <textarea id="f_description" class="form-control" rows="4" placeholder="Was ist passiert?"></textarea>
+        <p class="field-hint bug-only">Beschreibe das Problem so genau wie möglich.</p>
+        <p class="field-hint feature-only hidden">Beschreibe die gewünschte Funktion.</p>
+      </div>
+
+      <!-- Gerät (nur Bug) -->
+      <div class="form-group bug-only" id="deviceGroup">
+        <label class="form-label required" for="f_device">Dein Gerät</label>
+        <textarea id="f_device" class="form-control" rows="3"
+          placeholder="1. Gerät (z.B. iPhone 12)&#10;2. OS (z.B. iOS 18.1)&#10;3. Browser (z.B. Firefox)"></textarea>
+        <p class="field-hint">Bitte gebe uns Informationen über dein Gerät.</p>
+      </div>
+
+      <!-- Schritte (nur Bug) -->
+      <div class="form-group bug-only" id="stepsGroup">
+        <label class="form-label required" for="f_steps">Schritte zum Reproduzieren</label>
+        <textarea id="f_steps" class="form-control" rows="3"
+          placeholder="1. Gehe zu...&#10;2. Klicke auf...&#10;3. Siehe Fehler..."></textarea>
+        <p class="field-hint">Wie können wir den Fehler finden?</p>
+      </div>
+
+      <!-- Erwartetes Verhalten (nur Bug) -->
+      <div class="form-group bug-only" id="expectedGroup">
+        <label class="form-label required" for="f_expected">Erwartetes Verhalten</label>
+        <textarea id="f_expected" class="form-control" rows="2"
+          placeholder="Was sollte stattdessen passieren?"></textarea>
+      </div>
+
+      <!-- FEATURE FIELDS -->
+
+      <!-- Motivation (nur Feature) -->
+      <div class="form-group feature-only hidden" id="motivationGroup">
+        <label class="form-label required" for="f_motivation">Warum ist das hilfreich?</label>
+        <textarea id="f_motivation" class="form-control" rows="3"
+          placeholder="Welches Problem löst diese Funktion oder wie verbessert sie den Workflow?"></textarea>
+      </div>
+
+      <!-- SHARED FIELDS -->
+      <hr class="form-divider">
+
+      <!-- Screenshots / Details -->
+      <div class="form-group">
+        <label class="form-label" for="f_extra" id="extraLabel">Screenshots / Logs</label>
+        <textarea id="f_extra" class="form-control" rows="2"
+          placeholder="Falls vorhanden, füge bitte Screenshots-Links oder Fehlermeldungen bei."></textarea>
+      </div>
+
+      <!-- Selbst-Check -->
+      <div class="form-group">
+        <label class="form-label required">Selbst-Check</label>
+        <label class="checkbox-group" for="f_check">
+          <input type="checkbox" id="f_check">
+          <span>Ich nutze die aktuellste Version des Tools.</span>
+        </label>
+      </div>
+
+      <p class="error-msg" id="formError"></p>
+      <button class="btn btn-primary" id="submitBtn" onclick="submitIssue()">
+        <span id="submitBtnText">Bug Report absenden</span>
+        <i class="fa-solid fa-paper-plane"></i>
+      </button>
+    </div>
+
+    <!-- Success view (hidden) -->
+    <div class="card-body hidden" id="successArea">
+      <div class="success-view">
+        <div class="success-icon"><i class="fa-solid fa-check-circle"></i></div>
+        <h2>Danke für dein Feedback!</h2>
+        <p id="successMsg">Dein Bug Report wurde erfolgreich als GitHub Issue erstellt.</p>
+        <a class="issue-link" id="issueLink" href="#" target="_blank">
+          <i class="fa-brands fa-github"></i>
+          <span id="issueLinkText">Issue #… auf GitHub ansehen</span>
+        </a>
+        <br>
+        <button class="btn btn-secondary" onclick="resetForm()" style="margin-top: 12px;">
+          <i class="fa-solid fa-plus"></i> Weiteres Feedback senden
+        </button>
+        <a href="/" class="btn btn-primary"
+          style="display: block; text-align: center; text-decoration: none; margin-top: 8px;">
+          <i class="fa-solid fa-arrow-left"></i> Zurück zur Startseite
+        </a>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="card-footer">
+      <span><a class="footer-link" href="/">← Startseite</a></span>
+      <span class="footer-links">
+        <a href="/legal.html" target="_blank">Rechtliches</a>
+      </span>
+    </div>
+  </div>
+
+  <script src="/assets/js/config.js"></script>
+  <script>
+    // ── State ──────────────────────────────────────────────────
+    let currentType = 'bug';
+
+    // ── Type switch ────────────────────────────────────────────
+    function switchType(type, btn) {
+      currentType = type;
+      const buttons = document.querySelectorAll('#typeToggle button');
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const bugEls = document.querySelectorAll('.bug-only');
+      const featureEls = document.querySelectorAll('.feature-only');
+
+      if (type === 'bug') {
+        bugEls.forEach(el => el.classList.remove('hidden'));
+        featureEls.forEach(el => el.classList.add('hidden'));
+        document.getElementById('descLabel').textContent = 'Beschreibung';
+        document.getElementById('extraLabel').textContent = 'Screenshots / Logs';
+        document.getElementById('submitBtnText').textContent = 'Bug Report absenden';
+        document.getElementById('pageHeading').textContent = 'Fehler melden';
+        document.querySelector('.logo-badge i').className = 'fa-solid fa-bug';
+      } else {
+        bugEls.forEach(el => el.classList.add('hidden'));
+        featureEls.forEach(el => el.classList.remove('hidden'));
+        document.getElementById('descLabel').textContent = 'Was möchtest du verbessern oder hinzufügen?';
+        document.getElementById('extraLabel').textContent = 'Weitere Details';
+        document.getElementById('submitBtnText').textContent = 'Feature Request absenden';
+        document.getElementById('pageHeading').textContent = 'Feature vorschlagen';
+        document.querySelector('.logo-badge i').className = 'fa-solid fa-rocket';
+      }
+
+      // Clear errors
+      document.getElementById('formError').textContent = '';
+    }
+
+    // ── Build issue body ───────────────────────────────────────
+    function buildIssueBody() {
+      const desc = document.getElementById('f_description').value.trim();
+
+      if (currentType === 'bug') {
+        const device = document.getElementById('f_device').value.trim();
+        const steps = document.getElementById('f_steps').value.trim();
+        const expected = document.getElementById('f_expected').value.trim();
+        const extra = document.getElementById('f_extra').value.trim();
+
+        let body = `### Beschreibung\n${desc}\n\n`;
+        body += `### Dein Gerät\n${device}\n\n`;
+        body += `### Schritte zum Reproduzieren\n${steps}\n\n`;
+        body += `### Erwartetes Verhalten\n${expected}\n`;
+        if (extra) body += `\n### Screenshots / Logs\n${extra}\n`;
+        body += `\n---\n_Erstellt via Fehler-melden-Formular_`;
+        return body;
+      } else {
+        const motivation = document.getElementById('f_motivation').value.trim();
+        const extra = document.getElementById('f_extra').value.trim();
+
+        let body = `### Was möchtest du verbessern oder hinzufügen?\n${desc}\n\n`;
+        body += `### Warum ist das hilfreich?\n${motivation}\n`;
+        if (extra) body += `\n### Weitere Details\n${extra}\n`;
+        body += `\n---\n_Erstellt via Feature-Request-Formular_`;
+        return body;
+      }
+    }
+
+    // ── Validation ─────────────────────────────────────────────
+    function validate() {
+      const desc = document.getElementById('f_description').value.trim();
+      const check = document.getElementById('f_check').checked;
+
+      if (!desc) return 'Bitte eine Beschreibung eingeben.';
+      if (!check) return 'Bitte den Selbst-Check bestätigen.';
+
+      if (currentType === 'bug') {
+        if (!document.getElementById('f_device').value.trim())
+          return 'Bitte Geräte-Informationen angeben.';
+        if (!document.getElementById('f_steps').value.trim())
+          return 'Bitte Schritte zum Reproduzieren angeben.';
+        if (!document.getElementById('f_expected').value.trim())
+          return 'Bitte erwartetes Verhalten beschreiben.';
+      } else {
+        if (!document.getElementById('f_motivation').value.trim())
+          return 'Bitte erklären, warum das hilfreich ist.';
+      }
+
+      return null;
+    }
+
+    // ── Submit ──────────────────────────────────────────────────
+    async function submitIssue() {
+      const errEl = document.getElementById('formError');
+      const btn = document.getElementById('submitBtn');
+
+      const error = validate();
+      if (error) {
+        errEl.textContent = error;
+        return;
+      }
+      errEl.textContent = '';
+
+      const desc = document.getElementById('f_description').value.trim();
+      const titlePrefix = currentType === 'bug' ? '🐛 ' : '🚀 ';
+      // Use first line of description as title, capped at 80 chars
+      const firstLine = desc.split('\n')[0];
+      const title = titlePrefix + (firstLine.length > 80 ? firstLine.slice(0, 77) + '…' : firstLine);
+
+      btn.disabled = true;
+      document.getElementById('submitBtnText').textContent = 'Wird gesendet…';
+
+      try {
+        const res = await fetch('/.netlify/functions/create-issue', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: currentType,
+            title,
+            body: buildIssueBody(),
+          }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok || !data.ok) {
+          throw new Error(data.error || 'Unbekannter Fehler');
+        }
+
+        // Show success
+        document.getElementById('formArea').classList.add('hidden');
+        document.getElementById('successArea').classList.remove('hidden');
+
+        const typeLabel = currentType === 'bug' ? 'Bug Report' : 'Feature Request';
+        document.getElementById('successMsg').textContent =
+          `Dein ${typeLabel} wurde erfolgreich als GitHub Issue erstellt.`;
+        document.getElementById('issueLink').href = data.issueUrl;
+        document.getElementById('issueLinkText').textContent =
+          `Issue #${data.issueNumber} auf GitHub ansehen`;
+
+      } catch (err) {
+        errEl.textContent = 'Fehler beim Erstellen: ' + err.message;
+      } finally {
+        btn.disabled = false;
+        document.getElementById('submitBtnText').textContent =
+          currentType === 'bug' ? 'Bug Report absenden' : 'Feature Request absenden';
+      }
+    }
+
+    // ── Reset ───────────────────────────────────────────────────
+    function resetForm() {
+      document.getElementById('formArea').classList.remove('hidden');
+      document.getElementById('successArea').classList.add('hidden');
+      document.getElementById('f_description').value = '';
+      document.getElementById('f_device').value = '';
+      document.getElementById('f_steps').value = '';
+      document.getElementById('f_expected').value = '';
+      document.getElementById('f_motivation').value = '';
+      document.getElementById('f_extra').value = '';
+      document.getElementById('f_check').checked = false;
+      document.getElementById('formError').textContent = '';
+    }
+
+    // ── Branding ─────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.APP_CONFIG && window.APP_CONFIG.branding) {
+        const orgName = window.APP_CONFIG.branding.orgName || 'Jubla Reporting';
+        const el = document.getElementById('appOrgName');
+        if (el) el.textContent = orgName;
+      }
+    });
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>License – Jubla Reporting</title>
+  <meta name="description" content="License for the Jubla Reporting Tool.">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/assets/css/landing.css">
+  <link rel="stylesheet" href="/assets/vendor/fontawesome/css/all.min.css">
+  <style>
+    /* Legal page specific styles */
+    .legal-hero {
+      padding: 140px 0 60px;
+      text-align: center;
+      position: relative;
+      background: radial-gradient(circle at center, rgba(214, 90, 90, 0.06) 0%, transparent 70%);
+    }
+
+    .legal-hero::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(214, 90, 90, 0.08) 0%, transparent 70%);
+      z-index: -1;
+    }
+
+    .legal-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(214, 90, 90, 0.1);
+      color: var(--primary);
+      padding: 6px 18px;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .legal-hero h1 {
+      font-size: 3.5rem;
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 20px;
+      color: var(--text-dark);
+    }
+
+    .legal-hero h1 span {
+      color: var(--primary);
+    }
+
+    .legal-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .last-updated-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-white);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      padding: 8px 18px;
+      border-radius: 100px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-top: 24px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      transition: var(--transition);
+    }
+
+    .last-updated-badge:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .last-updated-badge i {
+      color: var(--primary);
+    }
+
+    #last-updated-date {
+      color: var(--text-dark);
+    }
+
+    .last-updated-badge .loading-dots::after {
+      content: '';
+      animation: dots 1.2s steps(3, end) infinite;
+    }
+
+    @keyframes dots {
+      0% {
+        content: '.';
+      }
+
+      33% {
+        content: '..';
+      }
+
+      66% {
+        content: '...';
+      }
+    }
+
+    /* Divider */
+    .legal-divider {
+      border: none;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(214, 90, 90, 0.3), transparent);
+      margin: 0 auto;
+      max-width: 800px;
+    }
+
+    /* Legal Content */
+    .legal-content-wrapper {
+      padding: 60px 0 100px;
+    }
+
+    .legal-card {
+      max-width: 860px;
+      margin: 0 auto;
+      background: var(--bg-white);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.07);
+      padding: 56px 64px;
+      border: 1px solid rgba(0, 0, 0, 0.04);
+    }
+
+    .legal-card .section-number {
+      display: inline-block;
+      background: rgba(214, 90, 90, 0.1);
+      color: var(--primary);
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      letter-spacing: 0.05em;
+    }
+
+    /* Rendered markdown styles */
+    #legal-body h2 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin-top: 40px;
+      margin-bottom: 14px;
+      padding-top: 30px;
+      border-top: 1px solid rgba(0, 0, 0, 0.06);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    #legal-body h2:first-child {
+      border-top: none;
+      padding-top: 0;
+      margin-top: 0;
+    }
+
+    #legal-body h2::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 20px;
+      background: var(--primary);
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    #legal-body p {
+      color: var(--text-muted);
+      margin-bottom: 14px;
+      line-height: 1.75;
+    }
+
+    #legal-body ul,
+    #legal-body ol {
+      margin: 12px 0 14px 20px;
+    }
+
+    #legal-body li {
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      line-height: 1.7;
+    }
+
+    #legal-body strong {
+      color: var(--text-dark);
+      font-weight: 700;
+    }
+
+    #legal-body blockquote {
+      background: rgba(214, 90, 90, 0.05);
+      border-left: 4px solid var(--primary);
+      padding: 14px 20px;
+      border-radius: 0 8px 8px 0;
+      margin: 16px 0;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* Loading state */
+    .legal-skeleton {
+      animation: shimmer 1.5s infinite linear;
+      background: linear-gradient(90deg,
+          rgba(0, 0, 0, 0.04) 0%,
+          rgba(0, 0, 0, 0.08) 50%,
+          rgba(0, 0, 0, 0.04) 100%);
+      background-size: 200% 100%;
+      border-radius: 6px;
+      height: 16px;
+      margin-bottom: 12px;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 200% 0;
+      }
+
+      100% {
+        background-position: -200% 0;
+      }
+    }
+
+    .legal-skeleton.wide {
+      width: 100%;
+    }
+
+    .legal-skeleton.medium {
+      width: 75%;
+    }
+
+    .legal-skeleton.short {
+      width: 50%;
+    }
+
+    .legal-skeleton.heading {
+      width: 40%;
+      height: 22px;
+      margin-top: 30px;
+    }
+
+    /* Error state */
+    .legal-error {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+    }
+
+    .legal-error i {
+      font-size: 2.5rem;
+      color: var(--primary);
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    /* Back link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: var(--transition);
+      margin-bottom: 32px;
+    }
+
+    .back-link:hover {
+      color: var(--primary);
+      transform: translateX(-4px);
+    }
+
+    /* Dark mode adjustments */
+    @media (prefers-color-scheme: dark) {
+      .last-updated-badge {
+        border-color: rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.04);
+      }
+
+      .legal-card {
+        border-color: rgba(255, 255, 255, 0.06);
+      }
+
+      #legal-body h2 {
+        border-top-color: rgba(255, 255, 255, 0.06);
+      }
+
+      .legal-skeleton {
+        background: linear-gradient(90deg,
+            rgba(255, 255, 255, 0.04) 0%,
+            rgba(255, 255, 255, 0.08) 50%,
+            rgba(255, 255, 255, 0.04) 100%);
+        background-size: 200% 100%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .legal-hero {
+        padding: 80px 0 40px;
+      }
+
+      .legal-hero h1 {
+        font-size: 2.2rem;
+      }
+
+      .legal-card {
+        padding: 32px 24px;
+        border-radius: var(--radius-md);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .legal-hero h1 {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="container">
+      <a href="/" class="logo">
+        <i class="fa-solid fa-tree"></i>
+        <span class="dynamic-org">Jubla Reporting</span>
+      </a>
+      <div class="nav-links">
+        <a href="/#features">Features</a>
+        <a href="/#vorteile">Vorteile</a>
+        <a href="/#setup">Setup</a>
+        <a href="app.html" class="btn-nav">Login für Leitende</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero / Header -->
+  <header class="legal-hero">
+    <div class="container">
+      <div class="legal-badge">
+        <i class="fa-solid fa-shield-halved"></i>
+        License
+      </div>
+      <h1>License &amp; <span>Legal</span></h1>
+      <p class="legal-subtitle">
+        License for the Jubla Reporting Tool.
+      </p>
+      <div class="last-updated-badge" id="last-updated-badge">
+        <i class="fa-brands fa-github"></i>
+        Last updated:&nbsp;
+        <span id="last-updated-date"><span class="loading-dots"></span></span>
+      </div>
+    </div>
+  </header>
+
+  <hr class="legal-divider">
+
+  <!-- Legal Content -->
+  <main class="legal-content-wrapper">
+    <div class="container">
+      <a href="/" class="back-link">
+        <i class="fa-solid fa-arrow-left"></i>
+        Zurück zur Startseite
+      </a>
+
+      <div class="legal-card">
+        <div id="legal-body">
+          <!-- Skeleton loader -->
+          <div class="legal-skeleton heading"></div>
+          <div class="legal-skeleton wide"></div>
+          <div class="legal-skeleton medium"></div>
+          <div class="legal-skeleton wide"></div>
+          <div class="legal-skeleton heading"></div>
+          <div class="legal-skeleton wide"></div>
+          <div class="legal-skeleton short"></div>
+          <div class="legal-skeleton wide"></div>
+          <div class="legal-skeleton medium"></div>
+          <div class="legal-skeleton heading"></div>
+          <div class="legal-skeleton wide"></div>
+          <div class="legal-skeleton wide"></div>
+          <div class="legal-skeleton medium"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-info">
+          <a href="/" class="logo">
+            <i class="fa-solid fa-tree"></i>
+            Jubla Reporting
+          </a>
+          <p>Entwickelt mit ❤️ von Leitern für die Jubla. Unterstütze uns auf GitHub oder werde Teil der Community.</p>
+        </div>
+        <div class="footer-links">
+          <h4>Projekt</h4>
+          <ul>
+            <li><a href="https://github.com/flohulo/jubla-reporting" target="_blank">GitHub</a></li>
+            <li><a href="/releases.html" target="_blank">Releases</a></li>
+            <li><a href="/report.html" target="_blank">Fehler melden</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Rechtliches</h4>
+          <ul>
+            <li><a href="/legal.html" aria-current="page">Datenschutz</a></li>
+            <li><a href="/license.html" target="_blank">Lizenz</a></li>
+            <li><a href="/security.html" target="_blank">Security</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Jubla Reporting Tool</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/assets/js/config.js"></script>
+  <script>
+    // ── Config ──────────────────────────────────────────────────────────────
+    const GITHUB_OWNER = 'flohulo';
+    const GITHUB_REPO = 'jubla-reporting';
+    const LEGAL_FILE = 'LICENSE';
+    const GITHUB_BRANCH = 'main';
+
+    const RAW_URL = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${LEGAL_FILE}`;
+    const COMMITS_URL = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/commits?path=${LEGAL_FILE}&per_page=1`;
+
+    // ── Minimal Markdown → HTML renderer ────────────────────────────────────
+    function renderMarkdown(md) {
+      // Remove the first H1 (used as page title already)
+      const lines = md.split('\n');
+      let firstH1Removed = false;
+      const filtered = lines.filter(line => {
+        if (!firstH1Removed && /^#\s/.test(line)) {
+          firstH1Removed = true;
+          return false;
+        }
+        return true;
+      });
+      md = filtered.join('\n');
+
+      let html = md
+        // Blockquote
+        .replace(/^>\s(.+)$/gm, '<blockquote>$1</blockquote>')
+        // H2
+        .replace(/^##\s+\*{0,2}(.+?)\*{0,2}\s*$/gm, '<h2>$1</h2>')
+        // H3
+        .replace(/^###\s+(.+)$/gm, '<h3>$1</h3>')
+        // Bold
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        // Italic
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
+        // Inline code
+        .replace(/`(.+?)`/g, '<code>$1</code>')
+        // Unordered list items
+        .replace(/^[\*\-]\s+(.+)$/gm, '<li>$1</li>')
+        // Wrap consecutive <li> in <ul>
+        .replace(/(<li>[\s\S]+?<\/li>)(?=\s*(?!<li>))/g, (match) => `<ul>${match}</ul>`)
+        // Paragraphs: lines that are not block-level elements
+        .replace(/^(?!<h[2-6]|<ul|<li|<blockquote|<hr)(.+)$/gm, (line) => {
+          const trimmed = line.trim();
+          if (!trimmed) return '';
+          if (trimmed.startsWith('<')) return line;
+          return `<p>${trimmed}</p>`;
+        })
+        // Clean up extra blank lines
+        .replace(/\n{3,}/g, '\n\n');
+
+      return html;
+    }
+
+    // ── Date formatter ───────────────────────────────────────────────────────
+    function formatDate(isoString) {
+      const date = new Date(isoString);
+      return date.toLocaleDateString('de-CH', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+      });
+    }
+
+    // ── Fetch & render ───────────────────────────────────────────────────────
+    async function loadLegal() {
+      const bodyEl = document.getElementById('legal-body');
+      const dateEl = document.getElementById('last-updated-date');
+
+      try {
+        // Fetch MD content and last commit in parallel
+        const [mdRes, commitRes] = await Promise.all([
+          fetch(RAW_URL),
+          fetch(COMMITS_URL, {
+            headers: { 'Accept': 'application/vnd.github+json' }
+          })
+        ]);
+
+        // Render markdown
+        if (mdRes.ok) {
+          const md = await mdRes.text();
+          bodyEl.innerHTML = renderMarkdown(md);
+        } else {
+          throw new Error('Markdown konnte nicht geladen werden.');
+        }
+
+        // Show last commit date
+        if (commitRes.ok) {
+          const commits = await commitRes.json();
+          if (commits && commits.length > 0) {
+            const commitDate = commits[0].commit.committer.date;
+            dateEl.textContent = formatDate(commitDate);
+          } else {
+            dateEl.textContent = 'Unbekannt';
+          }
+        } else {
+          dateEl.textContent = 'Nicht verfügbar';
+        }
+
+      } catch (err) {
+        console.error('Fehler beim Laden der LEGAL.md:', err);
+        bodyEl.innerHTML = `
+          <div class="legal-error">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <p><strong>Inhalt konnte nicht geladen werden.</strong></p>
+            <p>Bitte versuche es erneut oder besuche das <a href="https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/blob/${GITHUB_BRANCH}/${LEGAL_FILE}" target="_blank">GitHub Repository</a>.</p>
+          </div>`;
+        dateEl.textContent = 'Nicht verfügbar';
+      }
+    }
+
+    // ── Branding ─────────────────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.APP_CONFIG && window.APP_CONFIG.branding) {
+        const orgName = window.APP_CONFIG.branding.orgName || 'Jubla Reporting';
+        document.querySelectorAll('.dynamic-org').forEach(el => el.textContent = orgName);
+      }
+      loadLegal();
+    });
+  </script>
+
+</body>
+
+</html>

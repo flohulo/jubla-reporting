@@ -203,8 +203,9 @@ window.APP_CONFIG = {
         kanton: { label: "Jubla Kanton Zürich", url: "https://www.jublazueri.ch" },
         schar: { label: "Jubla Wald ZH", url: "https://www.jubla-wald.ch" },
         github: { label: "Projekt auf GitHub", url: "https://github.com/flohulo/jubla-reporting" },
-        license: { label: "Lizenz", url: "https://github.com/flohulo/jubla-reporting/blob/main/LICENSE" },
-        legal: { label: "Rechtliche Hinweise", url: "https://github.com/flohulo/jubla-reporting/blob/main/LEGAL.md" },
+        license: { label: "Lizenz", url: "/license.html" },
+        legal: { label: "Rechtliche Hinweise", url: "/legal.html" },
+        legalText: "Rechtliches",
         reportIssue: "Fehler melden"
     },
 

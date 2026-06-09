@@ -248,7 +248,8 @@ const UI = {
 
     // Links laden
     populateLinks() {
-        const cfg = window.APP_CONFIG.links;
+        const rootCfg = window.APP_CONFIG || {};
+        const cfg = rootCfg.links;
         if (!cfg) return;
 
         const mapping = {
@@ -262,17 +263,26 @@ const UI = {
 
         Object.entries(mapping).forEach(([id, data]) => {
             const el = document.getElementById(id);
-            if (el) {
+            if (el && data) {
                 el.innerText = data.label;
                 el.href = data.url;
             }
         });
 
-        if (document.getElementById("footerLegalLink")) document.getElementById("footerLegalLink").href = cfg.legal.url;
-        if (document.getElementById("readmeLink")) document.getElementById("readmeLink").href = cfg.github.url + "/blob/main/README.md";
-        if (document.getElementById("issueLink")) document.getElementById("issueLink").innerText = cfg.reportIssue;
-        if (document.getElementById("strikesLink")) document.getElementById("strikesLink").innerText = cfg.strikes;
-        if (document.getElementById("footerLegalLink")) document.getElementById("footerLegalLink").innerText = cfg.legalText;
+        if (document.getElementById("footerLegalLink") && cfg.legal) {
+            document.getElementById("footerLegalLink").href = cfg.legal.url;
+            document.getElementById("footerLegalLink").innerText = rootCfg.legalText || cfg.legalText || "Rechtliches";
+        }
+
+        if (document.getElementById("readmeLink") && cfg.github) {
+            document.getElementById("readmeLink").href = cfg.github.url + "/blob/main/README.md";
+        }
+        if (document.getElementById("issueLink")) {
+            document.getElementById("issueLink").innerText = cfg.reportIssue || rootCfg.reportIssue || "Fehler melden";
+        }
+        if (document.getElementById("strikesLink")) {
+            document.getElementById("strikesLink").innerText = rootCfg.strikes || "Strikes";
+        }
 
         const vLabel = document.getElementById("versionText");
         if (vLabel && window.APP_CONFIG.labels.versionLabel) vLabel.innerText = window.APP_CONFIG.labels.versionLabel;
