@@ -15,6 +15,7 @@ Dieses Tool ermöglicht es Leitenden, Berichte zu Gruppenstunden schnell und unk
 *   🚀 **Einfaches Reporting:** Berichte sind in weniger als 2 Minuten erfasst.
 *   📊 **Google Sheets Integration:** Keine Datenbank-Administration nötig – deine Tabelle ist dein Backend.
 *   ⚠️ **Alarm-Funktion:** Automatische Benachrichtigung bei kritischen Situationen (z.B. Unfälle oder Konflikte).
+*   🛒 **Gemeinsame Einkaufsliste:** Leitende tragen dieselbe Liste ein und sehen den aktuellen Stand sofort.
 *   🎨 **Einfaches Branding:** Texte und Logos lassen sich via `config.js` ohne Programmierkenntnisse anpassen.
 *   ☁️ **Serverless:** Kostenloses Hosting via Netlify Functions.
 

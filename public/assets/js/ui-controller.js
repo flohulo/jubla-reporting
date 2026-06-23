@@ -256,6 +256,7 @@ const UI = {
             "jublaschweizweb": cfg.website,
             "jublakanton": cfg.kanton,
             "jublaschar": cfg.schar,
+            "shoppingListLink": cfg.shopping,
             "githubProjectLink": cfg.github,
             "licenseLink": cfg.license,
             "legalLink": cfg.legal

@@ -27,6 +27,7 @@ exports.handler = async (event) => {
       ok: true,
       contactEmail: process.env.CONTACT_EMAIL || "",
       contactPhone: process.env.CONTACT_PHONE || "",
+      shoppingUrl: "/shopping.html",
       issueUrl: "/report.html",
       githubUrl: "https://github.com/flohulo/jubla-reporting",
       licenseUrl: "/license.html",

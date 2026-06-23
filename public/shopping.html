@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title id="pageTitle">Schareinkaufliste</title>
+  <link rel="icon" href="/favicon.ico" />
+  <meta name="theme-color" content="#2d6a4f" />
+  <link rel="stylesheet" href="/assets/css/main.css" />
+  <link rel="stylesheet" href="/assets/css/shopping.css" />
+  <link rel="stylesheet" href="/assets/vendor/fontawesome/css/all.min.css" />
+  <script src="/assets/js/config.js"></script>
+</head>
+
+<body class="shopping-page">
+  <header class="top-nav">
+    <div class="nav-left">
+      <span class="nav-title" id="appOrgName">Jubla Reporting</span>
+      <span id="shoppingSystemTitle" class="nav-subtitle">Schareinkaufliste</span>
+      <span id="headerSubtitle" style="display: none;"></span>
+    </div>
+    <div class="nav-right">
+      <a id="shoppingListLink" href="shopping.html">Einkaufsliste</a>
+      <a href="app.html">Reporting</a>
+      <a href="strikes.html">Strikes</a>
+      <button id="logoutBtnTop" class="btn-logout" onclick="logout()" style="display: none">
+        <i class="fa-solid fa-right-from-bracket"></i>
+      </button>
+    </div>
+  </header>
+
+  <div class="card shopping-card">
+    <div class="card-header shopping-header">
+      <div class="logo-badge"><i class="fa-solid fa-basket-shopping"></i></div>
+      <div class="header-titles">
+        <h1 id="pageHeading">Schareinkaufliste</h1>
+        <p id="pageSubtitle">Alle in der Schar sehen dieselbe Liste.</p>
+      </div>
+    </div>
+
+    <div class="card-body" id="loginArea">
+      <p class="section-title login-title" id="loginTitle">Anmelden</p>
+      <p class="shopping-intro" id="shoppingLoginHint">
+        Mit dem Schar-PIN kannst du die gemeinsame Liste nutzen.
+      </p>
+      <form onsubmit="login(); return false;">
+        <div class="form-group">
+          <label class="form-label" id="nameLabel">Dein Name</label>
+          <input type="text" id="userNameInput" class="form-control" placeholder="Vorname" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" id="pinLabel">Schar-PIN</label>
+          <div class="pin-group">
+            <input type="password" id="pinInput" class="form-control" placeholder="••••" inputmode="numeric"
+              maxlength="8" autocomplete="one-time-code" onkeydown="if (event.key === 'Enter') login();" />
+            <span class="toggle-pin" onclick="UI.togglePin()"><i class="fa-regular fa-eye"></i></span>
+          </div>
+        </div>
+        <p class="error-msg" id="loginError"></p>
+        <button type="submit" class="btn btn-primary" id="loginBtn">Anmelden</button>
+      </form>
+    </div>
+
+    <div class="card-body" id="mainArea" style="display: none">
+      <div class="shopping-intro-banner">
+        <div class="shopping-intro-icon"><i class="fa-solid fa-list-check"></i></div>
+        <div>
+          <strong id="shoppingTitle">Einkaufsliste</strong>
+          <p id="shoppingHint">Die Liste ist für alle Leitenden mit demselben PIN sichtbar.</p>
+        </div>
+      </div>
+
+      <div class="stats-strip">
+        <div class="stat-pill">
+          <div class="stat-num" id="statOpen">0</div>
+          <div class="stat-label" id="statsOpenLabel">Offen</div>
+        </div>
+        <div class="stat-pill">
+          <div class="stat-num stat-done" id="statDone">0</div>
+          <div class="stat-label" id="statsDoneLabel">Erledigt</div>
+        </div>
+        <div class="stat-pill">
+          <div class="stat-num" id="statTotal">0</div>
+          <div class="stat-label" id="statsTotalLabel">Artikel</div>
+        </div>
+      </div>
+
+      <div class="shopping-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" id="itemLabel">Artikel</label>
+            <input type="text" id="s_item" class="form-control" placeholder="z.B. Milch" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" id="amountLabel">Menge</label>
+            <input type="text" id="s_amount" class="form-control" placeholder="z.B. 2 Packungen" />
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" id="categoryLabel">Kategorie</label>
+            <input type="text" id="s_category" class="form-control" placeholder="z.B. Lebensmittel" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" id="noteLabel">Notiz</label>
+            <input type="text" id="s_note" class="form-control" placeholder="z.B. glutenfrei" />
+          </div>
+        </div>
+        <p class="error-msg" id="shoppingError"></p>
+        <button class="btn btn-primary" id="addItemBtn" onclick="addItem()">
+          <span id="addBtnText">Zur Liste</span> <i class="fa-solid fa-plus"></i>
+        </button>
+      </div>
+
+      <div class="shopping-toolbar">
+        <button class="btn btn-secondary" id="toggleDoneBtn" onclick="toggleDoneVisibility()">
+          <i class="fa-solid fa-eye-slash"></i> <span id="hideDoneBtn">Erledigte ausblenden</span>
+        </button>
+        <button class="btn btn-secondary" id="clearDoneBtn" onclick="clearDoneItems()">
+          <i class="fa-solid fa-broom"></i> <span id="clearDoneLabel">Erledigte löschen</span>
+        </button>
+      </div>
+
+      <div class="shopping-list" id="shoppingList">
+        <!-- JS dynamic -->
+      </div>
+    </div>
+
+    <div class="card-footer">
+      <span><a id="versionLink" class="footer-link" href="/releases.html" target="_blank" rel="noreferrer"><span
+            id="versionText">Version</span> <span id="versionLabel">lade...</span></a></span>
+      <span class="footer-links">
+        <a id="issueLink" href="/report.html" target="_blank" rel="noreferrer">Fehler melden</a>
+        <a id="footerLegalLink" href="/legal.html" target="_blank" rel="noreferrer">Rechtliches</a>
+      </span>
+    </div>
+  </div>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui-controller.js"></script>
+  <script src="/assets/js/shopping.js"></script>
+</body>
+
+</html>
